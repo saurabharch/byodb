@@ -14,5 +14,15 @@ module.exports = function (db) {
         URI: {
         	type: Sequelize.STRING
         }
+    }, {
+        getterMethods: {
+            dbName: function() {
+                return 'byodb' + this.id;
+            }
+        }
     });
 };
+
+// database.hook('afterSave', function(){
+
+// })
