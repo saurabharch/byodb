@@ -7,18 +7,22 @@ module.exports = function (db) {
 
     db.define('user', {
         email: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        firstName: {
+            type: Sequelize.STRING
+        },
+        lastName: {
+            type: Sequelize.STRING
+        },
+        organization: {
             type: Sequelize.STRING
         },
         password: {
             type: Sequelize.STRING
         },
         salt: {
-            type: Sequelize.STRING
-        },
-        twitter_id: {
-            type: Sequelize.STRING
-        },
-        facebook_id: {
             type: Sequelize.STRING
         },
         google_id: {
