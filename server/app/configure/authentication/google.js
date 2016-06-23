@@ -10,9 +10,9 @@ module.exports = function (app, db) {
     var googleConfig = app.getValue('env').GOOGLE;
 
     var googleCredentials = {
-        clientID: googleConfig.clientID,
-        clientSecret: googleConfig.clientSecret,
-        callbackURL: googleConfig.callbackURL
+        clientID: '1056098991115-t1aqsq6ga7p7gqdo9ffk7uv9dishon73.apps.googleusercontent.com',
+        clientSecret: 'RaHXETas5GON7UdMJsHc0jOz',
+        callbackURL: "/auth/google/callback"
     };
 
     var verifyCallback = function (accessToken, refreshToken, profile, done) {
@@ -27,7 +27,10 @@ module.exports = function (app, db) {
                     return user;
                 } else {
                     return User.create({
-                        google_id: profile.id
+                        google_id: profile.id,
+                        firstName: profile._json.given_name,
+                        lastName: profile._json.family_name,
+                        email: profile._json.email
                     });
                 }
             })
