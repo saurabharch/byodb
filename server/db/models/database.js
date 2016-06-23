@@ -13,9 +13,6 @@ module.exports = function (db) {
         },
         URI: {
         	type: Sequelize.STRING
-        },
-        lookupName: {
-        	type: Sequelize.STRING
         }
     });
 };
