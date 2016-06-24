@@ -1,17 +1,14 @@
-// app.config(function ($stateProvider) {
-//     $stateProvider.state('home', {
-//         url: '/',
-//         templateUrl: 'js/home/home.html'
-//     });
-// });
-
 app.config(function ($stateProvider) {
     $stateProvider.state('Home', {
         url: '/home',
         templateUrl: 'js/Home/Home.html',
-        controller: 'HomeCtrl'
+        controller: 'HomeCtrl',
+        resolve : {
+            loggedInUser: function (AuthService) {
+                return AuthService.getLoggedInUser();
+            }
         }
-    );
+    });
 
 });
 
@@ -25,6 +22,8 @@ app.factory('HomeFactory', function ($http) {
 	return HomeFactory; 
 })
 
-app.controller('HomeCtrl', function ($scope, HomeFactory, $state, $stateParams) {
+app.controller('HomeCtrl', function ($scope, HomeFactory, $state, $stateParams, loggedInUser) {
+
+    if(!loggedInUser) $state.go('landingPage');
 
 });

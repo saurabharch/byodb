@@ -10,6 +10,8 @@ var knex = require('knex');
 module.exports = router;
 
 router.post('/', function(req, res, next) {
+    if(!req.user) res.sendStatus(404);
+    
     var knex = require('knex')({
       client: 'pg',
       connection: 'postgres://localhost:5432/'+ req.body.dbName,
