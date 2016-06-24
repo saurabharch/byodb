@@ -20,7 +20,8 @@ router.post('/', function(req, res, next) {
 
     knex.schema.createTable(req.body.name, function (table) {
       table.increments();
-      // table.string(req.body.name);
+      table.string(req.body.column1);
+      table.string(req.body.column2);
       table.timestamps();
     }).then(function() {
         res.sendStatus(200);
