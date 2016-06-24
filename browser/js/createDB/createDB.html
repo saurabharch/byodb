@@ -13,24 +13,34 @@
 
 <form ng-if="createdDB" ng-model="table" ng-submit="createTable(table, createdDB)">
 
+
   <fieldset class="form-group">
     <label for="exampleInputEmail1">Enter your table's name</label>
     <input ng-model="table.name" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the table's name">
   </fieldset>
 
+<div ng-repeat="i in columnArray track by $index">
   <fieldset class="form-group">
-  <label for="exampleInputEmail1">Enter your column's name</label>
-  <input ng-model="table.column1" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the column's name">
+    <label for="exampleInputEmail1">Enter your column's name</label>
+    <input ng-model="table.column[$index]" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the column's name">
+    
+    <fieldset class="form-group">
+    <label for="exampleSelect1">What is the data type ?</label>
+    <select ng-model="table.type[$index]" class="form-control" id="exampleSelect1">
+        <option value="text">Text</option>
+        <option value="float">Number</option>
+        <option value="boolean">True/False</option>
+        <option value="date">Date</option>
+    </select>
+    </fieldset>
+
   </fieldset>
 
-  <fieldset class="form-group">
-  <label for="exampleInputEmail1">Enter your column's name</label>
-  <input ng-model="table.column2" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the column's name">
-  </fieldset>
+</div>
+
+  <button ng-click="add()" type="button" class="btn btn-success-outline">Add a column</button>
 
   <button type="submit" class="btn btn-primary">Submit</button>
 
-
 </form>
 
-<h2>{{createdDB}}</h2>
