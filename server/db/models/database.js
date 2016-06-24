@@ -10,19 +10,15 @@ module.exports = function (db) {
             validate: {
             	len: 3
             }
-        },
-        URI: {
-        	type: Sequelize.STRING
         }
     }, {
         getterMethods: {
             dbName: function() {
                 return 'byodb' + this.id;
+            },
+            URI: function() {
+                return 'postgres://localhost:5432/' + this.dbName;
             }
         }
     });
 };
-
-// database.hook('afterSave', function(){
-
-// })
