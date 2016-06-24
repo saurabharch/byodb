@@ -1,8 +1,9 @@
 app.config(function ($stateProvider) {
-    $stateProvider.state('createDB', {
+    $stateProvider.state('createdb', {
         url: '/createdb',
-        templateUrl: 'js/createDB/createDB.html',
-        controller: 'CreateDBCtrl'
+        templateUrl: 'js/createdb/createdb.html',
+        controller: 'CreatedbCtrl'
         }
     );
+
 });

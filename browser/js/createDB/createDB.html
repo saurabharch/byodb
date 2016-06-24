@@ -8,3 +8,17 @@
   <button type="submit" class="btn btn-primary">Submit</button>
 
 </form>
+
+<br>
+
+<form ng-if="createdDB" ng-model="table" ng-submit="createTable(table, createdDB)">
+
+  <fieldset class="form-group">
+    <label for="exampleInputEmail1">Enter your column's name</label>
+    <input ng-model="table.name" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the table's name">
+  </fieldset>
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<h2>{{createdDB}}</h2>
