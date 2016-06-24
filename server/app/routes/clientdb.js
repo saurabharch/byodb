@@ -19,9 +19,7 @@ router.post('/', function(req, res, next) {
     knex.schema.createTable(req.body.name, function (table) {
       table.increments();
       for(var key in req.body.column) {
-        if(req.body.type[key] === 'text') table.text(req.body.column[key]);
-        if(req.body.type[key] === 'float') table.float(req.body.column[key]);
-        if(req.body.type[key] === 'boolean') table.boolean(req.body.column[key]);
+        table[req.body.type[key]](req.body.column[key])
       }
       table.timestamps();
     }).then(function() {
