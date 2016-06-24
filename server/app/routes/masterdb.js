@@ -10,7 +10,7 @@ var Sequelize = require('sequelize');
 module.exports = router;
 
 router.post('/', function(req, res, next) {
-
+    console.log(req.body);
     Database.create(req.body)
     .then(function(createdDB) {
         Database.makeClientDatabase(createdDB);
