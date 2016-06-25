@@ -5,4 +5,9 @@
 
 <h2>Access your database</h2>
 
+<div ng-repeat="db in allDbs">{{db.dbName}}</div>
+<button ng-repeat="db in allDbs" ui-sref="Table({dbName: db.dbName})">This would be a db</button>
+
+<!-- {{allDbs}} -->
+
 </section>

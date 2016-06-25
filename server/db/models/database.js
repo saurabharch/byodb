@@ -10,15 +10,20 @@ module.exports = function (db) {
             validate: {
             	len: 3
             }
-        }
-    }, {
-        getterMethods: {
-            dbName: function() {
-                return 'byodb' + this.id;
-            },
-            URI: function() {
-                return 'postgres://localhost:5432/' + this.dbName;
+        },
+        dbName: {
+            type: Sequelize.STRING,
+            defaultValue: function(){
+                var random = Math.floor(100000000 + Math.random() * 900000000);
+                var randomString = random.toString();
+                return 'b' + randomString;
             }
         }
+    }, {
+        // getterMethods: {
+        //     URI: function() {
+        //         return 'postgres://localhost:5432/' + this.dbName;
+        //     }
+        // }
     });
 };
