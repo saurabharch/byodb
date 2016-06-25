@@ -1,6 +1,4 @@
-app.controller('HomeCtrl', function ($scope, allDbs, loggedInUser) {
-	
-	if(!loggedInUser) $state.go('landingPage');
+app.controller('HomeCtrl', function ($scope, allDbs, $state) {
 
 	$scope.allDbs = allDbs;
 });
