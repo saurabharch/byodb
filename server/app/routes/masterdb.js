@@ -12,13 +12,10 @@ module.exports = router;
 router.post('/', function(req, res, next) {
     Database.create(req.body)
     .then(function(createdDB) {
-        var dbName = createdDB.dbName;
-        var connectionString = 'postgres://localhost:5432/masterDB';
-
-        var client = new pg.Client(connectionString);
-        client.connect();
-        var query = client.query('CREATE DATABASE ' + dbName);
-        query.on('end', function() { client.end(); });
+        Database.makeClientDatabase(createdDB);
+        return createdDB
+    })
+    .then(function(createdDB) {
         res.send(createdDB);
     })
     .catch(next);
