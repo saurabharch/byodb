@@ -9,10 +9,20 @@ module.exports = function (db) {
     // function located at server/app/configure/index.js
     require('./configure')(app, db);
 
+    //it sends the html for the landing page.
+    app.get('/', function(req, res, next) {
+        res.sendFile(app.get('indexHTMLPath'));
+    })
+
+    //it blocks every url after api if the user is not logged in. 
+    app.use('/*', function(req, res, next) {
+        if(!req.user) res.redirect('/');
+        else next();
+    })
+
     // Routes that will be accessed via AJAX should be prepended with
     // /api so they are isolated from our GET /* wildcard.
     app.use('/api', require('./routes'));
-
 
     /*
      This middleware will catch any URLs resembling a file extension
@@ -30,9 +40,11 @@ module.exports = function (db) {
 
     });
 
+
     app.get('/*', function (req, res) {
         res.sendFile(app.get('indexHTMLPath'));
     });
+
 
     // Error catching endware.
     app.use(function (err, req, res, next) {

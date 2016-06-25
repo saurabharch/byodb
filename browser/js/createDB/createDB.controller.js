@@ -1,7 +1,4 @@
-app.controller('CreatedbCtrl', function ($scope, $state, CreatedbFactory, loggedInUser) {
-
-	if(!loggedInUser) $state.go('landingPage');
-
+app.controller('CreatedbCtrl', function ($scope, $state, CreatedbFactory) {
 
 	$scope.createdDB = false;
         $scope.columnArray = [];
