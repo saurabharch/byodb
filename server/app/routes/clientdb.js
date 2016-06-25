@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
 
 })
 
-
+// DO WE NEED TO INCLUDE SOMETHING TO HANDLE INJECTION ATTACK?
 router.get('/:dbName', function(req, res){
    var pg = require('pg'); 
 
@@ -48,19 +48,28 @@ router.get('/:dbName', function(req, res){
         if(err) {
          res.send('error running query'); 
         }
-        res.set("Content-Type", 'text/javascript'); // i added this to avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+        res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
         res.send(result);
-                      client.end();
+        client.end();
       });
     }); 
 
 });
 
 
-
+// DO NEED TO COME UP WITH A WAY TO REMOVE SPACES FROM THE TABLE NAME WHEN IT GETS SAVED?
 router.get('/:dbName/:tableName', function(req, res, next){
-  console.log('HERE!!!!')
-  res.sendStatus(200)
+  var knex = require('knex')({
+    client: 'pg',
+    connection: 'postgres://localhost:5432/'+ req.params.dbName,
+    searchPath: 'knex,public'
+  });
+
+  knex.select().from(req.params.tableName)
+  .then(function(foundTable){
+    res.send(foundTable)
+  })
+  .catch(next);
 })
 
 

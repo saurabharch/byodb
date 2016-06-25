@@ -1,1 +1,16 @@
-{{singleTable}}
+
+<!-- <div ng-repeat="row in singleTable"> {{row.Name}} </div>
+ -->
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th ng-repeat="column in columns">{{column}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="row in instanceArray">
+      	<td ng-repeat="value in row">{{value}}</td>
+    </tbody>
+  </table>
+
+
