@@ -7,7 +7,7 @@ app.controller('SingleTableCtrl', function ($scope, singleTable) {
 	var table = singleTable[0];
 
 	for(var prop in table){
-		$scope.columns.push(prop)
+		if(prop !== 'created_at' && prop !== 'updated_at') $scope.columns.push(prop)
 	}
 
 	// Sort the values in sigleTable so that all the values for a given row are grouped
@@ -16,7 +16,7 @@ app.controller('SingleTableCtrl', function ($scope, singleTable) {
 	singleTable.forEach(function(row){
 		var rowValues = [];
 		for(var prop in row){
-			rowValues.push(row[prop])
+			if(prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
 		}
 		$scope.instanceArray.push(rowValues)
 	})

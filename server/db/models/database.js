@@ -21,6 +21,8 @@ module.exports = function (db) {
                 return 'b' + randomString;
             }
         },
+        
+    }, {
         classMethods: {
             makeClientDatabase: function(createdDB) {
                 var dbName = createdDB.dbName;
@@ -32,11 +34,5 @@ module.exports = function (db) {
                 return createdDB; 
             }
         }
-    }, {
-        // getterMethods: {
-        //     URI: function() {
-        //         return 'postgres://localhost:5432/' + this.dbName;
-        //     }
-        // }
     });
 };
