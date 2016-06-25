@@ -6,7 +6,10 @@ app.config(function ($stateProvider) {
         resolve: {
         	allDbs: function(HomeFactory){
         		return HomeFactory.getAllDbs();
-        	}
+        	},
+            loggedInUser: function (AuthService) {
+                return AuthService.getLoggedInUser();
+            }
         }
     });
 });
