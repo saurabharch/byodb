@@ -1,6 +1,19 @@
-
-<!-- <div ng-repeat="row in singleTable"> {{row.Name}} </div>
- -->
+<div>
+<span>Filter {{currentTable.tableName}} where</span>
+<select>
+  <option ng-repeat="column in columns">{{ column }}</option>
+</select>
+<!-- <span>WHERE</span> -->
+<select>
+<option>=</option>
+<option><</option>
+<option>></option>
+<option><=</option>
+<option>>=</option>
+<option><></option>
+</select>
+<input></input>
+</div>
 <table class="table table-striped">
     <thead>
       <tr>

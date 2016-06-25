@@ -1,7 +1,5 @@
-<button class="btn btn-default" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})">{{table.table_name}}</button>
-
-<!-- <div ng-controller="ModalCtrl">
-    <script type="text/ng-template" id="myModalContent.html">
+ <div>
+ <script type="text/ng-template" id="myModalContent.html">
         <div class="modal-header">
             <h3 class="modal-title">I'm a modal!</h3>
         </div>
@@ -18,8 +16,4 @@
             <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
         </div>
     </script>
-
-    <button type="button" class="btn btn-default" ng-click="open()">QUERY</button>
-    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-</div> -->
-<ui-view></ui-view>
+</div>

@@ -14,8 +14,8 @@ app.controller('CreatedbCtrl', function ($scope, $state, CreatedbFactory) {
 		})
 	}
 
-	$scope.createTable = function(){
-		CreatedbFactory.createTable;
+	$scope.createTable = function(table, DB){
+		CreatedbFactory.createTable(table, DB);
 		$state.go('Table', {dbName: $scope.createdDB.dbName})
 	}
 });

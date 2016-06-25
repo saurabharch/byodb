@@ -1,5 +1,7 @@
-app.controller('SingleTableCtrl', function ($scope, singleTable) {
+app.controller('SingleTableCtrl', function ($scope, singleTable, $stateParams) {
 	$scope.singleTable = singleTable;
+
+	$scope.currentTable = $stateParams
 
 	// Get all of the columns to create the columns on the bootstrap table
 	$scope.columns = [];
