@@ -21,3 +21,10 @@ router.post('/', function(req, res, next) {
     })
     .catch(next);
 })
+
+router.get('/', function(req, res, next){
+    Database.findAll()
+    .then(function(allDBs){
+        res.send(allDBs)
+    })
+})
