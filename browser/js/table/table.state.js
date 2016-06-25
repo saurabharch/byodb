@@ -19,20 +19,6 @@ app.config(function ($stateProvider) {
                 return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
             }
         }
-    }); 
-
-    $stateProvider.state('Table.filtered', {
-        url: '/:tableName/filtered',
-        templateUrl: 'js/table/filteredTable.html',
-        controller: 'FilteredTableCtrl',
-        params : {
-            result : null
-        },
-        resolve: {
-            filteredTable: function(TableFactory, $stateParams){
-                return TableFactory.filter($stateParams.dbName, $stateParams.tableName, result);
-            }
-        }
-    });      
+    });     
 
 });
