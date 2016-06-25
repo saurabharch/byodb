@@ -1,7 +1,7 @@
-app.controller('SingleTableCtrl', function ($scope, singleTable, $stateParams) {
+app.controller('SingleTableCtrl', function ($scope, singleTable, $stateParams, TableFactory, $state) {
 	$scope.singleTable = singleTable;
 
-	$scope.currentTable = $stateParams
+	$scope.currentTable = $stateParams;
 
 	// Get all of the columns to create the columns on the bootstrap table
 	$scope.columns = [];
@@ -22,5 +22,15 @@ app.controller('SingleTableCtrl', function ($scope, singleTable, $stateParams) {
 		}
 		$scope.instanceArray.push(rowValues)
 	})
+
+
+	//sends the filtering query and then goes to the filtered state
+	$scope.filter = function(dbName, tableName, data) {
+		TableFactory.filter(dbName, tableName, data)
+		.then(function(result) {
+			console.log(result);
+			$state.go('Table.filtered', {dbName : $stateParams.dbName, tableName: $stateParams.tableName})
+		})
+	}
 
 });

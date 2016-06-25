@@ -1,19 +1,22 @@
 <div>
-<span>Filter {{currentTable.tableName}} where</span>
-<select>
-  <option ng-repeat="column in columns">{{ column }}</option>
-</select>
-<!-- <span>WHERE</span> -->
-<select>
-<option>=</option>
-<option><</option>
-<option>></option>
-<option><=</option>
-<option>>=</option>
-<option><></option>
-</select>
-<input></input>
+  <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
+    <span>Filter {{currentTable.tableName}} where</span>
+    <select ng-model="data.column">
+      <option ng-repeat="column in columns">{{ column }}</option>
+    </select>
+    <select ng-model="data.comparator">
+      <option>=</option>
+      <option><</option>
+      <option>></option>
+      <option><=</option>
+      <option>>=</option>
+      <option><></option>
+    </select>
+    <input ng-model="data.value"></input>
+    <button type="submit" class="btn btn-primary">Submit query</button>
+  </form>
 </div>
+
 <table class="table table-striped">
     <thead>
       <tr>
@@ -24,6 +27,5 @@
       <tr ng-repeat="row in instanceArray">
       	<td ng-repeat="value in row track by $index">{{value}}</td>
     </tbody>
-  </table>
-
+</table>
 
