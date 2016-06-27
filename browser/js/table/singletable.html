@@ -1,6 +1,7 @@
-<div>{{singleTable}}</div><br>
-<div>{{theDb}}</div><br>
-<div>{{allTables}}</div><br>
+<!-- <div>{{singleTable}}</div><br> -->
+<div>{{theDbName}}</div><br>
+<!-- <div>{{allTables}}</div><br> -->
+<div>{{theTableName}}</div><br>
 
 <table class="table table-bordered">
     <thead>
@@ -16,7 +17,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="row in instanceArray">
-        <td><button type="button" ng-click="removeRow(theDb.dbName, )" class="btn btn-sm btn-danger">x</button></td>
+        <td><button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
         <td ng-repeat="value in row track by $index">
             <input placeholder="{{value}}" ng-model='theRow' type="text" class="form-control" ng-keyup="updateRow(value, theRow, row, $index)">
         </td>

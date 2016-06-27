@@ -1,9 +1,10 @@
-app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, theDb) {
+app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, $stateParams) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
 	$scope.singleTable = singleTable;
-	$scope.theDb = theDb;
+	$scope.theDbName = $stateParams.dbName;
+	$scope.theTableName = $stateParams.tableName;
 
 	$scope.removeRow = TableFactory.removeRow;
 	

@@ -17,10 +17,7 @@ app.config(function ($stateProvider) {
         resolve: {
             singleTable: function(TableFactory, $stateParams){
                 return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
-            },
-            theDb: function(TableFactory, $stateParams){
-                return TableFactory.getDbName($stateParams.dbName);
-            },
+            }
         }
     });    
 
