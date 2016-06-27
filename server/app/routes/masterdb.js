@@ -28,3 +28,14 @@ router.get('/', function(req, res, next){
         res.send(allDBs)
     })
 })
+
+router.get('/:dbName', function(req, res, next){
+    Database.findOne({
+        where: {
+            dbName: req.params.dbName
+        }
+    })
+    .then(function(theDB){
+        res.send(theDB)
+    })
+})

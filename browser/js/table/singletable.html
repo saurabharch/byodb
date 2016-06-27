@@ -1,19 +1,22 @@
-{{singleTable}}
-
+<div>{{singleTable}}</div><br>
+<div>{{theDb}}</div><br>
+<div>{{allTables}}</div><br>
 
 <table class="table table-bordered">
     <thead>
       <tr>
+        <th></th>
         <th ng-repeat="column in columns track by $index">
             <input placeholder="{{column}}" ng-model='theColumn' type="text" class="form-control" ng-keyup="updateColumns(column, theColumn, $index)">
         </th>
         <th>
-          <span class='glyphicon glyphicon-plus add-column'></span>
+          <span class='glyphicon glyphicon-plus'></span>
         </th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="row in instanceArray">
+        <td><button type="button" ng-click="removeRow(theDb.dbName, )" class="btn btn-sm btn-danger">x</button></td>
         <td ng-repeat="value in row track by $index">
             <input placeholder="{{value}}" ng-model='theRow' type="text" class="form-control" ng-keyup="updateRow(value, theRow, row, $index)">
         </td>

@@ -73,6 +73,25 @@ router.get('/:dbName/:tableName', function(req, res, next){
 })
 
 
+router.delete('/:dbName/:tableName/:rowId', function(req, res, next){
+  var knex = require('knex')({
+    client: 'pg',
+    connection: 'postgres://localhost:5432/'+ req.params.dbName,
+    searchPath: 'knex,public'
+  });
+  knex(req.params.tableName)
+  .where('id', req.params.rowId)
+  .del()
+  .then(function(){
+    return knex.select().from(req.params.tableName)
+  })
+  .then(function(foundTable){
+    console.log('HERE IT IS!!!!!!!!!!!!!!!', foundTable)
+      res.send(foundTable)
+  })
+  .catch(next);
+  
+})
 
 
 

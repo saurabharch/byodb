@@ -1,5 +1,13 @@
-app.controller('SingleTableCtrl', function ($scope, singleTable) {
+app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, theDb) {
+	
+	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
+
 	$scope.singleTable = singleTable;
+	$scope.theDb = theDb;
+
+	$scope.removeRow = TableFactory.removeRow;
+	
+	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
 
 	// Get all of the columns to create the columns on the bootstrap table
 	$scope.columns = [];

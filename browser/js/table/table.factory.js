@@ -16,5 +16,15 @@ app.factory('TableFactory', function ($http) {
         .then(resToData)
     }
 
+    TableFactory.getDbName = function(dbName){
+        return $http.get('/api/masterdb/' + dbName)
+        .then(resToData)
+    }
+
+    TableFactory.removeRow = function(dbName, tableName, rowId){
+        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId)
+        .then(resToData)
+    }
+
 	return TableFactory; 
 })
