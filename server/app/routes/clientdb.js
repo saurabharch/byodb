@@ -33,6 +33,7 @@ router.post('/', function(req, res, next) {
 
 })
 
+//route to get all tables from a db
 // DO WE NEED TO INCLUDE SOMETHING TO HANDLE INJECTION ATTACK?
 router.get('/:dbName', function(req, res){
    var pg = require('pg'); 
@@ -56,7 +57,7 @@ router.get('/:dbName', function(req, res){
 
 });
 
-
+//route to get a single table from a db
 // DO NEED TO COME UP WITH A WAY TO REMOVE SPACES FROM THE TABLE NAME WHEN IT GETS SAVED?
 router.get('/:dbName/:tableName', function(req, res, next){
   var knex = require('knex')({
@@ -72,6 +73,20 @@ router.get('/:dbName/:tableName', function(req, res, next){
   .catch(next);
 })
 
+//route to query a single table (filter)
+router.put('/:dbName/:tableName', function(req, res, next){
+  var knex = require('knex')({
+    client: 'pg',
+    connection: 'postgres://localhost:5432/'+ req.params.dbName,
+    searchPath: 'knex,public'
+  })
+  knex(req.params.tableName).where(req.body.column,req.body.comparator,req.body.value)
+  .then(function(result){
+    console.log(result);
+    res.send(result)
+  })
+  .catch(next);
+})
 
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next){
   var knex = require('knex')({

@@ -6,13 +6,22 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
 
-	function getSingleTable (db, table){
-		TableFactory.getSingleTable(db, table)
-		.then(function(theTable){
-			$scope.singleTable = theTable;
-		})
-		$scope.$evalAsync()
+	$scope.currentTable = $stateParams;
+
+	// function getSingleTable (db, table){
+	// 	TableFactory.getSingleTable(db, table)
+	// 	.then(function(theTable){
+	// 		$scope.singleTable = theTable;
+	// 	})
+	// 	$scope.$evalAsync()
+	// }
+
+	$scope.showDelete = false;
+
+	$scope.toggleDelete = function(){
+		$scope.showDelete = !$scope.showDelete
 	}
+
 
 	// getSingleTable($stateParams.dbName, $stateParams.tableName)
 
@@ -23,8 +32,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	// Get all of the columns to create the columns on the bootstrap table
 	$scope.columns = [];
 	$scope.originalColVals = [];
-
 	var table = singleTable[0];
+
 
 	for(var prop in table){
 		if(prop !== 'created_at' && prop !== 'updated_at'){
@@ -33,16 +42,33 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		} 
 	}
 
-	// Sort the values in sigleTable so that all the values for a given row are grouped
-	$scope.instanceArray = [];
+   
 
-	singleTable.forEach(function(row){
-		var rowValues = [];
-		for(var prop in row){
-			if(prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
-		}
-		$scope.instanceArray.push(rowValues)
-	})
+
+    //this function will re run when the filter function is invoked, in order to repopulate the table
+    function CreateRows() {
+        $scope.instanceArray = [];
+        $scope.singleTable.forEach(function(row) {
+            var rowValues = [];
+            for (var prop in row) {
+                if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
+            }
+            $scope.instanceArray.push(rowValues)
+        })
+    }
+
+    // Sort the values in singleTable so that all the values for a given row are grouped
+    CreateRows();
+
+    //sends the filtering query and then re renders the table with filtered data
+    $scope.filter = function(dbName, tableName, data) {
+        TableFactory.filter(dbName, tableName, data)
+            .then(function(result) {
+                console.log(result);
+                $scope.singleTable = result.data;
+                CreateRows();
+            })
+    }
 
 
 	//************ Important *********
@@ -60,13 +86,18 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		var colObj= {oldVal: $scope.originalColVals[i], newVal: newColName};
 
 		// if there is nothing in the array to update, push the update into it
-		if($scope.colValsToUpdate.length === 0) $scope.colValsToUpdate.push(colObj);
-				
-		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
-		for(var e = 0; e < $scope.colValsToUpdate.length; e++){
-			if($scope.colValsToUpdate[e].old === colObj.old) $scope.colValsToUpdate = colObj;
-			else $scope.colValsToUpdate.push(colObj);
+		if($scope.colValsToUpdate.length === 0){ $scope.colValsToUpdate.push(colObj); }
+		else {
+			for(var e = 0; e < $scope.colValsToUpdate.length; e++){
+				if($scope.colValsToUpdate[e].oldVal === colObj.oldVal){
+					$scope.colValsToUpdate[e] = colObj;
+					return;
+				}
+			}
+			console.log(colObj)
+			$scope.colValsToUpdate.push(colObj);
 		}
+		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
 	}
 
 	///////////////////////////////Updating Row Stuff/////////////////////////////////////////////////
@@ -84,11 +115,15 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 		// if there is nothing in the array to update, push the update into it
 		if($scope.rowValsToUpdate.length === 0) $scope.rowValsToUpdate.push(rowObj);
-
-		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
-		for(var e = 0; e < $scope.rowValsToUpdate.length; e++){
-			if($scope.rowValsToUpdate[e].id === rowObj.id) $scope.rowValsToUpdate[e] = rowObj;
-			else{$scope.rowValsToUpdate.push(rowObj); break}
+		else {
+			// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
+			for(var e = 0; e < $scope.rowValsToUpdate.length; e++){
+				if($scope.rowValsToUpdate[e].id === rowObj.id){ 
+					$scope.rowValsToUpdate[e] = rowObj;
+					return;
+				}
+			}
+			$scope.rowValsToUpdate.push(rowObj);
 		}
 	}
 

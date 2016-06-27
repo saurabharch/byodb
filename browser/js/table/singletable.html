@@ -3,6 +3,28 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
+
+<div>
+  <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
+    <span>Filter {{currentTable.tableName}} where</span>
+    <select ng-model="data.column">
+      <option ng-repeat="column in columns">{{ column }}</option>
+    </select>
+    <select ng-model="data.comparator">
+      <option>=</option>
+      <option><</option>
+      <option>></option>
+      <option><=</option>
+      <option>>=</option>
+      <option><></option>
+    </select>
+    <input ng-model="data.value"></input>
+    <button type="submit" class="btn btn-primary">Submit query</button>
+  </form>
+</div>
+<button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
+
+
 <table class="table table-bordered">
     <thead>
       <tr>
@@ -17,7 +39,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="row in instanceArray">
-        <td><button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
+        <td><button ng-if="showDelete" type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
         <td ng-repeat="value in row track by $index">
             <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
         </td>
@@ -26,13 +48,8 @@
     </tbody>
 </table>
 
+
 <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="logData()" type="submit" class="btn btn-default">Submit</button>
-
-
-
-
-
-
 
 
 
