@@ -21,13 +21,18 @@ app.factory('TableFactory', function ($http) {
         .then(resToData)
     }
 
+    TableFactory.filter = function(dbName, tableName, data) {
+        return $http.put('/api/clientdb/' + dbName + '/' + tableName + '/filter', data)
+    }
+
     TableFactory.removeRow = function(dbName, tableName, rowId){
         return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId)
         .then(resToData)
     }
 
-    TableFactory.filter = function(dbName, tableName, data) {
-        return $http.put('/api/clientdb/' + dbName + '/' + tableName, data)
+    TableFactory.updateBackend = function(dbName, tableName, data) {
+        return $http.put('api/clientdb/' + dbName + '/' + tableName, data)
+        .then(resToData);
     }
 
 	return TableFactory; 

@@ -8,24 +8,13 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.currentTable = $stateParams;
 
-	// function getSingleTable (db, table){
-	// 	TableFactory.getSingleTable(db, table)
-	// 	.then(function(theTable){
-	// 		$scope.singleTable = theTable;
-	// 	})
-	// 	$scope.$evalAsync()
-	// }
-
+	//delete a row 
 	$scope.showDelete = false;
-
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
-
-
-	// getSingleTable($stateParams.dbName, $stateParams.tableName)
-
 	$scope.removeRow = TableFactory.removeRow;
+	
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
 
@@ -41,9 +30,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			$scope.originalColVals.push(prop);
 		} 
 	}
-
-   
-
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
@@ -127,9 +113,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		}
 	}
 
-	$scope.logData=function () {
-		console.log($scope.rowValsToUpdate)
-		console.log($scope.colValsToUpdate)
-     }
-
+	$scope.updateBackend= function() {
+		var data = {rows : $scope.rowValsToUpdate, columns : $scope.colValsToUpdate}
+		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
+	}
 });
