@@ -1,7 +1,7 @@
 
 <!-- <div ng-repeat="row in singleTable"> {{row.Name}} </div>
  -->
-<table class="table table-striped">
+<!-- <table class="table table-striped">
     <thead>
       <tr>
         <th ng-repeat="column in columns">{{column}}</th>
@@ -11,6 +11,53 @@
       <tr ng-repeat="row in instanceArray">
       	<td ng-repeat="value in row track by $index">{{value}}</td>
     </tbody>
+  </table> -->
+
+
+  {{singleTable}}
+
+
+  <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th ng-repeat="column in columns" ng-model="allData.column">
+            <input type="text" class="form-control" value="{{column}}" ng-keydown="columns = 0">
+          </th>
+          <th>
+            <span class='glyphicon glyphicon-plus add-column'></span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in instanceArray">
+          <td ng-repeat="value in row track by $index">
+
+              <input placeholder="{{value}}" ng-model='theRow.val' type="text" class="form-control" ng-keyup="update(value, theRow.val, row, $index)">
+
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
   </table>
+
+  <button ng-click="logData()" type="submit" class="btn btn-default">Submit</button>
+
+
+<!-- <form ng-model='hello' ng-click="EditRow(hello)">
+  <div class="form-group">
+  <input ng-model='hello.email' type="text" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  <button type="submit" class="btn btn-default">Submit</button>
+  </div>
+</form> -->
+
+
+
+
+
+
+
+
+
+
 
 
