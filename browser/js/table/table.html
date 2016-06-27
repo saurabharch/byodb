@@ -1,3 +1,5 @@
-<button class="btn btn-default" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})">{{table.table_name}}</button>
+<button ng-hide="$state.includes('Table.Single')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})">{{table.table_name}}</button>
+
+
 
 <ui-view></ui-view>

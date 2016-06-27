@@ -2,6 +2,16 @@
   box-sizing: border-box;
 }
 
+.form-control {
+	background-color: transparent;
+    border: none;
+  	box-shadow: none !important;
+}
+
+.add-column {
+	width: 50px;
+}
+
 body {
   background: #fdfdfd;
 }
