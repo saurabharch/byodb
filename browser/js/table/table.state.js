@@ -19,6 +19,6 @@ app.config(function ($stateProvider) {
                 return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
             }
         }
-    });    
+    });     
 
 });

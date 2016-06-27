@@ -16,5 +16,9 @@ app.factory('TableFactory', function ($http) {
         .then(resToData)
     }
 
+    TableFactory.filter = function(dbName, tableName, data) {
+        return $http.put('/api/clientdb/' + dbName + '/' + tableName, data)
+    }
+
 	return TableFactory; 
 })
