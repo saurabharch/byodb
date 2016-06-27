@@ -1,14 +1,14 @@
 <!-- <div>{{singleTable}}</div><br> -->
-<div>{{theDbName}}</div><br>
+<!-- <div>{{theDbName}}</div><br> -->
 <!-- <div>{{allTables}}</div><br> -->
-<div>{{theTableName}}</div><br>
+<!-- <div>{{theTableName}}</div><br> -->
 
 <table class="table table-bordered">
     <thead>
       <tr>
         <th></th>
         <th ng-repeat="column in columns track by $index">
-            <input placeholder="{{column}}" ng-model='theColumn' type="text" class="form-control" ng-keyup="updateColumns(column, theColumn, $index)">
+            <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
         </th>
         <th>
           <span class='glyphicon glyphicon-plus'></span>
@@ -19,14 +19,14 @@
       <tr ng-repeat="row in instanceArray">
         <td><button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
         <td ng-repeat="value in row track by $index">
-            <input placeholder="{{value}}" ng-model='theRow' type="text" class="form-control" ng-keyup="updateRow(value, theRow, row, $index)">
+            <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
         </td>
         <td></td>
       </tr>
     </tbody>
 </table>
 
-<button ng-click="logData()" type="submit" class="btn btn-default">Submit</button>
+<button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="logData()" type="submit" class="btn btn-default">Submit</button>
 
 
 

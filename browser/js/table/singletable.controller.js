@@ -1,10 +1,20 @@
-app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, $stateParams) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
-	$scope.singleTable = singleTable;
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
+	$scope.singleTable = singleTable;
+
+	function getSingleTable (db, table){
+		TableFactory.getSingleTable(db, table)
+		.then(function(theTable){
+			$scope.singleTable = theTable;
+		})
+		$scope.$evalAsync()
+	}
+
+	// getSingleTable($stateParams.dbName, $stateParams.tableName)
 
 	$scope.removeRow = TableFactory.removeRow;
 	
@@ -17,8 +27,10 @@ app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, $
 	var table = singleTable[0];
 
 	for(var prop in table){
-		if(prop !== 'created_at' && prop !== 'updated_at') $scope.columns.push(prop);
-		if(prop !== 'created_at' && prop !== 'updated_at') $scope.originalColVals.push(prop)
+		if(prop !== 'created_at' && prop !== 'updated_at'){
+			$scope.columns.push(prop);	
+			$scope.originalColVals.push(prop);
+		} 
 	}
 
 	// Sort the values in sigleTable so that all the values for a given row are grouped
@@ -61,8 +73,8 @@ app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, $
 	
 	$scope.rowValsToUpdate = [];
 
-	$scope.updateRow = function(old, val, row, i){
-		row[i] = val;
+	$scope.updateRow = function(old, newCell, row, i){
+		row[i] = newCell;
 		var rowObj = {};
 		var cols = $scope.originalColVals;
 		for(var c = 0; c < cols.length; c++){
@@ -76,15 +88,13 @@ app.controller('SingleTableCtrl', function ($scope, singleTable, TableFactory, $
 		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
 		for(var e = 0; e < $scope.rowValsToUpdate.length; e++){
 			if($scope.rowValsToUpdate[e].id === rowObj.id) $scope.rowValsToUpdate[e] = rowObj;
-			else $scope.rowValsToUpdate.push(rowObj);
+			else{$scope.rowValsToUpdate.push(rowObj); break}
 		}
 	}
 
 	$scope.logData=function () {
 		console.log($scope.rowValsToUpdate)
 		console.log($scope.colValsToUpdate)
-        // if(employee !== undefined) $scope.editEmployee.push(employee);
-        // console.log($scope.editEmployee);
      }
 
 });

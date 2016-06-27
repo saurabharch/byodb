@@ -82,13 +82,13 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next){
   knex(req.params.tableName)
   .where('id', req.params.rowId)
   .del()
-  .then(function(){
-    return knex.select().from(req.params.tableName)
-  })
-  .then(function(foundTable){
-    console.log('HERE IT IS!!!!!!!!!!!!!!!', foundTable)
-      res.send(foundTable)
-  })
+  // .then(function(){
+  //   return knex.select().from(req.params.tableName)
+  // })
+  // .then(function(foundTable){
+  //   console.log('HERE IT IS!!!!!!!!!!!!!!!', foundTable)
+  //     res.send(foundTable)
+  // })
   .catch(next);
   
 })
