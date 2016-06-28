@@ -49,7 +49,7 @@ router.get('/:dbName', function(req, res) {
             if (err) {
                 res.send('error running query');
             }
-            res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+            res.set("Content-Type", 'text/javascript');
             res.send(result);
             client.end();
         });
@@ -136,27 +136,53 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
         .catch(next);
 })
 
+//Route to create associations 
 router.post('/:dbName/association', function(req, res, next) {
     console.log('REQBODY', req.body);
     var pg = require('pg');
 
     var conString = 'postgres://localhost:5432/' + req.params.dbName;
 
+
     var client = new pg.Client(conString);
     client.connect(function(err) {
         if (err) {
             res.send('could not connect to postgres');
         }
-        //if relation is hasOne
-        client.query("ALTER TABLE " + req.body.table1.table_name + " ADD COLUMN " + req.body.table2.table_name + "_id character varying(50)", function(err, result) {
-            if (err) {
-                console.log('ERROR 2');
-                res.send('error running query');
-            }
-            res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
-            res.send(result);
-            client.end();
-        });
+        if(req.body.type === 'hasOne' && req.body.join === false){
+            client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.table2.table_name + "_id char(1)", function(err, result) {
+                if (err) {
+                    res.send('error running query');
+                }
+                res.set("Content-Type", 'text/javascript');
+                res.send(result);
+                client.end();
+            }); 
+        }else if(req.body.type === 'hasMany' && req.body.join === false){
+            client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.table1.table_name + "_id char(1)", function(err, result) {
+                if (err) {
+                    res.send('error running query');
+                }
+                res.set("Content-Type", 'text/javascript');
+                res.send(result);
+                client.end();
+            });      
+        }else if(req.body.type === 'hasMany' && req.body.join === true){
+            var knex = require('knex')({
+                client: 'pg',
+                connection: 'postgres://localhost:5432/' + req.params.dbName,
+                searchPath: 'knex,public'
+            });
+
+            knex.schema.createTable(req.body.table1.table_name +"_"+ req.body.table2.table_name, function(table) {
+                    table.integer(req.body.table1.table_name+"_id")
+                    table.integer(req.body.table2.table_name+"_id")
+                    table.timestamps();
+                }).then(function(result) {
+                    res.status(201).send(result);
+                })
+                .catch(next);
+        }
     });
 })
 
