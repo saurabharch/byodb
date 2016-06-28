@@ -9,7 +9,7 @@
             {{table.table_name}}</button>
     </div>
 </div>
-<div class="container" ng-hide="!$state.includes('Table.Single')">
+<div class="container" ng-hide="$state.includes('Table.Single')">
     <div class="row">
         <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
             <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
