@@ -132,6 +132,27 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     knex(req.params.tableName)
         .where('id', req.params.rowId)
         .del()
-        .catch(next);
+    .then(function(){
+        knex.select().from(req.params.tableName)
+            .then(function(foundTable) {
+                console.log(foundTable)
+                res.send(foundTable)
+            })
+    })
+    .catch(next);
+
+})
+
+router.post('/addrow/:dbName/:tableName/:rowNumber', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    knex(req.params.tableName).insert({id: req.params.rowNumber})
+    .then(function(){
+        res.sendStatus(200);
+    })
+    .catch(next);
 
 })

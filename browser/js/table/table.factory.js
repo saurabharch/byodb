@@ -35,5 +35,10 @@ app.factory('TableFactory', function ($http) {
         .then(resToData);
     }
 
+    TableFactory.addRow = function(dbName, tableName, rowNumber) {
+        return $http.post('api/clientdb/addrow/' + dbName + '/' + tableName + '/' + rowNumber)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

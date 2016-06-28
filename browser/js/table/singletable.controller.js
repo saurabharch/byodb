@@ -13,7 +13,14 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
-	$scope.removeRow = TableFactory.removeRow;
+
+	$scope.removeRow = function(db, table, row){
+		TableFactory.removeRow(db, table, row)
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+		})
+	}
 	
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
@@ -21,7 +28,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	// Get all of the columns to create the columns on the bootstrap table
 	$scope.columns = [];
 	$scope.originalColVals = [];
-	var table = singleTable[0];
+	var table = $scope.singleTable[0];
 
 
 	for(var prop in table){
@@ -115,6 +122,35 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.updateBackend= function() {
 		var data = {rows : $scope.rowValsToUpdate, columns : $scope.colValsToUpdate}
-		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
+		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data)
 	}
+
+	$scope.addRow= function() {
+		TableFactory.addRow($scope.theDbName, $scope.theTableName, $scope.instanceArray.length+1)
+	}
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
