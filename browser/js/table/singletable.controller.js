@@ -22,21 +22,49 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 	}
 	
+	$scope.addRow = function(db, table, arr){
+		TableFactory.addRow(db, table, arr.length+1)
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+		})
+	}
+
+	$scope.addColumn = function(db, table){
+		$scope.numNewCol = $scope.columns.length;
+		var nameNewCol = 'Column ' + $scope.numNewCol.toString();
+		TableFactory.addColumn(db, table, nameNewCol)
+		.then(function(){
+			return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+		})
+		.then(function(theTable){
+			console.log(theTable)
+			$scope.singleTable = theTable;
+			CreateColumns();
+			CreateRows();
+		})
+	}
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
 
 	// Get all of the columns to create the columns on the bootstrap table
-	$scope.columns = [];
-	$scope.originalColVals = [];
-	var table = $scope.singleTable[0];
+	
+
+	function CreateColumns(){
+		$scope.columns = [];
+		$scope.originalColVals = [];
+		var table = $scope.singleTable[0];
 
 
-	for(var prop in table){
-		if(prop !== 'created_at' && prop !== 'updated_at'){
-			$scope.columns.push(prop);	
-			$scope.originalColVals.push(prop);
-		} 
+		for(var prop in table){
+			if(prop !== 'created_at' && prop !== 'updated_at'){
+				$scope.columns.push(prop);	
+				$scope.originalColVals.push(prop);
+			} 
+		}
 	}
+
+	CreateColumns();
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
@@ -122,12 +150,12 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.updateBackend= function() {
 		var data = {rows : $scope.rowValsToUpdate, columns : $scope.colValsToUpdate}
-		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data)
+		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
 	}
 
-	$scope.addRow= function() {
-		TableFactory.addRow($scope.theDbName, $scope.theTableName, $scope.instanceArray.length+1)
-	}
+	// $scope.addRow= function() {
+	// 	TableFactory.addRow($scope.theDbName, $scope.theTableName, $scope.instanceArray.length+1)
+	// }
 
 });
 

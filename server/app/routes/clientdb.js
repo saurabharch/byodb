@@ -135,7 +135,6 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     .then(function(){
         knex.select().from(req.params.tableName)
             .then(function(foundTable) {
-                console.log(foundTable)
                 res.send(foundTable)
             })
     })
@@ -151,8 +150,58 @@ router.post('/addrow/:dbName/:tableName/:rowNumber', function(req, res, next) {
     });
     knex(req.params.tableName).insert({id: req.params.rowNumber})
     .then(function(){
-        res.sendStatus(200);
+        knex.select().from(req.params.tableName)
+            .then(function(foundTable) {
+                console.log(foundTable)
+                res.send(foundTable)
+            })
     })
     .catch(next);
+})
 
+router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next) {
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            res.send('could not connect to postgres');
+        }
+        client.query("ALTER TABLE \"" + req.params.tableName + "\" ADD COLUMN \"" + req.params.numNewCol + "\" text", function(err, result) {
+
+            if (err) {
+                console.log(err)
+                res.send('error running query');
+            }
+            res.set("Content-Type", 'text/javascript');
+            res.send(result);
+            client.end();
+        });
+        // client.query("SELECT * FROM \"" + req.params.tableName + "\"", function(err, result) {
+
+        //     if (err) {
+        //         console.log(err)
+        //         res.send('error running query');
+        //     }
+        //     res.set("Content-Type", 'text/javascript');
+        //     console.log(result)
+        //     res.send(result);
+        //     client.end();
+        // });  
+    })
+    // .then(function(result){
+    //     var knex = require('knex')({
+    //         client: 'pg',
+    //         connection: 'postgres://localhost:5432/' + req.params.dbName,
+    //         searchPath: 'knex,public'
+    //     });
+
+    //     knex.select().from(req.params.tableName)
+    //         .then(function(foundTable) {
+    //             res.send(foundTable)
+    //         })
+    // })
+    // .catch(next);
 })

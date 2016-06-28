@@ -40,5 +40,10 @@ app.factory('TableFactory', function ($http) {
         .then(resToData);
     }
 
+    TableFactory.addColumn = function(dbName, tableName, numNewCol){
+        return $http.post('api/clientdb/addcolumn/' + dbName + '/' + tableName + '/' + numNewCol)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

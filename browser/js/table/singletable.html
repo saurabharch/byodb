@@ -3,7 +3,6 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
-
 <div>
   <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
     <span>Filter {{currentTable.tableName}} where</span>
@@ -23,8 +22,8 @@
   </form>
 </div>
 <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
-<button ng-click="addRow()" type="submit" class="btn btn-default">Add Row</button>
-<button ng-click="" type="submit" class="btn btn-default">Add Column</button>
+<button ng-click="addRow(theDbName, theTableName, instanceArray)" type="submit" class="btn btn-default">Add Row</button>
+<button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
 
 
 <table class="table table-bordered">
