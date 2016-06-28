@@ -122,7 +122,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
         .catch(next);
 })
 
-
+// delete row in table
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -142,13 +142,13 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
 
 })
 
-router.post('/addrow/:dbName/:tableName/:rowNumber', function(req, res, next) {
+router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     });
-    knex(req.params.tableName).insert({id: req.params.rowNumber})
+    knex(req.params.tableName).insert({id: req.body.rowNumber})
     .then(function(){
         knex.select().from(req.params.tableName)
             .then(function(foundTable) {
@@ -179,29 +179,87 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
             res.send(result);
             client.end();
         });
-        // client.query("SELECT * FROM \"" + req.params.tableName + "\"", function(err, result) {
-
-        //     if (err) {
-        //         console.log(err)
-        //         res.send('error running query');
-        //     }
-        //     res.set("Content-Type", 'text/javascript');
-        //     console.log(result)
-        //     res.send(result);
-        //     client.end();
-        // });  
     })
-    // .then(function(result){
-    //     var knex = require('knex')({
-    //         client: 'pg',
-    //         connection: 'postgres://localhost:5432/' + req.params.dbName,
-    //         searchPath: 'knex,public'
-    //     });
-
-    //     knex.select().from(req.params.tableName)
-    //         .then(function(foundTable) {
-    //             res.send(foundTable)
-    //         })
-    // })
-    // .catch(next);
 })
+
+
+router.post('/:dbName/association', function(req, res, next) {
+    console.log('REQBODY', req.body);
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            res.send('could not connect to postgres');
+        }
+        if(req.body.type === 'hasOne'){
+            client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.table2.table_name + "_id char(1)", function(err, result) {
+                if (err) {
+                    console.log('error 1')
+                    console.log(err)
+                    res.send('error running query');
+                }
+                res.set("Content-Type", 'text/javascript');
+                res.send(result);
+                client.end();
+            }); 
+        }else if(req.body.type === 'hasMany' && !req.body.join){
+            client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.table1.table_name + "_id char(1)", function(err, result) {
+                if (err) {
+                    console.log('error 2')
+                    console.log(err)
+                    res.send('error running query');
+                }
+                res.set("Content-Type", 'text/javascript');
+                res.send(result);
+                client.end();
+            });      
+        }else if(req.body.type === 'hasMany' && req.body.join === true){
+            var knex = require('knex')({
+                client: 'pg',
+                connection: 'postgres://localhost:5432/' + req.params.dbName,
+                searchPath: 'knex,public'
+            });
+
+            knex.schema.createTable(req.body.table1.table_name +"_"+ req.body.table2.table_name, function(table) {
+                    table.integer(req.body.table1.table_name+"_id")
+                    table.integer(req.body.table2.table_name+"_id")
+                    table.timestamps();
+                }).then(function(result) {
+                    res.status(201).send(result);
+                })
+                .catch(next);
+        }
+    });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

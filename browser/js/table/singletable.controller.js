@@ -23,7 +23,13 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 	
 	$scope.addRow = function(db, table, arr){
-		TableFactory.addRow(db, table, arr.length+1)
+		var allIds = [];
+		arr.forEach(function(rowData){
+			allIds.push(rowData[0])
+		})
+		var sorted = allIds.sort(function(a, b){return b - a})
+		TableFactory.addRow(db, table, sorted[0] + 1)
+		// TableFactory.addRow(db, table, arr[arr.length-1][0])
 		.then(function(result){
 			$scope.singleTable = result;
 			CreateRows();
@@ -38,7 +44,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
 		})
 		.then(function(theTable){
-			console.log(theTable)
 			$scope.singleTable = theTable;
 			CreateColumns();
 			CreateRows();
@@ -85,7 +90,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.filter = function(dbName, tableName, data) {
         TableFactory.filter(dbName, tableName, data)
             .then(function(result) {
-                console.log(result);
                 $scope.singleTable = result.data;
                 CreateRows();
             })
@@ -115,7 +119,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 					return;
 				}
 			}
-			console.log(colObj)
 			$scope.colValsToUpdate.push(colObj);
 		}
 		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
