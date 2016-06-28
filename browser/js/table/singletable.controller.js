@@ -13,23 +13,63 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
-	$scope.removeRow = TableFactory.removeRow;
+
+	$scope.removeRow = function(db, table, row){
+		TableFactory.removeRow(db, table, row)
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+		})
+	}
 	
+	$scope.addRow = function(db, table, arr){
+		var allIds = [];
+		arr.forEach(function(rowData){
+			allIds.push(rowData[0])
+		})
+		var sorted = allIds.sort(function(a, b){return b - a})
+		TableFactory.addRow(db, table, sorted[0] + 1)
+		// TableFactory.addRow(db, table, arr[arr.length-1][0])
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+		})
+	}
+
+	$scope.addColumn = function(db, table){
+		$scope.numNewCol = $scope.columns.length;
+		var nameNewCol = 'Column ' + $scope.numNewCol.toString();
+		TableFactory.addColumn(db, table, nameNewCol)
+		.then(function(){
+			return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+		})
+		.then(function(theTable){
+			$scope.singleTable = theTable;
+			CreateColumns();
+			CreateRows();
+		})
+	}
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
 
 	// Get all of the columns to create the columns on the bootstrap table
-	$scope.columns = [];
-	$scope.originalColVals = [];
-	var table = singleTable[0];
+	
+
+	function CreateColumns(){
+		$scope.columns = [];
+		$scope.originalColVals = [];
+		var table = $scope.singleTable[0];
 
 
-	for(var prop in table){
-		if(prop !== 'created_at' && prop !== 'updated_at'){
-			$scope.columns.push(prop);	
-			$scope.originalColVals.push(prop);
-		} 
+		for(var prop in table){
+			if(prop !== 'created_at' && prop !== 'updated_at'){
+				$scope.columns.push(prop);	
+				$scope.originalColVals.push(prop);
+			} 
+		}
 	}
+
+	CreateColumns();
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
@@ -50,7 +90,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.filter = function(dbName, tableName, data) {
         TableFactory.filter(dbName, tableName, data)
             .then(function(result) {
-                console.log(result);
                 $scope.singleTable = result.data;
                 CreateRows();
             })
@@ -80,7 +119,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 					return;
 				}
 			}
-			console.log(colObj)
 			$scope.colValsToUpdate.push(colObj);
 		}
 		// check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
@@ -117,4 +155,33 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		var data = {rows : $scope.rowValsToUpdate, columns : $scope.colValsToUpdate}
 		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
 	}
+
+	// $scope.addRow= function() {
+	// 	TableFactory.addRow($scope.theDbName, $scope.theTableName, $scope.instanceArray.length+1)
+	// }
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

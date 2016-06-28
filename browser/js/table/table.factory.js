@@ -35,8 +35,17 @@ app.factory('TableFactory', function ($http) {
         .then(resToData);
     }
 
+    TableFactory.addRow = function(dbName, tableName, rowNumber) {
+        return $http.post('api/clientdb/addrow/' + dbName + '/' + tableName, {rowNumber: rowNumber})
+        .then(resToData);
+    }
+
+    TableFactory.addColumn = function(dbName, tableName, numNewCol){
+        return $http.post('api/clientdb/addcolumn/' + dbName + '/' + tableName + '/' + numNewCol)
+    }
+
     TableFactory.makeAssociations = function(association, dbName) {
-        console.log(association);
+        console.log(association)
         return $http.post('/api/clientdb/' + dbName + '/association', association)
         .then(resToData);
     }
