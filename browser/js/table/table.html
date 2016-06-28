@@ -1,19 +1,30 @@
-<button ng-hide="$state.includes('Table.Single')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})">
-    {{table.table_name}}</button>
-<br>
-<br>
-<form ng-model="association" ng-submit="makeAssociations(association, dbName)">
-    <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
-    </select>
-    <select ng-model="association.type" ng-options="association as association for association in associationTypes">
-    </select>
-    <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
-    </select>
-    <div class="checkbox" ng-show="association.type === 'hasMany'">
-        <label>
-            <input type="checkbox" ng-model="association.join"> Two Way Association
-        </label>
+<div class="container">
+    <div class="row btn">
+        <button ng-hide="$state.includes('Table.Single')" class="btn btn-default" ui-sref="Table.create">Add Table</button>
     </div>
-    <button type="submit" class="btn btn-primary">Make association</button>
-</form>
+</div>
+<div class="container">
+    <div class="row btn-toolbar">
+        <button ng-hide="$state.includes('Table.Single')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-default">
+            {{table.table_name}}</button>
+    </div>
+</div>
+<div class="container" ng-hide="!$state.includes('Table.Single')">
+    <div class="row">
+        <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
+            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
+            </select>
+            <select ng-model="association.type" ng-options="association as association for association in associationTypes">
+            </select>
+            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
+            </select>
+            <div class="checkbox" ng-show="association.type === 'hasMany'">
+                <label>
+                    <input type="checkbox" ng-model="association.join"> Two Way Association
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">Make association</button>
+        </form>
+    </div>
+</div>
 <ui-view></ui-view>

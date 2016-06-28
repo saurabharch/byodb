@@ -1,4 +1,4 @@
-app.factory('TableFactory', function ($http) {
+app.factory('TableFactory', function ($http, $stateParams) {
 
 	var TableFactory = {};
 
@@ -38,6 +38,12 @@ app.factory('TableFactory', function ($http) {
     TableFactory.makeAssociations = function(association, dbName) {
         console.log(association);
         return $http.post('/api/clientdb/' + dbName + '/association', association)
+        .then(resToData);
+    }
+
+    TableFactory.createTable = function(table){
+        table.dbName = $stateParams.dbName;
+        return $http.post('/api/clientdb', table)
         .then(resToData);
     }
 
