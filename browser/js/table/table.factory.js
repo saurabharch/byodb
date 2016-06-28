@@ -35,5 +35,11 @@ app.factory('TableFactory', function ($http) {
         .then(resToData);
     }
 
+    TableFactory.makeAssociations = function(association, dbName) {
+        console.log(association);
+        return $http.post('/api/clientdb/' + dbName + '/association', association)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

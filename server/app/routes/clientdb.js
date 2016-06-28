@@ -123,6 +123,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
 })
 
 
+//delete a row in a table
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -133,5 +134,56 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
         .where('id', req.params.rowId)
         .del()
         .catch(next);
-
 })
+
+router.post('/:dbName/association', function(req, res, next) {
+    console.log('REQBODY', req.body);
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            res.send('could not connect to postgres');
+        }
+        //if relation is hasOne
+        client.query("ALTER TABLE " + req.body.table1.table_name + " ADD COLUMN " + req.body.table2.table_name + "_id character varying(50)", function(err, result) {
+            if (err) {
+                console.log('ERROR 2');
+                res.send('error running query');
+            }
+            res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+            res.send(result);
+            client.end();
+        });
+    });
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
