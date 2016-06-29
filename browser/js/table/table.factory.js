@@ -1,4 +1,4 @@
-app.factory('TableFactory', function ($http) {
+app.factory('TableFactory', function ($http, $stateParams) {
 
 	var TableFactory = {};
 
@@ -36,8 +36,13 @@ app.factory('TableFactory', function ($http) {
     }
 
     TableFactory.makeAssociations = function(association, dbName) {
-        console.log(association);
         return $http.post('/api/clientdb/' + dbName + '/association', association)
+        .then(resToData);
+    }
+
+    TableFactory.deleteTable = function(currentTable) {
+        console.log(currentTable);
+        return $http.delete('/api/clientdb/' + currentTable.dbName + '/' + currentTable.tableName)
         .then(resToData);
     }
 

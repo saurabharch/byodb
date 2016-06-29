@@ -1,4 +1,4 @@
-app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
@@ -116,5 +116,13 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.updateBackend= function() {
 		var data = {rows : $scope.rowValsToUpdate, columns : $scope.colValsToUpdate}
 		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
+	}
+
+	$scope.deleteTable = function() {
+		// var response = $window.prompt('Please enter your password');
+		TableFactory.deleteTable($scope.currentTable)
+		.then(function() {
+			$state.go('Table', {dbName : $scope.theDbName}, {reload : true})
+		})
 	}
 });

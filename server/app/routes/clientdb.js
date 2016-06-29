@@ -186,6 +186,21 @@ router.post('/:dbName/association', function(req, res, next) {
     });
 })
 
+router.delete('/:dbName/:tableName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    })
+
+    knex.schema.dropTable(req.params.tableName)
+    .then(function(result) {
+        res.status(201).send(result)
+    })
+    .catch(next);
+
+})
+
 
 
 
