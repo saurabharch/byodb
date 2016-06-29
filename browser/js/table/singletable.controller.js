@@ -211,25 +211,3 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
