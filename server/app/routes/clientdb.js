@@ -26,11 +26,11 @@ router.post('/', function(req, res, next) {
             }
             table.timestamps();
         }).then(function() {
-            res.sendStatus(200);
+            return knex(req.body.name).insert([
+                    {id: 1},
+                ]);
         })
         .catch(next);
-
-
 })
 
 //route to get all tables from a db
@@ -251,7 +251,28 @@ router.delete('/:dbName/:tableName', function(req, res, next) {
 
 })
 
+router.delete('/deletedatabase/:dbName', function(req, res) {
+    console.log('MADE IT HERE!!!!!!', req.params.dbName)
+    // var pg = require('pg');
 
+    // var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    // var client = new pg.Client(conString);
+    // client.connect(function(err) {
+    //     if (err) {
+    //         res.send('could not connect to postgres');
+    //     }
+    //     client.query("DROP DATABASE [ IF EXISTS ] \"" + req.params.dbName, function(err, result) {
+    //         if (err) {
+    //             res.send('error running query');
+    //         }
+    //         res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+    //         res.send(result);
+    //         client.end();
+    //     });
+    // });
+
+});
 
 
 
