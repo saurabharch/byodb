@@ -3,6 +3,8 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
+{{ids}}
+
 <div>
   <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
     <span>Filter {{currentTable.tableName}} where</span>
@@ -30,7 +32,8 @@
     <thead>
       <tr>
         <th></th>
-        <th ng-repeat="column in columns track by $index">
+        <th>id</th>
+        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
             <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
         </th>
@@ -42,7 +45,8 @@
     <tbody>
       <tr ng-repeat="row in instanceArray">
         <td><button ng-if="showDelete" type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
-        <td ng-repeat="value in row track by $index">
+        <td>{{row[0]}}</td>
+        <td ng-repeat="value in row track by $index" ng-if="$index >= myIndex">
             <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
         </td>
         <td></td>

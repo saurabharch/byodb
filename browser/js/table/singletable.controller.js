@@ -8,6 +8,12 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.currentTable = $stateParams;
 
+	$scope.myIndex = 1;
+
+	$scope.ids = singleTable.map(function(row){
+		return row.id;
+	})
+
 	//delete a row 
 	$scope.showDelete = false;
 	$scope.toggleDelete = function(){
