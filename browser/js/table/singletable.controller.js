@@ -9,6 +9,12 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.currentTable = $stateParams;
 
+	$scope.myIndex = 1;
+
+	$scope.ids = singleTable.map(function(row){
+		return row.id;
+	})
+
 	//delete a row 
 	$scope.showDelete = false;
 	$scope.toggleDelete = function(){
@@ -55,8 +61,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 	}
 
-
-
 	$scope.removeColumn = function(db, table, columnName){
 		TableFactory.removeColumn(db, table, columnName)
 		.then(function(result){
@@ -67,7 +71,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 	}
 
-	
 	$scope.addRow = function(db, table, arr){
 		var allIds = [];
 		arr.forEach(function(rowData){
