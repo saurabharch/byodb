@@ -25,11 +25,6 @@ app.factory('TableFactory', function ($http, $stateParams) {
         return $http.put('/api/clientdb/' + dbName + '/' + tableName + '/filter', data)
     }
 
-    TableFactory.removeRow = function(dbName, tableName, rowId){
-        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId)
-        .then(resToData)
-    }
-
     TableFactory.updateBackend = function(dbName, tableName, data) {
         return $http.put('api/clientdb/' + dbName + '/' + tableName, data)
         .then(resToData);
@@ -40,21 +35,30 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.removeRow = function(dbName, tableName, rowId){
+        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId)
+        .then(resToData)
+    }
+
     TableFactory.addColumn = function(dbName, tableName, numNewCol){
         return $http.post('api/clientdb/addcolumn/' + dbName + '/' + tableName + '/' + numNewCol)
     }
-
-    TableFactory.makeAssociations = function(association, dbName) {
-        console.log(association)
-        return $http.post('/api/clientdb/' + dbName + '/association', association)
-        .then(resToData);
-    }
-
     TableFactory.createTable = function(table){
         table.dbName = $stateParams.dbName;
         return $http.post('/api/clientdb', table)
         .then(resToData);
     }
+
+    TableFactory.deleteTable = function(currentTable) {
+        console.log(currentTable);
+        return $http.delete('/api/clientdb/' + currentTable.dbName + '/' + currentTable.tableName)
+    }
+
+    TableFactory.makeAssociations = function(association, dbName) {
+        return $http.post('/api/clientdb/' + dbName + '/association', association)
+        .then(resToData);
+    }
+
 
 	return TableFactory; 
 })

@@ -1,4 +1,4 @@
-app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
@@ -29,7 +29,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 		var sorted = allIds.sort(function(a, b){return b - a})
 		TableFactory.addRow(db, table, sorted[0] + 1)
-		// TableFactory.addRow(db, table, arr[arr.length-1][0])
 		.then(function(result){
 			$scope.singleTable = result;
 			CreateRows();
@@ -156,9 +155,14 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		TableFactory.updateBackend($scope.theDbName, $scope.theTableName, data);
 	}
 
-	// $scope.addRow= function() {
-	// 	TableFactory.addRow($scope.theDbName, $scope.theTableName, $scope.instanceArray.length+1)
-	// }
+
+	$scope.deleteTable = function() {
+		// var response = $window.prompt('Please enter your password');
+		TableFactory.deleteTable($scope.currentTable)
+		.then(function() {
+			$state.go('Table', {dbName : $scope.theDbName}, {reload : true})
+		})
+	}
 
 });
 
