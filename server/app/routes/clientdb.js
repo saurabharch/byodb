@@ -25,12 +25,10 @@ router.post('/', function(req, res, next) {
                 table[req.body.type[key]](req.body.column[key])
             }
             table.timestamps();
-        }).then(function() {
-            res.sendStatus(200);
+        }).then(function(theTable) {
+            return knex(req.body.name).insert({id: 1})
         })
         .catch(next);
-
-
 })
 
 //route to get all tables from a db
@@ -160,6 +158,7 @@ router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next)
     .catch(next);
 })
 
+// add row to table
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -177,6 +176,7 @@ router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     .catch(next);
 })
 
+// add column to table
 router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next) {
     var pg = require('pg');
 
@@ -200,7 +200,7 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
     })
 })
 
-
+// create associations between two tables
 router.post('/:dbName/association', function(req, res, next) {
     console.log('REQBODY', req.body);
     var pg = require('pg');
@@ -254,6 +254,7 @@ router.post('/:dbName/association', function(req, res, next) {
     });
 })
 
+// delete a column
 router.delete('/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',

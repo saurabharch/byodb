@@ -26,7 +26,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		TableFactory.removeColumn(db, table, columnName)
 		.then(function(result){
 			$scope.singleTable = result;
-			console.log('HERE!!')
 			CreateRows();
 			CreateColumns();
 		})
