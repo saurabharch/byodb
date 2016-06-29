@@ -21,6 +21,16 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			CreateRows();
 		})
 	}
+
+	$scope.removeColumn = function(db, table, columnName){
+		TableFactory.removeColumn(db, table, columnName)
+		.then(function(result){
+			$scope.singleTable = result;
+			console.log('HERE!!')
+			CreateRows();
+			CreateColumns();
+		})
+	}
 	
 	$scope.addRow = function(db, table, arr){
 		var allIds = [];

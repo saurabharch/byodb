@@ -32,9 +32,10 @@
         <th></th>
         <th ng-repeat="column in columns track by $index">
             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
+            <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
         </th>
         <th>
-          <span class='glyphicon glyphicon-plus'></span>
+          <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
         </th>
       </tr>
     </thead>
