@@ -94,17 +94,35 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 	$scope.addColumn = function(db, table){
-		$scope.numNewCol = $scope.columns.length;
-		var nameNewCol = 'Column ' + $scope.numNewCol.toString();
-		TableFactory.addColumn(db, table, nameNewCol)
-		.then(function(){
-			return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
-		})
-		.then(function(theTable){
-			$scope.singleTable = theTable;
-			CreateColumns();
-			CreateRows();
-		})
+		var colNums = $scope.columns.join(' ').match(/[1-9]/g);
+		if(colNums){
+			var sortedNums = colNums.sort(function(a, b){return b - a})
+			var numInNew = Number(sortedNums[0]) + 1;
+			var nameNewCol = 'Column ' + numInNew.toString();
+
+			TableFactory.addColumn(db, table, nameNewCol)
+			.then(function(){
+				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+			})
+			.then(function(theTable){
+				$scope.singleTable = theTable;
+				CreateColumns();
+				CreateRows();
+			})
+		} else {
+			var nextColNum = $scope.columns.length + 1;
+			var newColName = 'Column ' + nextColNum;
+			TableFactory.addColumn(db, table, 'Column 1')
+			.then(function(){
+				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+			})
+			.then(function(theTable){
+				$scope.singleTable = theTable;
+				CreateColumns();
+				CreateRows();
+			})
+		}
+		
 	}
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
