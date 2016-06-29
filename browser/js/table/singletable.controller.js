@@ -77,11 +77,20 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			allIds.push(rowData[0])
 		})
 		var sorted = allIds.sort(function(a, b){return b - a})
-		TableFactory.addRow(db, table, sorted[0] + 1)
-		.then(function(result){
-			$scope.singleTable = result;
-			CreateRows();
-		})
+		if(sorted.length > 0){
+			TableFactory.addRow(db, table, sorted[0] + 1)
+			.then(function(result){
+				$scope.singleTable = result;
+				CreateRows();
+			})
+		} else {
+			TableFactory.addRow(db, table, 1)
+			.then(function(result){
+				$scope.singleTable = result;
+				CreateRows();
+			})
+		}
+
 	}
 
 	$scope.addColumn = function(db, table){
