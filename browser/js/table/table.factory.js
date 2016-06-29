@@ -59,6 +59,11 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.getAssociations = function(dbName, tableName) {
+        return $http.get('/api/clientdb/' + dbName + '/association', association)
+        .then(resToData);
+    }
+
 
 	return TableFactory; 
 })
