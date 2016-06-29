@@ -40,6 +40,11 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData)
     }
 
+    TableFactory.removeColumn = function(dbName, tableName, columnName){
+        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/column/' + columnName)
+        .then(resToData)
+    }
+
     TableFactory.addColumn = function(dbName, tableName, numNewCol){
         return $http.post('api/clientdb/addcolumn/' + dbName + '/' + tableName + '/' + numNewCol)
     }

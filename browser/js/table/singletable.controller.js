@@ -15,14 +15,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		$scope.showDelete = !$scope.showDelete
 	}
 
-	$scope.removeRow = function(db, table, row){
-		TableFactory.removeRow(db, table, row)
-		.then(function(result){
-			$scope.singleTable = result;
-			CreateRows();
-		})
-	}
-
     $scope.deleteSelected = function(db, table, instanceArray){
         instanceArray.forEach(function(row){
             if(row.selected){
@@ -54,6 +46,27 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
             $scope.selectedAll = false;
         }
     }
+
+	$scope.removeRow = function(db, table, row){
+		TableFactory.removeRow(db, table, row)
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+		})
+	}
+
+
+
+	$scope.removeColumn = function(db, table, columnName){
+		TableFactory.removeColumn(db, table, columnName)
+		.then(function(result){
+			$scope.singleTable = result;
+			console.log('HERE!!')
+			CreateRows();
+			CreateColumns();
+		})
+	}
+
 	
 	$scope.addRow = function(db, table, arr){
 		var allIds = [];
@@ -198,8 +211,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 });
-
-
 
 
 

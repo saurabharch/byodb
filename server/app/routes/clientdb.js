@@ -139,7 +139,25 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
             })
     })
     .catch(next);
+})
 
+// delete column in table
+router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    knex.schema.table(req.params.tableName, function (table) {
+      table.dropColumn(req.params.columnName)
+    })
+    .then(function(res){
+        return knex.select().from(req.params.tableName)
+    })
+    .then(function(foundTable) {
+        res.send(foundTable)
+    })
+    .catch(next);
 })
 
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
