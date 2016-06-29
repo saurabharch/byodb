@@ -19,6 +19,12 @@ app.config(function ($stateProvider) {
                 return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
             }
         }
+    });
+
+    $stateProvider.state('Table.create', {
+        url: '/createtable',
+        templateUrl: 'js/table/createtable.html',
+        controller: 'TableCtrl'
     });     
 
 });

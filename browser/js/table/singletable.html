@@ -22,6 +22,8 @@
   </form>
 </div>
 <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
+<button ng-click="addRow(theDbName, theTableName, instanceArray)" type="submit" class="btn btn-default">Add Row</button>
+<button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
 
 
 <table class="table table-bordered">
@@ -50,9 +52,7 @@
 
 <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
 
-
 <button type="button" class="btn btn-danger" ng-click="deleteTable()">Delete this table</button>
-
 
 
 

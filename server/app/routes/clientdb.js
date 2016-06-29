@@ -49,7 +49,7 @@ router.get('/:dbName', function(req, res) {
             if (err) {
                 res.send('error running query');
             }
-            res.set("Content-Type", 'text/javascript');
+            res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
             res.send(result);
             client.end();
         });
@@ -122,8 +122,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
         .catch(next);
 })
 
-
-//delete a row in a table
+// delete row in table
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -133,10 +132,57 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
     knex(req.params.tableName)
         .where('id', req.params.rowId)
         .del()
-        .catch(next);
+    .then(function(){
+        knex.select().from(req.params.tableName)
+            .then(function(foundTable) {
+                res.send(foundTable)
+            })
+    })
+    .catch(next);
+
 })
 
-//Route to create associations 
+router.post('/addrow/:dbName/:tableName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    knex(req.params.tableName).insert({id: req.body.rowNumber})
+    .then(function(){
+        knex.select().from(req.params.tableName)
+            .then(function(foundTable) {
+                console.log(foundTable)
+                res.send(foundTable)
+            })
+    })
+    .catch(next);
+})
+
+router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next) {
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            res.send('could not connect to postgres');
+        }
+        client.query("ALTER TABLE \"" + req.params.tableName + "\" ADD COLUMN \"" + req.params.numNewCol + "\" text", function(err, result) {
+
+            if (err) {
+                console.log(err)
+                res.send('error running query');
+            }
+            res.set("Content-Type", 'text/javascript');
+            res.send(result);
+            client.end();
+        });
+    })
+})
+
+
 router.post('/:dbName/association', function(req, res, next) {
     console.log('REQBODY', req.body);
     var pg = require('pg');
@@ -149,18 +195,22 @@ router.post('/:dbName/association', function(req, res, next) {
         if (err) {
             res.send('could not connect to postgres');
         }
-        if(req.body.type === 'hasOne' && req.body.join === false){
+        if(req.body.type === 'hasOne'){
             client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.table2.table_name + "_id char(1)", function(err, result) {
                 if (err) {
+                    console.log('error 1')
+                    console.log(err)
                     res.send('error running query');
                 }
                 res.set("Content-Type", 'text/javascript');
                 res.send(result);
                 client.end();
             }); 
-        }else if(req.body.type === 'hasMany' && req.body.join === false){
+        }else if(req.body.type === 'hasMany' && !req.body.join){
             client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.table1.table_name + "_id char(1)", function(err, result) {
                 if (err) {
+                    console.log('error 2')
+                    console.log(err)
                     res.send('error running query');
                 }
                 res.set("Content-Type", 'text/javascript');
