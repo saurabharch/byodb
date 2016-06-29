@@ -184,56 +184,83 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
 
 
 router.post('/:dbName/association', function(req, res, next) {
-    console.log('REQBODY', req.body);
     var pg = require('pg');
-
     var conString = 'postgres://localhost:5432/' + req.params.dbName;
-
-
-    var client = new pg.Client(conString);
-    client.connect(function(err) {
-        if (err) {
-            res.send('could not connect to postgres');
-        }
-        if(req.body.type === 'hasOne'){
-            client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.table2.table_name + "_id char(1)", function(err, result) {
-                if (err) {
-                    console.log('error 1')
-                    console.log(err)
-                    res.send('error running query');
-                }
-                res.set("Content-Type", 'text/javascript');
-                res.send(result);
-                client.end();
-            }); 
-        }else if(req.body.type === 'hasMany' && !req.body.join){
-            client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.table1.table_name + "_id char(1)", function(err, result) {
-                if (err) {
-                    console.log('error 2')
-                    console.log(err)
-                    res.send('error running query');
-                }
-                res.set("Content-Type", 'text/javascript');
-                res.send(result);
-                client.end();
-            });      
-        }else if(req.body.type === 'hasMany' && req.body.join === true){
-            var knex = require('knex')({
-                client: 'pg',
-                connection: 'postgres://localhost:5432/' + req.params.dbName,
-                searchPath: 'knex,public'
-            });
-
-            knex.schema.createTable(req.body.table1.table_name +"_"+ req.body.table2.table_name, function(table) {
-                    table.integer(req.body.table1.table_name+"_id")
-                    table.integer(req.body.table2.table_name+"_id")
-                    table.timestamps();
-                }).then(function(result) {
-                    res.status(201).send(result);
-                })
-                .catch(next);
-        }
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
     });
+
+    knex.schema.createTableIfNotExists(req.params.dbName+'_assoc', function(table) {
+            table.increments();
+            table.string('Table1');
+            table.string('Relationship1');
+            table.string('Alias1');
+            table.string('Table2');
+            table.string('Relationship2');
+            table.string('Alias2');
+            table.string('Through');
+        })
+        .then(function() {
+            return knex(req.params.dbName+'_assoc').insert({
+              Table1: req.body.table1.table_name,
+              Alias1: req.body.alias1,
+              Relationship1: req.body.type1,
+              Table2: req.body.table2.table_name,
+              Alias2: req.body.alias2,
+              Relationship2: req.body.type2,
+              Through: req.body.through
+            })
+        .then(function(result){
+            var client = new pg.Client(conString);
+            client.connect(function(err){
+              if(err){
+                console.log('DATABASE FAILED TO CONNECT')
+                res.send('database failed to connect')
+              }
+              if(req.body.type1 === 'hasOne'){
+                client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.alias1 + " char(50)", function(err, result){
+                  if(err){
+                    console.log("ADD COLUMN FAILED", err)
+                    res.send('Error running query')
+                  }
+                })
+              }
+              if(req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne'){
+                client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " char(50)", function(err, result){
+                  if(err){
+                    console.log("ADD COLUMN FAILED", err)
+                    res.send('Error running query')
+                  }
+                })
+              }
+              // if(req.body.type2 === 'hasMany'){
+              //   client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " char(50)", function(err, result){
+              //     if(err){
+              //       console.log("ADD COLUMN FAILED", err)
+              //       res.send('Error running query')
+              //     }
+              //       res.set("Content-Type", 'text/javascript');
+              //       res.send(result);
+              //       client.end();
+              //   })
+              // }
+            })
+            if(req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany'){
+              console.log("--------------------------", req.body.through)
+              return knex.schema.createTable(req.body.through, function(table) {
+                      table.string(req.body.alias1);
+                      table.string(req.body.alias2);
+                  })
+              .then(function() {
+                      res.sendStatus(200);
+                  })
+              .catch(next);
+            }
+          })
+        })
+        .catch(next);
 })
 
 router.delete('/:dbName/:tableName', function(req, res, next) {

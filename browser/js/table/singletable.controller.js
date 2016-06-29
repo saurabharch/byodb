@@ -6,6 +6,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
 
+	console.log(singleTable);
+
 	$scope.currentTable = $stateParams;
 
 	//delete a row 
