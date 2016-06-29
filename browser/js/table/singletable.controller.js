@@ -5,14 +5,53 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
+    $scope.selectedAll = false;
 
 	$scope.currentTable = $stateParams;
+
+	$scope.myIndex = 1;
+
+	$scope.ids = singleTable.map(function(row){
+		return row.id;
+	})
 
 	//delete a row 
 	$scope.showDelete = false;
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
+
+    $scope.deleteSelected = function(db, table, instanceArray){
+        instanceArray.forEach(function(row){
+            if(row.selected){
+                TableFactory.removeRow(db, table, row[0])
+                .then(function(result){
+                    $scope.singleTable = result;
+                    CreateRows();
+                })
+            }
+        })
+        $scope.showDelete = false;
+    }
+
+    $scope.selectAll = function(instanceArray){
+        if($scope.selectedAll){
+            instanceArray.forEach(function(row){
+                row.selected = true;
+            })
+        }
+        else{
+            instanceArray.forEach(function(row){
+                row.selected = false;
+            })
+        }
+    }
+
+    $scope.uncheckSelectAll = function(instanceArray){
+        if($scope.selectedAll===true){
+            $scope.selectedAll = false;
+        }
+    }
 
 	$scope.removeRow = function(db, table, row){
 		TableFactory.removeRow(db, table, row)
@@ -21,7 +60,17 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			CreateRows();
 		})
 	}
-	
+
+	$scope.removeColumn = function(db, table, columnName){
+		TableFactory.removeColumn(db, table, columnName)
+		.then(function(result){
+			$scope.singleTable = result;
+			console.log('HERE!!')
+			CreateRows();
+			CreateColumns();
+		})
+	}
+
 	$scope.newRow = function(db, table, arr){
 		var allIds = [];
 		arr.forEach(function(rowData){
@@ -173,27 +222,3 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

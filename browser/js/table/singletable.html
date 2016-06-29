@@ -3,6 +3,8 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
+{{ids}}
+
 <div>
   <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
     <span>Filter {{currentTable.tableName}} where</span>
@@ -29,19 +31,38 @@
 <table class="table table-bordered">
     <thead>
       <tr>
-        <th></th>
+<<<<<<< HEAD
+        <th ng-show="showDelete">
+          <button type="button" class="btn btn-danger" ng-click="deleteSelected(theDbName, theTableName, instanceArray)">Delete Selected</button>
+          <label> Select All <input type="checkbox" ng-model="selectedAll" ng-click="selectAll(instanceArray)"></label>
+        </th>
         <th ng-repeat="column in columns track by $index">
+=======
+        <th></th>
+        <th>id</th>
+        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
+>>>>>>> master
             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
+            <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
         </th>
         <th>
-          <span class='glyphicon glyphicon-plus'></span>
+          <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
         </th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="row in instanceArray">
-        <td><button ng-if="showDelete" type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
+<<<<<<< HEAD
+        <td ng-show="showDelete">
+          <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
+          <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
+        </td>
         <td ng-repeat="value in row track by $index">
+=======
+        <td><button ng-if="showDelete" type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button></td>
+        <td>{{row[0]}}</td>
+        <td ng-repeat="value in row track by $index" ng-if="$index >= myIndex">
+>>>>>>> master
             <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
         </td>
         <td></td>
