@@ -5,6 +5,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
+    $scope.selectedAll = false;
 
 	$scope.currentTable = $stateParams;
 
@@ -19,6 +20,38 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
+
+    $scope.deleteSelected = function(db, table, instanceArray){
+        instanceArray.forEach(function(row){
+            if(row.selected){
+                TableFactory.removeRow(db, table, row[0])
+                .then(function(result){
+                    $scope.singleTable = result;
+                    CreateRows();
+                })
+            }
+        })
+        $scope.showDelete = false;
+    }
+
+    $scope.selectAll = function(instanceArray){
+        if($scope.selectedAll){
+            instanceArray.forEach(function(row){
+                row.selected = true;
+            })
+        }
+        else{
+            instanceArray.forEach(function(row){
+                row.selected = false;
+            })
+        }
+    }
+
+    $scope.uncheckSelectAll = function(instanceArray){
+        if($scope.selectedAll===true){
+            $scope.selectedAll = false;
+        }
+    }
 
 	$scope.removeRow = function(db, table, row){
 		TableFactory.removeRow(db, table, row)
@@ -37,7 +70,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			CreateColumns();
 		})
 	}
-	
+
 	$scope.addRow = function(db, table, arr){
 		var allIds = [];
 		arr.forEach(function(rowData){
@@ -181,27 +214,3 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
