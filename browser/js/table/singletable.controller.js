@@ -71,7 +71,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 	}
 
-	$scope.addRow = function(db, table, arr){
+	$scope.newRow = function(db, table, arr){
 		var allIds = [];
 		arr.forEach(function(rowData){
 			allIds.push(rowData[0])
@@ -83,14 +83,14 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 				$scope.singleTable = result;
 				CreateRows();
 			})
-		} else {
+
+		} else{
 			TableFactory.addRow(db, table, 1)
 			.then(function(result){
 				$scope.singleTable = result;
 				CreateRows();
 			})
 		}
-
 	}
 
 	$scope.addColumn = function(db, table){
