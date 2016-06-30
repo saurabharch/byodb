@@ -25,15 +25,14 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 		})
 	}
 
-	$scope.deleteTheDb = function(){
-				console.log('HERE')
-		TableFactory.deleteDb($scope.dbName)
-		.then(function(){
-			HomeFactory.deleteDB($scope.dbName)
-		})
-		.then(function() {
-			$state.go('Home', {}, {reload : true})
-		})
-	}
+	// $scope.deleteTheDb = function(){
+	// 	TableFactory.deleteDb($scope.dbName)
+	// 	.then(function(){
+	// 		HomeFactory.deleteDB($scope.dbName)
+	// 	})
+	// 	.then(function() {
+	// 		$state.go('Home', {}, {reload : true})
+	// 	})
+	// }
 
 });

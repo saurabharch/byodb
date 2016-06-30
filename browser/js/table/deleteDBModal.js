@@ -1,4 +1,6 @@
-app.controller('DeleteDBCtrl', function ($scope, $uibModal, $log) {
+app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+
+  $scope.items = ['item1', 'item2', 'item3'];
 
   $scope.animationsEnabled = true;
 
@@ -6,8 +8,8 @@ app.controller('DeleteDBCtrl', function ($scope, $uibModal, $log) {
 
     var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'deleteDbContent.html',
-      controller: 'DeleteDbInstanceCtrl',
+      templateUrl: 'myModalContent.html',
+      controller: 'ModalInstanceCtrl',
       size: size,
       resolve: {
         items: function () {
@@ -23,18 +25,36 @@ app.controller('DeleteDBCtrl', function ($scope, $uibModal, $log) {
     });
   };
 
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
 });
 
+app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, TableFactory, HomeFactory, $stateParams, $state) {
 
-app.controller('DeleteDbInstanceCtrl', function ($scope, $uibModalInstance, items, $stateParams, TableFactory) {
 
-  $scope.dbName = $stateParams.dbName
+  $scope.dropDbText = 'DROP DATABASE'
+  $scope.dbName = $stateParams.dbName;
 
-  $scope.dropDatabase = 'DROP DATABASE'
-
-  $scope.delete = function () {
+  $scope.deleteTheDb = function(){
+    $uibModalInstance.close($scope.selected.item);
     TableFactory.deleteDb($scope.dbName)
-    $state.go('Home', {}, {reload : true})
+    .then(function(){
+      HomeFactory.deleteDB($scope.dbName)
+    })
+    .then(function() {
+      $state.go('Home', {}, {reload : true})
+    })
+  }
+
+  $scope.items = items;
+  $scope.selected = {
+    item: $scope.items[0]
+  };
+
+  $scope.ok = function () {
+    $uibModalInstance.close($scope.selected.item);
   };
 
   $scope.cancel = function () {

@@ -27,34 +27,35 @@
         </form>
     </div>
 
-<!--     <div ng-controller="DeleteDBCtrl">
-        <script type="text/ng-template" id="deleteDbContent.html">
-            <div class="modal-header">
-                <h3 class="modal-title">You are about to delete your database!</h3>
-            </div>
-            <div class="modal-body">
-                Once you delete your database it cannot be undone. Type 'DROP DATABASE' to delete your database.
-                <form name="deleteForm" novalidate> 
 
-               <div class="form-group">
-                   <input type="text" name="name" class="form-control" ng-model="formVal" required>
-               </div>
-
-            
-            <div class="modal-footer">
-                <button class="btn btn-danger" type="button" ng-disabled="formVal !== dropDatabase" ng-click="delete()">Delete</button>
-                <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
-            </div>
-                   </form>
-
-            </div>
-        </script>
-
-    </div> -->
-<!--         <button type="button" class="btn btn-danger" ng-click="open()">Delete database</button> -->
 
 <button class="btn btn-danger" type="button" ng-click="deleteTheDb()">Delete Db</button>
     
 
+</div>
+
+<div ng-controller="ModalDemoCtrl">
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">You are about to delete your database!</h3>
+        </div>
+        <div class="modal-body">
+            Once you delete your database it cannot be undone. Type 'DROP DATABASE' to delete your database.
+            <form name="deleteForm" novalidate> 
+
+           <div class="form-group">
+               <input type="text" name="name" class="form-control" ng-model="formVal" required>
+           </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" type="button" ng-disabled="formVal !== dropDbText" ng-click="deleteTheDb()">Delete</button>
+            <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+    <button type="button" class="btn btn-default" ng-click="open()">Open me!</button>
+
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
 </div>
 <ui-view></ui-view>
