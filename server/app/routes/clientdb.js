@@ -244,11 +244,23 @@ router.post('/:dbName/association', function(req, res, next) {
               }
               //need to make above work in alternate direction 
               if(req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne'){
-                client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " char(50)", function(err, result){
+                client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " integer", function(err, result){
                   if(err){
                     console.log("ADD COLUMN FAILED", err)
                     res.send('Error running query')
                   }
+                })
+                //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
+                //data type on both tables need to match in order for foreign key to work
+                knex.schema.table(req.body.table2.table_name, function(table){
+                  table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
+                })
+                .then(function(result){
+                  console.log("========================", result)
+                  res.send(result);
+                })
+                .catch(function(err){
+                  console.log(err);
                 })
               }
             })
@@ -256,8 +268,8 @@ router.post('/:dbName/association', function(req, res, next) {
             if(req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany'){
               console.log("--------------------------", req.body.through)
               return knex.schema.createTable(req.body.through, function(table) {
-                      table.string(req.body.alias1);
-                      table.string(req.body.alias2);
+                      table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
+                      table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
                   })
               .then(function() {
                       res.sendStatus(200);
