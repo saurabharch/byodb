@@ -9,6 +9,8 @@
             {{table.table_name}}</button>
     </div>
 </div>
+<br>
+<br>
 <div class="container" ng-hide="$state.includes('Table.Single')">
     <div class="row">
         <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
@@ -40,6 +42,8 @@
         </form>
     </div>
     
+    <br>
+    <br>
 
     <div ng-controller="deleteDBCtrl">
         <script type="text/ng-template" id="deleteDBContent.html">
