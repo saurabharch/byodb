@@ -223,7 +223,7 @@ router.post('/:dbName/association', function(req, res, next) {
               }
               //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
               if(req.body.type1 === 'hasOne'){
-                client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + req.body.alias1 + " integer", function(err, result){
+                client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result){
                   if(err){
                     console.log("ADD COLUMN FAILED", err)
                     res.send('Error running query')
