@@ -143,11 +143,21 @@ router.get('/:dbName/:tableName', function(req, res, next) {
         searchPath: 'knex,public'
     });
 
-    knex.select().from(req.params.tableName)
-        .then(function(foundTable) {
-            res.send(foundTable)
-        })
-        .catch(next);
+    var findingTable = knex.select().from(req.params.tableName)
+
+    var findingForeignIds = knex.select('Table2').from(req.params.dbName + "_assoc").where({
+        Table1: req.params.tableName
+    })
+    .then(function(Table){
+        return knex.select('id').from(Table[0].Table2)
+    })
+
+    Promise.all([findingTable, findingForeignIds])
+    .then(function(result){
+        console.log("one", result[1])
+        res.send(result);
+    })
+
 })
 
 //route to query a single table (filter)

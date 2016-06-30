@@ -4,7 +4,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
-	$scope.singleTable = singleTable;
+	$scope.singleTable = singleTable[0];
+	$scope.foreignIds = singleTable[1];
     $scope.selectedAll = false;
     $scope.associations = associations;
 
@@ -155,6 +156,13 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
         $scope.singleTable.forEach(function(row) {
             var rowValues = [];
             for (var prop in row) {
+            	if (prop === $scope.associations[0]["Alias1"] && row[prop] === null) {
+            		row[prop] = []
+            		$scope.foreignIds.forEach(function(id){
+            			row[prop].push(id.id)
+            		})
+            		rowValues.push(row[prop])
+            	}
                 if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
             }
             $scope.instanceArray.push(rowValues)
