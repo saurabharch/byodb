@@ -39,3 +39,15 @@ router.get('/:dbName', function(req, res, next){
         res.send(theDB)
     })
 })
+
+router.delete('/:dbName', function(req, res, next){
+    Database.findOne({
+        where: {
+            dbName: req.params.dbName
+        }
+    })
+    .then(function(theDB){
+        theDB.destroy({force: true})
+        res.send(201)
+    })
+})

@@ -1,4 +1,4 @@
-app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
@@ -65,7 +65,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		TableFactory.removeColumn(db, table, columnName)
 		.then(function(result){
 			$scope.singleTable = result;
-			console.log('HERE!!')
 			CreateRows();
 			CreateColumns();
 		})
@@ -233,7 +232,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 
 	$scope.deleteTable = function() {
-		// var response = $window.prompt('Please enter your password');
 		TableFactory.deleteTable($scope.currentTable)
 		.then(function() {
 			$state.go('Table', {dbName : $scope.theDbName}, {reload : true})

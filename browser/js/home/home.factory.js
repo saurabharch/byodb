@@ -11,5 +11,10 @@ app.factory('HomeFactory', function ($http) {
     	.then(resToData)
     }
 
+    HomeFactory.deleteDB = function(name){
+    	return $http.delete('/api/masterdb/' + name)
+    	.then(resToData)
+    }
+
 	return HomeFactory; 
 })

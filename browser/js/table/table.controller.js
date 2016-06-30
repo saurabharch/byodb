@@ -1,8 +1,10 @@
-app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams) {
+app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams, $uibModal, HomeFactory) {
 
 	$scope.allTables = allTables;
 
 	$scope.columnArray = [];
+
+	$scope.dbName = $stateParams.dbName
 
 	$scope.add = function() {
 		$scope.columnArray.push('1');
@@ -22,5 +24,15 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 			$state.go('Table', {dbName:$scope.dbName},{reload:true});
 		})
 	}
+
+	// $scope.deleteTheDb = function(){
+	// 	TableFactory.deleteDb($scope.dbName)
+	// 	.then(function(){
+	// 		HomeFactory.deleteDB($scope.dbName)
+	// 	})
+	// 	.then(function() {
+	// 		$state.go('Home', {}, {reload : true})
+	// 	})
+	// }
 
 });
