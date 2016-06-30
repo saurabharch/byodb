@@ -10,7 +10,8 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 		$scope.columnArray.push('1');
 	}
 
-	$scope.$state = $state; // used to hide the list of all tables when in single table state
+	// used to hide the list of all tables when in single table state
+	$scope.$state = $state;
 
 	$scope.associationTypes = ['hasOne', 'hasMany'];
 
@@ -24,15 +25,4 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 			$state.go('Table', {dbName:$scope.dbName},{reload:true});
 		})
 	}
-
-	// $scope.deleteTheDb = function(){
-	// 	TableFactory.deleteDb($scope.dbName)
-	// 	.then(function(){
-	// 		HomeFactory.deleteDB($scope.dbName)
-	// 	})
-	// 	.then(function() {
-	// 		$state.go('Home', {}, {reload : true})
-	// 	})
-	// }
-
 });

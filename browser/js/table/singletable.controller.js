@@ -7,6 +7,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.singleTable = singleTable;
     $scope.selectedAll = false;
 
+	console.log(singleTable);
+
 	$scope.currentTable = $stateParams;
 
 	$scope.myIndex = 1;
