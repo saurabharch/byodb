@@ -1,20 +1,59 @@
-app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
+    $scope.selectedAll = false;
 
 	console.log(singleTable);
 
 	$scope.currentTable = $stateParams;
+
+	$scope.myIndex = 1;
+
+	$scope.ids = singleTable.map(function(row){
+		return row.id;
+	})
 
 	//delete a row 
 	$scope.showDelete = false;
 	$scope.toggleDelete = function(){
 		$scope.showDelete = !$scope.showDelete
 	}
+
+    $scope.deleteSelected = function(db, table, instanceArray){
+        instanceArray.forEach(function(row){
+            if(row.selected){
+                TableFactory.removeRow(db, table, row[0])
+                .then(function(result){
+                    $scope.singleTable = result;
+                    CreateRows();
+                })
+            }
+        })
+        $scope.showDelete = false;
+    }
+
+    $scope.selectAll = function(instanceArray){
+        if($scope.selectedAll){
+            instanceArray.forEach(function(row){
+                row.selected = true;
+            })
+        }
+        else{
+            instanceArray.forEach(function(row){
+                row.selected = false;
+            })
+        }
+    }
+
+    $scope.uncheckSelectAll = function(instanceArray){
+        if($scope.selectedAll===true){
+            $scope.selectedAll = false;
+        }
+    }
 
 	$scope.removeRow = function(db, table, row){
 		TableFactory.removeRow(db, table, row)
@@ -23,32 +62,69 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			CreateRows();
 		})
 	}
-	
-	$scope.addRow = function(db, table, arr){
+
+	$scope.removeColumn = function(db, table, columnName){
+		TableFactory.removeColumn(db, table, columnName)
+		.then(function(result){
+			$scope.singleTable = result;
+			CreateRows();
+			CreateColumns();
+		})
+	}
+
+	$scope.newRow = function(db, table, arr){
 		var allIds = [];
 		arr.forEach(function(rowData){
 			allIds.push(rowData[0])
 		})
 		var sorted = allIds.sort(function(a, b){return b - a})
-		TableFactory.addRow(db, table, sorted[0] + 1)
-		.then(function(result){
-			$scope.singleTable = result;
-			CreateRows();
-		})
+		if(sorted.length > 0){
+			TableFactory.addRow(db, table, sorted[0] + 1)
+			.then(function(result){
+				$scope.singleTable = result;
+				CreateRows();
+			})
+
+		} else{
+			TableFactory.addRow(db, table, 1)
+			.then(function(result){
+				$scope.singleTable = result;
+				CreateRows();
+			})
+		}
 	}
 
 	$scope.addColumn = function(db, table){
-		$scope.numNewCol = $scope.columns.length;
-		var nameNewCol = 'Column ' + $scope.numNewCol.toString();
-		TableFactory.addColumn(db, table, nameNewCol)
-		.then(function(){
-			return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
-		})
-		.then(function(theTable){
-			$scope.singleTable = theTable;
-			CreateColumns();
-			CreateRows();
-		})
+		var colNums = $scope.columns.join(' ').match(/\d+/g);
+		console.log(colNums)
+		if(colNums){
+			var sortedNums = colNums.sort(function(a, b){return b - a})
+			var numInNew = Number(sortedNums[0]) + 1;
+			var nameNewCol = 'Column ' + numInNew.toString();
+
+			TableFactory.addColumn(db, table, nameNewCol)
+			.then(function(){
+				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+			})
+			.then(function(theTable){
+				$scope.singleTable = theTable;
+				CreateColumns();
+				CreateRows();
+			})
+		} else {
+			var nextColNum = $scope.columns.length + 1;
+			var newColName = 'Column ' + nextColNum;
+			TableFactory.addColumn(db, table, 'Column 1')
+			.then(function(){
+				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
+			})
+			.then(function(theTable){
+				$scope.singleTable = theTable;
+				CreateColumns();
+				CreateRows();
+			})
+		}
+		
 	}
 	
 	///////////////////////////////Organizing stuff into arrays/////////////////////////////////////////////////
@@ -159,7 +235,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 
 	$scope.deleteTable = function() {
-		// var response = $window.prompt('Please enter your password');
 		TableFactory.deleteTable($scope.currentTable)
 		.then(function() {
 			$state.go('Table', {dbName : $scope.theDbName}, {reload : true})
@@ -167,27 +242,3 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

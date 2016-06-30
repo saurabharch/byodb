@@ -10,6 +10,49 @@ var pg = require('pg');
 
 module.exports = router;
 
+// delete a db
+router.delete('/:dbn', function(req, res) {
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/masterDB';
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            console.log(err)
+            res.send('could not connect to postgres');
+        }
+         client.query("REVOKE CONNECT ON DATABASE " + req.params.dbn + " FROM public", function(err, result) {
+            if (err) {
+                console.log('err')
+                res.send('error running query');
+            }
+        });
+          client.query("ALTER DATABASE " + req.params.dbn + " CONNECTION LIMIT 0 ", function(err, result) {
+             if (err) {
+                 console.log(err)
+                 res.send('error running query');
+             }
+         });
+            client.query("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid()", function(err, result) {
+              if (err) {
+                  console.log(err)
+                  res.send('error running query');
+              }
+            });
+            client.query("DROP DATABASE " + req.params.dbn, function(err, result) {
+              if (err) {
+                  console.log(err)
+                  res.send('error running query');
+              }
+              res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+              res.send(result);
+              client.end();
+            });
+    });
+
+});
+
 router.post('/', function(req, res, next) {
     if (!req.user) res.sendStatus(404);
 
@@ -26,11 +69,11 @@ router.post('/', function(req, res, next) {
             }
             table.timestamps();
         }).then(function() {
-            res.sendStatus(200);
+            return knex(req.body.name).insert([
+                    {id: 1},
+                ]);
         })
         .catch(next);
-
-
 })
 
 //route to get all tables from a db
@@ -139,7 +182,25 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
             })
     })
     .catch(next);
+})
 
+// delete column in table
+router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    knex.schema.table(req.params.tableName, function (table) {
+      table.dropColumn(req.params.columnName)
+    })
+    .then(function(res){
+        return knex.select().from(req.params.tableName)
+    })
+    .then(function(foundTable) {
+        res.send(foundTable)
+    })
+    .catch(next);
 })
 
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
