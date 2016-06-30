@@ -9,6 +9,25 @@
             {{table.table_name}}</button>
     </div>
 </div>
+<br>
+<br>
+<!-- 
+<div>
+  <form ng-model="" ng-submit=""> 
+    <span>Query your data !</span>
+    <select ng-model="">
+      <option ng-repeat="">{{ }}</option>
+    </select>
+    
+    <input ng-model=""></input>
+    <button type="submit" class="btn btn-primary">Submit query</button>
+  </form>
+</div> -->
+
+
+<br>
+<br>
+
 <div class="container" ng-hide="$state.includes('Table.Single')">
     <div class="row">
         <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
@@ -40,6 +59,14 @@
         </form>
     </div>
     
+    <br>
+    <br>
+
+
+
+
+    <br>
+    <br>
 
     <div ng-controller="deleteDBCtrl">
         <script type="text/ng-template" id="deleteDBContent.html">
