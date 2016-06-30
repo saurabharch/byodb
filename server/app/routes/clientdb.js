@@ -10,6 +10,40 @@ var pg = require('pg');
 
 module.exports = router;
 
+
+
+//get all the information from the association table
+router.get('/allassociations/:dbName', function(req, res, next) {
+  var knex = require('knex')({
+      client: 'pg',
+      connection: 'postgres://localhost:5432/' + req.params.dbName,
+      searchPath: 'knex,public'
+  })
+
+  knex.select().table(req.params.dbName + '_assoc')
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
+})
+
+//get information from the association table for a single table
+router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    })
+
+    knex(req.params.dbName + '_assoc').where(function() {
+        this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
+    })
+    .then(function(result) {
+        console.log(result);
+        res.send(result);
+    })
+})
+
 // delete a db
 router.delete('/:dbn', function(req, res) {
     var pg = require('pg');
@@ -284,6 +318,7 @@ router.post('/:dbName/association', function(req, res, next) {
               }
               //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
               if(req.body.type1 === 'hasOne'){
+
                 client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result){
                   if(err){
                     console.log("ADD COLUMN FAILED", err)
@@ -356,6 +391,7 @@ router.delete('/:dbName/:tableName', function(req, res, next) {
     .catch(next);
 
 })
+
 
 
 

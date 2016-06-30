@@ -1,10 +1,12 @@
-app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams, $uibModal, HomeFactory) {
+app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams, $uibModal, HomeFactory, associations) {
 
 	$scope.allTables = allTables;
 
 	$scope.columnArray = [];
 
 	$scope.dbName = $stateParams.dbName
+
+	$scope.associations = associations;
 
 	$scope.add = function() {
 		$scope.columnArray.push('1');

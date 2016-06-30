@@ -4,9 +4,12 @@ app.config(function ($stateProvider) {
         templateUrl: 'js/table/table.html',
         controller: 'TableCtrl',
         resolve: {
-        	allTables: function(TableFactory, $stateParams){
+        	allTables: function(TableFactory, $stateParams) {
                 return TableFactory.getAllTables($stateParams.dbName);
-        	}
+        	}, 
+            associations: function(TableFactory, $stateParams) {
+                return TableFactory.getAllAssociations($stateParams.dbName);
+            }
         }
     });
 
@@ -15,8 +18,11 @@ app.config(function ($stateProvider) {
         templateUrl: 'js/table/singletable.html',
         controller: 'SingleTableCtrl',
         resolve: {
-            singleTable: function(TableFactory, $stateParams){
+            singleTable: function(TableFactory, $stateParams) {
                 return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
+            }, 
+            associations: function(TableFactory, $stateParams) {
+                return TableFactory.getAssociations($stateParams.dbName, $stateParams.tableName);
             }
         }
     });
