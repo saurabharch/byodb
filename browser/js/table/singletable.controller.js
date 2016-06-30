@@ -93,7 +93,8 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	}
 
 	$scope.addColumn = function(db, table){
-		var colNums = $scope.columns.join(' ').match(/[1-9]/g);
+		var colNums = $scope.columns.join(' ').match(/\d+/g);
+		console.log(colNums)
 		if(colNums){
 			var sortedNums = colNums.sort(function(a, b){return b - a})
 			var numInNew = Number(sortedNums[0]) + 1;
