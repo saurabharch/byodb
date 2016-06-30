@@ -1,4 +1,4 @@
-app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal) {
+app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal, associations) {
 	
 	///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
@@ -6,6 +6,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable;
     $scope.selectedAll = false;
+    $scope.associations = associations;
 
 	console.log(singleTable);
 
