@@ -13,7 +13,9 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.myIndex = 1;
 
-	$scope.ids = singleTable.map(function(row){
+	$scope.ids = $scope.singleTable.map(function(row){
+		console.log($scope.singleTable)
+		console.log(row)
 		return row.id;
 	})
 
@@ -107,7 +109,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
 			})
 			.then(function(theTable){
-				$scope.singleTable = theTable;
+				$scope.singleTable = theTable[0];
 				CreateColumns();
 				CreateRows();
 			})
@@ -119,7 +121,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
 			})
 			.then(function(theTable){
-				$scope.singleTable = theTable;
+				$scope.singleTable = theTable[0];
 				CreateColumns();
 				CreateRows();
 			})
@@ -152,9 +154,10 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     function CreateRows() {
         $scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
+            console.log("foreign", $scope.associations)
             var rowValues = [];
             for (var prop in row) {
-            	if (prop === $scope.associations[0]["Alias1"] && row[prop] === null) {
+            	if ($scope.associations.length>0 && prop === $scope.associations[0]["Alias1"] && row[prop] === null) {
             		row[prop] = []
             		$scope.foreignIds.forEach(function(id){
             			row[prop].push(id.id)

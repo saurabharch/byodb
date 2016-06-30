@@ -160,13 +160,14 @@ router.get('/:dbName/:tableName', function(req, res, next) {
     var findingForeignIds = knex(req.params.dbName + "_assoc").where('Relationship1','hasOne').orWhere('Relationship2', 'hasOne')
     .then(function(Table){
         console.log("IFNOTABLEEXISTSSSSSS",Table);
+        if(Table.length===0) return;
         return knex.select('id').from(Table[0].Table2)
     })
 
     Promise.all([findingTable, findingForeignIds])
     .then(function(result){
         
-        console.log("++++++++++++++++++++++++", result[1])
+        console.log("++++++++++++++++++++++++", result)
         res.send(result);
     })
 
