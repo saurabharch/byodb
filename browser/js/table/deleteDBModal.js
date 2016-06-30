@@ -1,4 +1,4 @@
-app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+app.controller('deleteDBCtrl', function ($scope, $uibModal, $log) {
 
   $scope.items = ['item1', 'item2', 'item3'];
 
@@ -8,8 +8,8 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
     var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
-      templateUrl: 'myModalContent.html',
-      controller: 'ModalInstanceCtrl',
+      templateUrl: 'deleteDBContent.html',
+      controller: 'deleteDBInstanceCtrl',
       size: size,
       resolve: {
         items: function () {
@@ -31,7 +31,7 @@ app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
 });
 
-app.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, TableFactory, HomeFactory, $stateParams, $state) {
+app.controller('deleteDBInstanceCtrl', function ($scope, $uibModalInstance, items, TableFactory, HomeFactory, $stateParams, $state) {
 
 
   $scope.dropDbText = 'DROP DATABASE'
