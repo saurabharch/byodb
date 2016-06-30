@@ -3,7 +3,6 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
-{{ids}}
 
 <div>
   <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
@@ -63,7 +62,36 @@
 
 <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
 
-<button type="button" class="btn btn-danger" ng-click="deleteTable()">Delete this table</button>
+    <button type="button" class="btn btn-danger" ng-click="deleteDb()">Delete table</button>
+
+
+
+
+
+<!-- <div ng-controller="DeleteDbInstanceCtrl">
+    <script type="text/ng-template" id="deleteTableContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">You are about to delete your database!</h3>
+        </div>
+        <div class="modal-body">
+            Once you delete your database it cannot be undone. Type 'DROP TABLE' to delete your database.
+            <form name="deleteForm" novalidate> 
+
+           <div class="form-group">
+               <input type="text" name="name" class="form-control" ng-model="formVal" required>
+           </div>
+
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" ng-disabled="formVal !== dropTable" ng-click="deleteTable()">Delete this table</button>
+            <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+               </form>
+
+        </div>
+    </script>
+
+</div> -->
 
 
 

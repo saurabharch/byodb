@@ -10,6 +10,49 @@ var pg = require('pg');
 
 module.exports = router;
 
+// delete a db
+router.delete('/:dbn', function(req, res) {
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/masterDB';
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            console.log(err)
+            res.send('could not connect to postgres');
+        }
+         client.query("REVOKE CONNECT ON DATABASE " + req.params.dbn + " FROM public", function(err, result) {
+            if (err) {
+                console.log('err')
+                res.send('error running query');
+            }
+        });
+          client.query("ALTER DATABASE " + req.params.dbn + " CONNECTION LIMIT 0 ", function(err, result) {
+             if (err) {
+                 console.log(err)
+                 res.send('error running query');
+             }
+         });
+            client.query("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid()", function(err, result) {
+              if (err) {
+                  console.log(err)
+                  res.send('error running query');
+              }
+            });
+            client.query("DROP DATABASE " + req.params.dbn, function(err, result) {
+              if (err) {
+                  console.log(err)
+                  res.send('error running query');
+              }
+              res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
+              res.send(result);
+              client.end();
+            });
+    });
+
+});
+
 router.post('/', function(req, res, next) {
     if (!req.user) res.sendStatus(404);
 
@@ -269,28 +312,7 @@ router.delete('/:dbName/:tableName', function(req, res, next) {
 
 })
 
-router.delete('/deletedatabase/:dbName', function(req, res) {
-    console.log('MADE IT HERE!!!!!!', req.params.dbName)
-    // var pg = require('pg');
 
-    // var conString = 'postgres://localhost:5432/' + req.params.dbName;
-
-    // var client = new pg.Client(conString);
-    // client.connect(function(err) {
-    //     if (err) {
-    //         res.send('could not connect to postgres');
-    //     }
-    //     client.query("DROP DATABASE [ IF EXISTS ] \"" + req.params.dbName, function(err, result) {
-    //         if (err) {
-    //             res.send('error running query');
-    //         }
-    //         res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
-    //         res.send(result);
-    //         client.end();
-    //     });
-    // });
-
-});
 
 
 

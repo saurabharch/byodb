@@ -64,6 +64,11 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.deleteDb = function(dbName) {
+        return $http.delete('/api/clientdb/' + dbName)
+        .then(resToData);
+    }
+
 
 	return TableFactory; 
 })
