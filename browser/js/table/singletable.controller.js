@@ -9,8 +9,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.selectedAll = false;
     $scope.associations = associations;
 
-	console.log(singleTable);
-
 	$scope.currentTable = $stateParams;
 
 	$scope.myIndex = 1;
