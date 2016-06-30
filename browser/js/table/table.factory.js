@@ -55,7 +55,6 @@ app.factory('TableFactory', function ($http, $stateParams) {
     }
 
     TableFactory.deleteTable = function(currentTable) {
-        console.log(currentTable);
         return $http.delete('/api/clientdb/' + currentTable.dbName + '/' + currentTable.tableName)
     }
 

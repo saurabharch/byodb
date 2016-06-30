@@ -14,8 +14,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.myIndex = 1;
 
 	$scope.ids = $scope.singleTable.map(function(row){
-		console.log($scope.singleTable)
-		console.log(row)
 		return row.id;
 	})
 
@@ -98,7 +96,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.addColumn = function(db, table){
 		var colNums = $scope.columns.join(' ').match(/\d+/g);
-		console.log(colNums)
 		if(colNums){
 			var sortedNums = colNums.sort(function(a, b){return b - a})
 			var numInNew = Number(sortedNums[0]) + 1;
@@ -152,17 +149,22 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
+    	var alias;
+        if($scope.associations[0].Relationship1 === 'hasOne'){
+        	alias = $scope.associations[0].Alias1;
+        }else if($scope.associations[0].Relationship2 === 'hasOne'){
+        	alias = $scope.associations[0].Alias2;
+        }
         $scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
-            console.log("foreign", $scope.associations)
             var rowValues = [];
             for (var prop in row) {
-            	if ($scope.associations.length>0 && prop === $scope.associations[0]["Alias1"] && row[prop] === null) {
+            	if ($scope.associations.length>0 && prop === alias && row[prop] === null) {
             		row[prop] = []
             		$scope.foreignIds.forEach(function(id){
             			row[prop].push(id.id)
             		})
-            		rowValues.push(row[prop])
+            		// rowValues.push(row[prop])
             	}
                 if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
             }

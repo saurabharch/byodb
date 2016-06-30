@@ -33,7 +33,6 @@ router.get('/allassociations/:dbName', function(req, res, next) {
         .then(function() {
             knex.select().table(req.params.dbName + '_assoc')
                 .then(function(result) {
-                    console.log(result);
                     res.send(result);
                 })
         })
@@ -51,7 +50,6 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
             this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
         })
         .then(function(result) {
-            console.log(result);
             res.send(result);
         })
 })
@@ -159,15 +157,21 @@ router.get('/:dbName/:tableName', function(req, res, next) {
 
     var findingForeignIds = knex(req.params.dbName + "_assoc").where('Relationship1','hasOne').orWhere('Relationship2', 'hasOne')
     .then(function(Table){
-        console.log("IFNOTABLEEXISTSSSSSS",Table);
-        if(Table.length===0) return;
-        return knex.select('id').from(Table[0].Table2)
+        if(Table.length===0){
+            return;
+        }else{
+            if(Table[0].Relationship1 === 'hasOne'){
+                return knex.select('id').from(Table[0].Table2)
+            }else{
+                return knex.select('id').from(Table[0].Table1)
+            }   
+        }
     })
 
     Promise.all([findingTable, findingForeignIds])
     .then(function(result){
         
-        console.log("++++++++++++++++++++++++", result)
+         console.log("++++++++++++++++++++++++", result)
         res.send(result);
     })
 
