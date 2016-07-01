@@ -72,7 +72,7 @@ router.get('/getallcolumns/:dbName', function(req, res, next) {
         }
 
             var TablesNames = [];
-            client.query("SELECT column_name, table_name FROM information_schema.columns WHERE table_schema = 'public'", function(err, result) {
+            client.query("SELECT column_name, table_name, data_type FROM information_schema.columns WHERE table_schema = 'public'", function(err, result) {
             if (err) {
                 console.log(err);
                 res.send('error running query');
