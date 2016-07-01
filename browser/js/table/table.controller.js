@@ -1,4 +1,4 @@
-app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams, $uibModal, HomeFactory, associations) {
+app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $stateParams, $uibModal, HomeFactory, associations, allColumns) {
 
 	$scope.allTables = allTables;
 
@@ -7,6 +7,10 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 	$scope.dbName = $stateParams.dbName
 
 	$scope.associations = associations;
+
+	$scope.allColumns = allColumns;
+
+	$scope.associationTable = $stateParams.dbName + '_assoc';
 
 	$scope.add = function() {
 		$scope.columnArray.push('1');

@@ -11,18 +11,35 @@
 </div>
 <br>
 <br>
-<!-- 
+
 <div>
-  <form ng-model="" ng-submit=""> 
+  <form ng-model="query" ng-submit=""> 
     <span>Query your data !</span>
-    <select ng-model="">
-      <option ng-repeat="">{{ }}</option>
+    <select ng-model="query.table1">
+      <option ng-if="table.table_name !== associationTable" ng-repeat="table in allTables.rows">{{ table.table_name }}</option>
     </select>
-    
+    <select ng-model="query.comparator">
+      <option>WHERE</option>
+      <option>WHERE NOT</option>
+      <option>WHERE BETWEEN</option>
+      <option>WHERE NOT BETWEEN<=</option>
+
+    </select>
+    <select ng-model="query.column">
+      <option ng-if="column.table_name === query.table1" ng-repeat="column in allColumns">{{ column.column_name }}</option>
+    </select>
+    <select ng-model="query.comparator">
+      <option>=</option>
+      <option><</option>
+      <option>></option>
+      <option><=</option>
+      <option>>=</option>
+      <option><></option>
+    </select>
     <input ng-model=""></input>
     <button type="submit" class="btn btn-primary">Submit query</button>
   </form>
-</div> -->
+</div>
 
 
 <br>

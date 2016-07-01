@@ -9,6 +9,9 @@ app.config(function ($stateProvider) {
         	}, 
             associations: function(TableFactory, $stateParams) {
                 return TableFactory.getAllAssociations($stateParams.dbName);
+            },
+            allColumns: function(TableFactory, $stateParams) {
+                return TableFactory.getAllColumns($stateParams.dbName);
             }
         }
     });

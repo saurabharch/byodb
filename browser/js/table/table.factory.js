@@ -79,5 +79,10 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.getAllColumns = function(dbName) {
+        return $http.get('/api/clientdb/getallcolumns/' + dbName)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })
