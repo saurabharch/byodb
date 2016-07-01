@@ -1,5 +1,10 @@
 'use strict';
 
+// OB: This file is huge! Before going any deeper a couple quick thoughts for reining it in
+// 1) Split this out into multiple routers.
+// 2) Move as much of the logic as possible into the models (not necessarily sequelize models) or other utilities.
+// 3) This is the third point in the list.
+
 var db = require('../../db');
 var Database = db.model('database');
 var router = require('express').Router();
@@ -13,13 +18,16 @@ module.exports = router;
 
 
 //get all the information from the association table
+// OB: I'm thinking this should instead be /:dbName/assocations, associations are the "subresource" of the database
 router.get('/allassociations/:dbName', function(req, res, next) {
+    // OB: this could be a model method on Database, something like, .toClientDB()
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     })
 
+    // OB: I'm thinking if the table doesn't exist you should throw an error instead of creating it
     knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
             table.increments();
             table.string('Table1');
@@ -31,15 +39,18 @@ router.get('/allassociations/:dbName', function(req, res, next) {
             table.string('Through');
         })
         .then(function() {
+            // OB: nested .thens!
             knex.select().table(req.params.dbName + '_assoc')
                 .then(function(result) {
-                    console.log(result);
+                    console.log(result); // OB: chuck these logs like some kind of log chucking animal, maybe a woodchuck?
                     res.send(result);
                 })
         })
+    // OB: don't forget to handle errors, i.e. here you could have a .catch(next) to forward any knex errors through to your express error handling middleware
 })
 
 //get information from the association table for a single table
+// OB: I'm thinking this could be /:dbName/tables/:tableName/associations, I think this would better fit expected standards
 router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -47,26 +58,29 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
         searchPath: 'knex,public'
     })
 
+    // OB: again, this could be a model method for the some not-yet-defined ClientDB model, or even better an Association model
     knex(req.params.dbName + '_assoc').where(function() {
             this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
         })
         .then(function(result) {
-            console.log(result);
+            console.log(result); // OB: deforestation
             res.send(result);
         })
 })
 
 // delete a db
 router.delete('/:dbn', function(req, res) {
+    // OB: it'd be awesome to just be able to do ClientDB.removeByName(...) or potentially ClientDB.findByName(...).then(function (clientDB) {return clientDB.remove();});
     var pg = require('pg');
 
     var conString = 'postgres://localhost:5432/masterDB';
 
     var client = new pg.Client(conString);
+    // OB: however you decide to do it, I'd say this is too much logic happening inside your route handler, port it to somewhere else
     client.connect(function(err) {
         if (err) {
-            console.log(err)
-            res.send('could not connect to postgres');
+            console.log(err) // OB: you could instead forward this onto your express error handling middleware by doing next(err)
+            res.send('could not connect to postgres'); // OB: might as well give this a 500 status
         }
         client.query("REVOKE CONNECT ON DATABASE " + req.params.dbn + " FROM public", function(err, result) {
             if (err) {
@@ -91,6 +105,7 @@ router.delete('/:dbn', function(req, res) {
                 console.log(err)
                 res.send('error running query');
             }
+            // OB: missing else
             res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
             res.send(result);
             client.end();
@@ -99,8 +114,10 @@ router.delete('/:dbn', function(req, res) {
 
 });
 
+// OB: I'm thinking POST to /api/clientdb create a database, and it should be POST /api/clientdb/:dbName/tables to create a table
 router.post('/', function(req, res, next) {
     if (!req.user) res.sendStatus(404);
+    // OB: missing else
 
     var knex = require('knex')({
         client: 'pg',
@@ -111,7 +128,7 @@ router.post('/', function(req, res, next) {
     knex.schema.createTable(req.body.name, function(table) {
             table.increments();
             for (var key in req.body.column) {
-                table[req.body.type[key]](req.body.column[key])
+                table[req.body.type[key]](req.body.column[key]) // OB: this is pretty cool, and also watch out for possible injection abuse
             }
             table.timestamps();
         }).then(function() {
@@ -123,7 +140,8 @@ router.post('/', function(req, res, next) {
 })
 
 //route to get all tables from a db
-// DO WE NEED TO INCLUDE SOMETHING TO HANDLE INJECTION ATTACK?
+// DO WE NEED TO INCLUDE SOMETHING TO HANDLE INJECTION ATTACK? OB: PROBABLY?
+// OB: this is for getting all tables yes? if so I'm thinking the matching URL fragment should be /:dbName/tables
 router.get('/:dbName', function(req, res) {
     var pg = require('pg');
 
@@ -138,6 +156,7 @@ router.get('/:dbName', function(req, res) {
             if (err) {
                 res.send('error running query');
             }
+            // OB: the type is javascript?
             res.set("Content-Type", 'text/javascript'); //avoid the "Resource interpreted as Script but transferred with MIME type text/html" message
             res.send(result);
             client.end();
@@ -147,7 +166,8 @@ router.get('/:dbName', function(req, res) {
 });
 
 //route to get a single table from a db
-// DO NEED TO COME UP WITH A WAY TO REMOVE SPACES FROM THE TABLE NAME WHEN IT GETS SAVED?
+// DO NEED TO COME UP WITH A WAY TO REMOVE SPACES FROM THE TABLE NAME WHEN IT GETS SAVED? OB: PROBABLY?
+// OB: again, I'm thinking /:dbName/tables/:tableName is closer to standard, or in this case /:dbName/tables/:tableName/rows could be better, because it's really the rows you're GETing
 router.get('/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -163,21 +183,23 @@ router.get('/:dbName/:tableName', function(req, res, next) {
 })
 
 //route to query a single table (filter)
+// OB: this should be a GET, PUT should only be for updates. that means you'll have to pass the column, comparator, and value through the req.query because GET requests don't have a body.
 router.put('/:dbName/:tableName/filter', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     })
-    knex(req.params.tableName).where(req.body.column, req.body.comparator, req.body.value)
+    knex(req.params.tableName).where(req.body.column, req.body.comparator, req.body.value) // OB: beware possible injection abuse
         .then(function(result) {
-            console.log(result);
+            console.log(result); // OB: x
             res.send(result)
         })
-        .catch(next);
+        .catch(next); // OB: nice!
 })
 
 //route to update data in a table (columns and rows)
+// OB: I vote you split this into two route handlers: PUT /:dbName/tables/:tableName/columns/:columnName can update column stuff and PUT /:dbName/tables/:tableName/rows/:rowKey for updating a particular row
 router.put('/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -185,7 +207,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
         searchPath: 'knex,public'
     })
     var promises = [];
-    req.body.rows.forEach(function(row) {
+    req.body.rows.forEach(function(row) { // OB: updating multiple rows at once?
         var promise = knex(req.params.tableName)
             .where('id', '=', row.id)
             .update(row)
@@ -195,7 +217,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
     Promise.all(promises)
         .then(function(result) {
             var promises2 = [];
-            req.body.columns.forEach(function(column) {
+            req.body.columns.forEach(function(column) { // OB: updating multiple columns at once?
                 var promise2 = knex.schema.table(req.params.tableName, function(table) {
                     var oldVal = column.oldVal;
                     var newVal = column.newVal;
@@ -222,6 +244,7 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
         .where('id', req.params.rowId)
         .del()
         .then(function() {
+            // OB: nested .thens!
             knex.select().from(req.params.tableName)
                 .then(function(foundTable) {
                     res.send(foundTable)
@@ -232,13 +255,14 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
 
 // delete column in table
 router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next) {
+    // OB: I haven't been counting exactly but this code has repeated like a bunch of times—definitely excellent refactoring opportunity here
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     });
     knex.schema.table(req.params.tableName, function(table) {
-            table.dropColumn(req.params.columnName)
+            table.dropColumn(req.params.columnName) // OB: is this operation asynchronous?
         })
         .then(function(res) {
             return knex.select().from(req.params.tableName)
@@ -249,6 +273,7 @@ router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next)
         .catch(next);
 })
 
+// OB: recommendation is /:dbName/tables/:tableName/rows
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -257,6 +282,7 @@ router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     });
     knex(req.params.tableName).insert({ id: req.body.rowNumber })
         .then(function() {
+            // OB: nested .thens!
             knex.select().from(req.params.tableName)
                 .then(function(foundTable) {
                     console.log(foundTable)
@@ -266,6 +292,7 @@ router.post('/addrow/:dbName/:tableName', function(req, res, next) {
         .catch(next);
 })
 
+// OB: having a "verb" in your route should be a red flag. sometimes it's happens, but it's usually considered best practice for the URL to be nouns only and the action is specified by GET/POST/PUT/DELETE etc.
 router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next) {
     var pg = require('pg');
 
@@ -276,6 +303,7 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
         if (err) {
             res.send('could not connect to postgres');
         }
+        // OB: es6 template strings are great for this kind of stuff, i.e. `ALTER TABLE "${req.params.tableName}" ADD COLUMN "${req.params.numNewCol}" text`
         client.query("ALTER TABLE \"" + req.params.tableName + "\" ADD COLUMN \"" + req.params.numNewCol + "\" text", function(err, result) {
 
             if (err) {
@@ -289,7 +317,6 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
     })
 })
 
-
 router.post('/:dbName/association', function(req, res, next) {
         var pg = require('pg');
         var conString = 'postgres://localhost:5432/' + req.params.dbName;
@@ -298,6 +325,7 @@ router.post('/:dbName/association', function(req, res, next) {
             connection: 'postgres://localhost:5432/' + req.params.dbName,
             searchPath: 'knex,public'
         });
+        // OB: dead code, burn it
         //creates the association table -- Named using DBName_assoc
         // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
         //         table.increments();
@@ -311,6 +339,7 @@ router.post('/:dbName/association', function(req, res, next) {
         //     })
         //     //inserts association data into the association table
         //     .then(function() {
+        // OB: return is not necessary here
         return knex(req.params.dbName + '_assoc').insert({
                 Table1: req.body.table1.table_name,
                 Alias1: req.body.alias1,
@@ -342,6 +371,7 @@ router.post('/:dbName/association', function(req, res, next) {
                             knex.schema.table(req.body.table1.table_name, function(table) {
                                     table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
                                 })
+                                // OB: nested .thens
                                 .then(function(result) {
                                     console.log("========================", result)
                                     res.send(result);
@@ -363,6 +393,7 @@ router.post('/:dbName/association', function(req, res, next) {
                             knex.schema.table(req.body.table2.table_name, function(table) {
                                     table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
                                 })
+                                // OB: nested .thens
                                 .then(function(result) {
                                     console.log("========================", result)
                                     res.send(result);
@@ -379,6 +410,7 @@ router.post('/:dbName/association', function(req, res, next) {
                             table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
                             table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
                         })
+                        // OB: nested .thens
                         .then(function() {
                             res.sendStatus(200);
                         })
@@ -386,6 +418,7 @@ router.post('/:dbName/association', function(req, res, next) {
                 }
             // })
     })
+    // OB: I'm thinking you should consider cleaning this route handler up, seems to be pretty complex—break it up into smaller pieces and make those pieces functions
     .catch(next);
 })
 
