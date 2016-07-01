@@ -25,20 +25,25 @@
       <option>WHERE BETWEEN</option>
       <option>WHERE NOT BETWEEN</option>
     </select>
-    <select ng-change="type()" ng-show="!wherebetween(query.condition)" ng-model="query.column">
+    <select ng-change="columnDataType()" ng-show="!wherebetween(query.condition)" ng-model="query.column">
       <option ng-show="column.table_name === query.table1" ng-repeat="column in allColumns">{{ column.column_name }}</option>
     </select>
-    <select ng-change="type()" ng-show="wherebetween(query.condition)" ng-model="query.column">
+    <select ng-change="columnDataType()" ng-show="wherebetween(query.condition)" ng-model="query.column">
       <option ng-show="column.table_name === query.table1 && column.data_type === 'integer' || column.data_type ==='float'" ng-repeat="column in allColumns">{{ column.column_name }}</option>
     </select>
+    {{query.condition}}
+    <select ng-model="query.comparator" ng-hide="query.condition == 'WHERE BETWEEN' || query.condition == 'WHERE NOT BETWEEN'">
     {{type}}
-    <select ng-model="query.comparator">
       <option ng-hide="query.condition === 'WHERE BETWEEN' || query.condition === 'WHERE NOT BETWEEN'">=</option>
       <option ng-hide="type === 'boolean' || type === 'text'"><</option>
       <option ng-hide="type === 'boolean' || type === 'text'">></option>
       <option ng-hide="type === 'boolean' || type === 'text'"><=</option>
       <option ng-hide="type === 'boolean' || type === 'text'">>=</option>
-      <option ng-hide="query.condition === 'WHERE BETWEEN' || query.condition === 'WHERE NOT BETWEEN'"><></option>
+      <option ng-show="type === 'boolean' || type === 'text'">Contains</option>
+      <option ng-show="type === 'text' || type === 'float'">Includes</option>
+      <option ng-show="type === 'text' || type === 'float'">Does Not Include</option>
+      <option ng-show="type === 'text' || type === 'float'">Starts With</option>
+      <option ng-show="type === 'text' || type === 'float'">Starts With</option>
     </select>
     <input ng-model="query.input1"></input>
     <input ng-if="wherebetween(query.condition)" ng-model="query.input2"></input>

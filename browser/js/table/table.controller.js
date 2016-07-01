@@ -35,7 +35,7 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 		})
 	}
 
-	$scope.type = function() {
+	$scope.columnDataType = function() {
 		console.log("HELLO JENNA IS THE BEST");
 		$scope.allColumns.forEach(function(obj) {
 			if(obj.table_name === $scope.query.table1 && obj.column_name === $scope.query.column) $scope.type = obj.data_type;
