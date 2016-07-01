@@ -62,7 +62,7 @@
                 <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
             </td>
             <td ng-show="virtualColumn">
-              <a ng-click="getPrimaryKeys(row[0], dbName, virtualColumnTable, virtualColumnKey)">{{virtualColumn}}</a>
+              <a ui-sref="Table.Join({rowId:row[0], dbName: dbName, tableName: virtualColumnTable, key: virtualColumnKey })">{{virtualColumn}}</a>
             </td>
             <td></td>
         </tr>

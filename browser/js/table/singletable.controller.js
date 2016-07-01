@@ -32,12 +32,12 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     	}
     }
 
-    $scope.getPrimaryKeys = function(id, dbName, table, key){
-    	TableFactory.getPrimaryKeys(id, dbName, table, key)
-    	.then(function(result){
-    		console.log("MANY TO MANY RESULTS", result);
-    	})
-    }
+    // $scope.getPrimaryKeys = function(id, dbName, table, key){
+    // 	TableFactory.getPrimaryKeys(id, dbName, table, key)
+    // 	.then(function(result){
+    // 		$state.go("Table.Join", {rowId: id, dbName: dbName, table: table, key: key});
+    // 	})
+    // }
 
 	$scope.currentTable = $stateParams;
 
