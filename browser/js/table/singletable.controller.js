@@ -9,6 +9,18 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.selectedAll = false;
     $scope.associations = associations;
 
+    if($scope.associations.length > 0){
+    	if($scope.associations[0].Relationship1 === 'hasMany'){
+    		$scope.virtualColumn = $scope.associations[0].Alias1
+    		$scope.virtualColumnTable = $scope.associations[0].Table2;
+    		$scope.virtualColumnKey = $scope.associations[0].Alias2;
+    	}else if($scope.associations[0].Relationship2 === 'hasMany'){
+    		$scope.virtualColumn = $scope.associations[0].Alias2
+    	}	
+    }
+
+    $scope.getPrimaryKeys = TableFactory.getPrimaryKeys;
+
 	$scope.currentTable = $stateParams;
 
 	$scope.myIndex = 1;
@@ -150,11 +162,13 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
     	var alias;
-        if($scope.associations[0].Relationship1 === 'hasOne'){
-        	alias = $scope.associations[0].Alias1;
-        }else if($scope.associations[0].Relationship2 === 'hasOne'){
-        	alias = $scope.associations[0].Alias2;
-        }
+    	if($scope.associations.length > 0){
+	        if($scope.associations[0].Relationship1 === 'hasOne'){
+	        	alias = $scope.associations[0].Alias1;
+	        }else if($scope.associations[0].Relationship2 === 'hasOne'){
+	        	alias = $scope.associations[0].Alias2;
+	        }	
+    	}
         $scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
             var rowValues = [];

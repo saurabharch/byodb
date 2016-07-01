@@ -78,5 +78,10 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.getPrimaryKeys = function(id, dbName, tableName, columnkey){
+        return $http.get('/api/clientdb/' + dbName + '/' + tableName + '/' + id + "/" + columnkey)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

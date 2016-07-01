@@ -167,14 +167,29 @@ router.get('/:dbName/:tableName', function(req, res, next) {
             }   
         }
     })
-
-    Promise.all([findingTable, findingForeignIds])
+     Promise.all([findingTable, findingForeignIds])
     .then(function(result){
         
          console.log("++++++++++++++++++++++++", result)
         res.send(result);
     })
 
+})
+
+router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    var numId = Number(req.params.id);
+
+    knex.select().from(req.params.tableName).where(req.params.columnkey, numId)
+    .then(function(result){
+        console.log("!!!!!!!!!!!",result);
+        res.send(result);
+    })
 })
 
 //route to query a single table (filter)
