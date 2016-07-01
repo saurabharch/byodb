@@ -11,11 +11,15 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
     if($scope.associations.length > 0){
     	if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasOne'){
+    		if($scope.theTableName !== $scope.associations[0].Table2)
     		$scope.virtualColumn = $scope.associations[0].Alias1
     		$scope.virtualColumnTable = $scope.associations[0].Table2;
     		$scope.virtualColumnKey = $scope.associations[0].Alias2;
     	}else if($scope.associations[0].Relationship2 === 'hasMany' && $scope.associations[0].Relationship1 === 'hasOne'){
+    		if($scope.theTableName !== $scope.associations[0].Table1)
     		$scope.virtualColumn = $scope.associations[0].Alias2
+    		$scope.virtualColumnTable = $scope.associations[0].Table1;
+    		$scope.virtualColumnKey = $scope.associations[0].Alias1;
     	}else if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasMany'){
     		if($scope.theTableName === $scope.associations[0].Table1){
     			$scope.virtualColumn = $scope.associations[0].Alias2

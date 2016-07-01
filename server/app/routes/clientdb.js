@@ -169,8 +169,6 @@ router.get('/:dbName/:tableName', function(req, res, next) {
     })
      Promise.all([findingTable, findingForeignIds])
     .then(function(result){
-        
-         console.log("++++++++++++++++++++++++", result)
         res.send(result);
     })
 
