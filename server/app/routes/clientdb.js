@@ -185,7 +185,7 @@ router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
 
     var numId = Number(req.params.id);
 
-    knex.select().from(req.params.tableName).where(req.params.columnkey, numId)
+    knex.select('*').from(req.params.tableName).where(req.params.columnkey, numId)
     .then(function(result){
         console.log("!!!!!!!!!!!",result);
         res.send(result);

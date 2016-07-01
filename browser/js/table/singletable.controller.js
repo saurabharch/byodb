@@ -10,16 +10,30 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.associations = associations;
 
     if($scope.associations.length > 0){
-    	if($scope.associations[0].Relationship1 === 'hasMany'){
+    	if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasOne'){
     		$scope.virtualColumn = $scope.associations[0].Alias1
     		$scope.virtualColumnTable = $scope.associations[0].Table2;
     		$scope.virtualColumnKey = $scope.associations[0].Alias2;
-    	}else if($scope.associations[0].Relationship2 === 'hasMany'){
+    	}else if($scope.associations[0].Relationship2 === 'hasMany' && $scope.associations[0].Relationship1 === 'hasOne'){
     		$scope.virtualColumn = $scope.associations[0].Alias2
-    	}	
+    	}else if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasMany'){
+    		if($scope.theTableName === $scope.associations[0].Table1){
+    			$scope.virtualColumn = $scope.associations[0].Alias2
+    			$scope.virtualColumnTable = $scope.associations[0].Through;
+    			$scope.virtualColumnKey = $scope.associations[0].Alias2;	
+    		}else if($scope.theTableName === $scope.associations[0].Table2)
+	    		$scope.virtualColumn = $scope.associations[0].Alias1
+	    		$scope.virtualColumnTable = $scope.associations[0].Through;
+	    		$scope.virtualColumnKey = $scope.associations[0].Alias1;
+    	}
     }
 
-    $scope.getPrimaryKeys = TableFactory.getPrimaryKeys;
+    $scope.getPrimaryKeys = function(id, dbName, table, key){
+    	TableFactory.getPrimaryKeys(id, dbName, table, key)
+    	.then(function(result){
+    		console.log("MANY TO MANY RESULTS", result);
+    	})
+    }
 
 	$scope.currentTable = $stateParams;
 
