@@ -9,6 +9,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.selectedAll = false;
     $scope.associations = associations;
 
+
     if($scope.associations.length > 0){
     	if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasOne'){
     		if($scope.theTableName !== $scope.associations[0].Table2)
@@ -174,6 +175,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 			} 
 		}
 	}
+
 
 	CreateColumns();
 
