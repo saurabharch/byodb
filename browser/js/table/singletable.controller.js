@@ -272,35 +272,53 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 		Promise.all(promisesForColumns)
 		.then(function(columns){
-			$scope.columnsForQuery.push(columns[0]);
-			$scope.$evalAsync()
+			columns.forEach(function(column) {
+				$scope.columnsForQuery.push(column);
+				$scope.$evalAsync()
+			})
 		})
 
 	}
 
-	$scope.logFunc = function(val){
-		console.log(val)
-	}
+	// $scope.logFunc = function(val){
+	// 	console.log(val)
+	// }
 
 	$scope.selectedColumns = {};
 
 	$scope.getDataFromColumns = function(val) {
-		// console.log(val);
-		// console.log(val.tableName);
+	
 		var columnName = $scope.columnsForQuery[0]['columns'][val.i];
 		var tableName = val.tableName
-		// console.log(val);
+
 		if(!$scope.selectedColumns[tableName]) $scope.selectedColumns[tableName]=[];
-		
 		if($scope.selectedColumns[tableName].indexOf(columnName) !== -1) {
-			$scope.selectedColumns[tableName].splice(i,1)
+			$scope.selectedColumns[tableName].splice($scope.selectedColumns[tableName].indexOf(columnName), 1)
 		} else {
 			$scope.selectedColumns[tableName].push(columnName);
 		}
 	}
 
-	$scope.runQuery = function() {
-		
+	$scope.resultOfQuery= [];
+
+	$scope.runQuery = function(dbName) {
+		var promisesForQuery = [];
+		var query = $scope.selectedColumns
+		for(var key in query) {
+			promisesForQuery.push(TableFactory.getSingleTable(dbName, key));	
+		}
+		Promise.all(promisesForQuery)
+		.then(function(tables) {
+			tables.forEach(function(table) {
+				$scope.resultOfQuery.push(table);
+				$scope.$evalAsync();
+			})
+		})
+		.then(function() {
+			$scope.resultOfQuery.forEach(function(table) {
+				
+			})
+		})
 	}
 
 });

@@ -12,6 +12,7 @@ app.factory('TableFactory', function ($http, $stateParams) {
     }
 
     TableFactory.getSingleTable = function(dbName, tableName){
+        console.log('HELLO');
         return $http.get('/api/clientdb/' + dbName + '/' + tableName)
         .then(resToData)
     }
@@ -92,6 +93,14 @@ app.factory('TableFactory', function ($http, $stateParams) {
         return $http.get('/api/clientdb/columnsfortable/' + dbName + '/' + tableName)
         .then(resToData);
     }
+
+    // TableFactory.runQuery = function(dbName, query) {
+    //     console.log(query);
+    //     var promises = [];
+    //     for(var key in query) {
+    //         promises.push($http.get('/api/clientdb/' + dbName + '/' + key))
+    //     }
+    // }
 
 	return TableFactory; 
 })

@@ -62,7 +62,6 @@ router.get('/allassociations/:dbName', function(req, res, next) {
         .then(function() {
             knex.select().table(req.params.dbName + '_assoc')
                 .then(function(result) {
-                    console.log(result);
                     res.send(result);
                 })
         })
@@ -80,7 +79,6 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
             this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
         })
         .then(function(result) {
-            console.log(result);
             res.send(result);
         })
 })
