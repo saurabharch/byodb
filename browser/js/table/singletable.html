@@ -4,7 +4,7 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
-{{columnsForQuery}}
+{{selectedColumns}}
 
 <form ng-submit="getColumnsForTable()" ng-model="select">
   <div class="checkbox">
@@ -16,11 +16,12 @@
 </form>
 
 
-<form ng-submit="logFunc(query)" ng-model="query">
+
+<form ng-if="columnsForQuery.length" ng-submit="runQuery()" ng-model="query">
   <div ng-repeat="column in columnsForQuery" class="checkbox">
     <p>{{column.tableName}}</p>
-    <label ng-repeat="name in column.columns">
-      <input value="table" ng-model="select.table1" ng-click="getAssociated($index)" type="checkbox"> {{name}}
+    <label ng-repeat="name in column.columns track by $index">
+      <input ng-click="getDataFromColumns({tableName:column.tableName, i: $index})" value="col" ng-model="query.column" type="checkbox"> {{name}}
     </label>
   </div>
   <button type="submit" class="btn btn-default">Submit</button>
