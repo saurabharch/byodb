@@ -17,7 +17,6 @@ app.controller('JoinTableCtrl', function ($scope, TableFactory, $stateParams, jo
 
     CreateColumns();
 
-    console.log($scope.columns);
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
@@ -35,6 +34,5 @@ app.controller('JoinTableCtrl', function ($scope, TableFactory, $stateParams, jo
     // Sort the values in singleTable so that all the values for a given row are grouped
     CreateRows();
 
-    console.log("ROWS", $scope.instanceArray);
 
 })

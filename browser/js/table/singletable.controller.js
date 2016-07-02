@@ -5,7 +5,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable[0];
-	// $scope.foreignIds = singleTable[1];
     $scope.selectedAll = false;
     $scope.associations = associations;
 
