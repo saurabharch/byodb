@@ -4,7 +4,7 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
-<pre> {{resultOfQuery | json}} </pre>
+<!-- <pre> {{tablesToQuery| json}} </pre> -->
 
 <form ng-submit="getColumnsForTable()" ng-model="select">
   <div class="checkbox">
@@ -17,7 +17,7 @@
 
 
 
-<form ng-if="columnsForQuery.length" ng-submit="runQuery(theDbName)" ng-model="query">
+<form ng-if="columnsForQuery.length" ng-submit="runJoin()" ng-model="query">
   <div ng-repeat="column in columnsForQuery" class="checkbox">
     <p>{{column.tableName}}</p>
     <label ng-repeat="name in column.columns track by $index">

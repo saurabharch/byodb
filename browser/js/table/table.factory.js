@@ -102,5 +102,25 @@ app.factory('TableFactory', function ($http, $stateParams) {
     //     }
     // }
 
+    TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations) {
+
+        var data = {};
+        data.dbName = dbName;
+        data.table1 = table1;
+        data.table2 = arrayOfTables[0];
+        data.arrayOfTables = arrayOfTables;
+        data.selectedColumns = selectedColumns;
+
+        console.log(associations);
+
+        associations.forEach(function(row) {
+            if(row.Table1 === data.table1 && row.Table2 === data.table2) data.alias = row.Alias2; 
+            if(row.Table1 === data.table2 && row.Table2 === data.table1) data.alias = row.Alias1;
+        })
+
+        return $http.put('/api/clientdb/runjoin', data)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

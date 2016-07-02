@@ -10,6 +10,22 @@ var pg = require('pg');
 
 module.exports = router;
 
+router.put('/runjoin', function(req, res, next) {
+    console.log(req.body);
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
+        searchPath: 'knex,public'
+    })
+
+    var table1 = req.body.table1;
+
+    knex.from('Players').innerJoin('Team', 'Players.id', 'Team.PlayerId')
+    .then(function(result) {
+        console.log('RESULT OF THE QUERY', result);
+    })
+})
+
 router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
     var ColumnsNames = [];
 

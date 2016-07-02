@@ -301,25 +301,30 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.resultOfQuery= [];
 
-	$scope.runQuery = function(dbName) {
-		var promisesForQuery = [];
-		var query = $scope.selectedColumns
-		for(var key in query) {
-			promisesForQuery.push(TableFactory.getSingleTable(dbName, key));	
-		}
-		Promise.all(promisesForQuery)
-		.then(function(tables) {
-			tables.forEach(function(table) {
-				$scope.resultOfQuery.push(table);
-				$scope.$evalAsync();
-			})
-		})
-		.then(function() {
-			$scope.resultOfQuery.forEach(function(table) {
-				
-			})
-		})
+	// $scope.runQuery = function(dbName) {
+	// 	var promisesForQuery = [];
+	// 	var query = $scope.selectedColumns
+	// 	for(var key in query) {
+	// 		promisesForQuery.push(TableFactory.getSingleTable(dbName, key));	
+	// 	}
+	// 	Promise.all(promisesForQuery)
+	// 	.then(function(tables) {
+	// 		tables.forEach(function(table) {
+	// 			$scope.resultOfQuery.push(table);
+	// 			$scope.$evalAsync();
+	// 		})
+	// 	})
+	// 	.then(function() {
+	// 		$scope.resultOfQuery.forEach(function(table) {
+
+	// 		})
+	// 	})
+	// }
+
+	$scope.runJoin = function() {
+		TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations);
 	}
+
 
 });
 
