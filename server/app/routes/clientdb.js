@@ -155,7 +155,13 @@ router.get('/:dbName/:tableName', function(req, res, next) {
 
     var findingTable = knex.select().from(req.params.tableName)
 
-    var findingForeignIds = knex(req.params.dbName + "_assoc").where('Relationship1','hasOne').orWhere('Relationship2', 'hasOne')
+    var findingForeignIds = knex(req.params.dbName + "_assoc").where({
+        Relationship1: 'hasOne',
+        Table1: req.params.tableName
+    }).orWhere({
+        Relationship2: 'hasOne',
+        Table2: req.params.tableName
+    })
     .then(function(Table){
         if(Table.length===0){
             return;
@@ -174,6 +180,23 @@ router.get('/:dbName/:tableName', function(req, res, next) {
 
 })
 
+
+router.get('/primary/:dbName/:tblName', function(req, res, next){
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    knex.select('id').from(req.params.tblName)
+    .then(function(result){
+        console.log("!!!!!!!!!!!!!!!",result)
+        res.send(result)
+    })
+    .catch(next);
+
+})
+
 router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
     var knex = require('knex')({
         client: 'pg',
@@ -187,7 +210,6 @@ router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
 
     knex(req.params.tableName).where(req.params.columnkey, numId)
     .then(function(result){
-        console.log("!!!!!!!!!!!",result);
         res.send(result);
     })
 })
@@ -373,7 +395,6 @@ router.post('/:dbName/association', function(req, res, next) {
                                     table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
                                 })
                                 .then(function(result) {
-                                    console.log("========================", result)
                                     res.send(result);
                                 })
                                 .catch(function(err) {
@@ -394,7 +415,6 @@ router.post('/:dbName/association', function(req, res, next) {
                                     table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
                                 })
                                 .then(function(result) {
-                                    console.log("========================", result)
                                     res.send(result);
                                 })
                                 .catch(function(err) {

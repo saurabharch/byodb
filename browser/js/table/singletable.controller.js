@@ -5,80 +5,24 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
 	$scope.singleTable = singleTable[0];
-	$scope.foreignIds = singleTable[1];
-	console.log($scope.foreignIds);
+	// $scope.foreignIds = singleTable[1];
     $scope.selectedAll = false;
     $scope.associations = associations;
 
 
-    // if($scope.associations.length > 0){
-    // 	if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasOne'){
-    // 		if($scope.theTableName !== $scope.associations[0].Table2)
-    // 		$scope.virtualColumn = $scope.associations[0].Alias1
-    // 		$scope.virtualColumnTable = $scope.associations[0].Table2;
-    // 		$scope.virtualColumnKey = $scope.associations[0].Alias2;
-    // 	}else if($scope.associations[0].Relationship2 === 'hasMany' && $scope.associations[0].Relationship1 === 'hasOne'){
-    // 		if($scope.theTableName !== $scope.associations[0].Table1)
-    // 		$scope.virtualColumn = $scope.associations[0].Alias2
-    // 		$scope.virtualColumnTable = $scope.associations[0].Table1;
-    // 		$scope.virtualColumnKey = $scope.associations[0].Alias1;
-    // 	}else if($scope.associations[0].Relationship1 === 'hasMany' && $scope.associations[0].Relationship2 === 'hasMany'){
-    // 		if($scope.theTableName === $scope.associations[0].Table1){
-    // 			$scope.virtualColumn = $scope.associations[0].Alias2
-    // 			$scope.virtualColumnTable = $scope.associations[0].Through;
-    // 			$scope.virtualColumnKey = $scope.associations[0].Alias2;	
-    // 		}else if($scope.theTableName === $scope.associations[0].Table2)
-	   //  		$scope.virtualColumn = $scope.associations[0].Alias1
-	   //  		$scope.virtualColumnTable = $scope.associations[0].Through;
-	   //  		$scope.virtualColumnKey = $scope.associations[0].Alias1;
-    // 	}
-    // }
-
-    function createVirtualColumns(){
-	    if($scope.associations.length > 0){
-	    	$scope.virtualColumns = [];
-	    	$scope.associations.forEach(function(row){
-	    		if(row.Table1 === $scope.theTableName && row.Relationship1 === 'hasMany'){
-    				var virtual = {};
-    				virtual.name = row.Alias1;
-    				if(row.Through){
-    					virtual.table = row.Through;
-    					virtual.columnkey = row.Alias1;
-    				}else{
-    					virtual.table = row.Table2;
-    					virtual.columnkey = row.Alias2;
-    				}
-    				$scope.virtualColumns.push(virtual);
-	    		}else if(row.Table2 === $scope.theTableName && row.Relationship2 === 'hasMany'){
-	    			console.log("IN DIS BETCH")
-	    			var virtual = {};
-	    			virtual.name = row.Alias2;
-	    			if(row.Through){
-	    				virtual.table = row.Through;
-	    				virtual.columnkey = row.Alias2;
-	    			}else{
-	    				virtual.table = row.Table1;
-	    				virtual.columnkey = row.Alias1;
-	    			}
-	    			$scope.virtualColumns.push(virtual);
-	    		}
-	    	})
-	    }
+    function foreignColumnObj(){
+    	var foreignCols = {};
+	    $scope.associations.forEach(function(row){
+	    	if(row.Table1 === $scope.theTableName && row.Relationship1 === 'hasOne'){
+	    		foreignCols[row.Alias1] = row.Table2
+	    	}else if(row.Table2 === $scope.theTableName && row.Relationship2 === 'hasOne'){
+	    		foreignCols[row.Alias2] = row.Table1
+	    	}
+	    })	
+    	$scope.foreignCols = foreignCols;
     }
 
-    createVirtualColumns();
-
-    console.log($scope.virtualColumns);
-
-
-
-
-    // $scope.getPrimaryKeys = function(id, dbName, table, key){
-    // 	TableFactory.getPrimaryKeys(id, dbName, table, key)
-    // 	.then(function(result){
-    // 		$state.go("Table.Join", {rowId: id, dbName: dbName, table: table, key: key});
-    // 	})
-    // }
+    foreignColumnObj();
 
 	$scope.currentTable = $stateParams;
 
@@ -216,41 +160,62 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		}
 	}
 
-
 	CreateColumns();
 
-	console.log("ROWS", $scope.singleTable);
+
+    function createVirtualColumns(){
+	    if($scope.associations.length > 0){
+	    	$scope.virtualColumns = [];
+	    	$scope.associations.forEach(function(row){
+	    		if(row.Table1 === $scope.theTableName && row.Relationship1 === 'hasMany'){
+    				var virtual = {};
+    				virtual.name = row.Alias1;
+    				if(row.Through){
+    					virtual.table = row.Through;
+    					virtual.columnkey = row.Alias1;
+    				}else{
+    					virtual.table = row.Table2;
+    					virtual.columnkey = row.Alias2;
+    				}
+    				$scope.virtualColumns.push(virtual);
+	    		}else if(row.Table2 === $scope.theTableName && row.Relationship2 === 'hasMany'){
+	    			var virtual = {};
+	    			virtual.name = row.Alias2;
+	    			if(row.Through){
+	    				virtual.table = row.Through;
+	    				virtual.columnkey = row.Alias2;
+	    			}else{
+	    				virtual.table = row.Table1;
+	    				virtual.columnkey = row.Alias1;
+	    			}
+	    			$scope.virtualColumns.push(virtual);
+	    		}
+	    	})
+	    }
+    }
+
+    createVirtualColumns();
+
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
-    	var alias;
-    	if($scope.associations.length > 0){
-	        if($scope.associations[0].Relationship1 === 'hasOne'){
-	        	alias = $scope.associations[0].Alias1;
-	        }else if($scope.associations[0].Relationship2 === 'hasOne' && $scope.associations[0].Relationship1 === 'hasMany'){
-	        	alias = $scope.associations[0].Alias2;
-	        }	
-    	}
-        $scope.instanceArray = [];
+    	$scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
             var rowValues = [];
+            var rowObj = {};
+            
             for (var prop in row) {
-            	console.log("PROP", prop);
-            	if ($scope.associations.length > 0 && prop === alias && row[prop] === null) {
-            		row[prop] = []
-            		$scope.foreignIds.forEach(function(id){
-            			row[prop].push(id.id)
-            		})
-            		// rowValues.push(row[prop])
-            	}
-                if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
+            	if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push({
+            		col: prop,
+            		value: row[prop]
+            	})
             }
-            $scope.instanceArray.push(rowValues);
+        	rowObj.values = rowValues;
+            $scope.instanceArray.push(rowObj);
         })
     }
 
     // Sort the values in singleTable so that all the values for a given row are grouped
     CreateRows();
-
     //sends the filtering query and then re renders the table with filtered data
     $scope.filter = function(dbName, tableName, data) {
         TableFactory.filter(dbName, tableName, data)
@@ -261,6 +226,11 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     }
 
 
+    $scope.checkForeign = function (col){
+    	return $scope.foreignCols.hasOwnProperty(col);
+    }
+
+    $scope.findPrimary = TableFactory.findPrimary;
 	//************ Important *********
 		// Make sure to update the row values BEFORE the column name
 			// The rowValsToUpdate array stores the values of the ORIGINAL column names so if the column name is updated after the row value, we still have reference to which column the row value references

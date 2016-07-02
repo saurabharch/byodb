@@ -83,5 +83,10 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.findPrimary = function(dbName, tblName){
+        return $http.get('/api/clientdb/primary/'+dbName+'/'+tblName)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

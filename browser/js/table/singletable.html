@@ -1,4 +1,4 @@
-<pre> {{associations | json}} </pre>
+<!-- <pre> {{associations | json}} </pre> -->
 <!-- <div>{{singleTable}}</div><br> -->
 <!-- <div>{{theDbName}}</div><br> -->
 <!-- <div>{{allTables}}</div><br> -->
@@ -63,12 +63,13 @@
                         <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                         <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
                     </td>
-                    <td>{{row[0]}}</td>
-                    <td ng-repeat="value in row track by $index" ng-if="$index >= myIndex">
-                        <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
+                    <td>{{row.values[0].value}}</td>
+                    <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">
+                        <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
+                        <button class="glyphicon glyphicon-th" ng-if="checkForeign(value.col)" ng-click="findPrimary(theDbName, foreignCols[value.col])"></button>
                     </td>
                     <td ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
-                        <a ui-sref="Table.Join({rowId:row[0], dbName: dbName, tableName: vcolumn.table, key: vcolumn.columnkey })">{{vcolumn.name}}</a>
+                        <a ui-sref="Table.Join({rowId:row.values[0].value, dbName: dbName, tableName: vcolumn.table, key: vcolumn.columnkey })">{{vcolumn.name}}</a>
                     </td>
                     <td></td>
                 </tr>
