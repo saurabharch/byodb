@@ -8,8 +8,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     $scope.selectedAll = false;
     $scope.associations = associations;
 
-	console.log(singleTable);
-
 	$scope.currentTable = $stateParams;
 
 	$scope.myIndex = 1;
@@ -97,7 +95,6 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.addColumn = function(db, table){
 		var colNums = $scope.columns.join(' ').match(/\d+/g);
-		console.log(colNums)
 		if(colNums){
 			var sortedNums = colNums.sort(function(a, b){return b - a})
 			var numInNew = Number(sortedNums[0]) + 1;
@@ -242,4 +239,71 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 		})
 	}
 
+	///////////////////////////////Querying Stuff/////////////////////////////////////////////////
+
+	$scope.currentTableAssociations = [];
+
+	$scope.tablesToQuery = [];
+
+	associations.forEach(function(row){
+		if(row.Table1 === $scope.theTableName && $scope.currentTableAssociations.indexOf(row.Table2) == -1){
+			$scope.currentTableAssociations.push(row.Table2);
+		}
+		else if(row.Table2 === $scope.theTableName && $scope.currentTableAssociations.indexOf(row.Table1) == -1){
+			$scope.currentTableAssociations.push(row.Table1);	
+		} 
+	})
+
+	$scope.getAssociated = function(val){
+		if($scope.tablesToQuery.indexOf($scope.currentTableAssociations[val]) === -1){
+			$scope.tablesToQuery.push($scope.currentTableAssociations[val])
+		} else {
+			var i = $scope.tablesToQuery.indexOf($scope.currentTableAssociations[val]);
+			$scope.tablesToQuery.splice(i,1)
+		}
+	}
+	
+	$scope.columnsForQuery = [];
+
+	$scope.getColumnsForTable = function(){
+		var promisesForColumns = [];
+		$scope.tablesToQuery.forEach(function(tableName){
+			return promisesForColumns.push(TableFactory.getColumnsForTable($scope.theDbName, tableName))
+		})
+		Promise.all(promisesForColumns)
+		.then(function(columns){
+			$scope.columnsForQuery.push(columns[0]);
+			$scope.$evalAsync()
+		})
+
+	}
+
+	$scope.logFunc = function(val){
+		console.log(val)
+	}
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

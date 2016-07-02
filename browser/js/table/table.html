@@ -1,4 +1,3 @@
-<pre> {{allColumns}} </pre>
 <div class="container">
     <div class="row btn">
         <button ng-hide="$state.includes('Table.Single')" class="btn btn-default" ui-sref="Table.create">Add Table</button>
@@ -12,44 +11,6 @@
 </div>
 <br>
 <br>
-
-<div>
-  <form ng-model="query" ng-submit=""> 
-    <span>Query your data !</span>
-    <select ng-model="query.table1">
-      <option ng-if="table.table_name !== associationTable" ng-repeat="table in allTables.rows">{{ table.table_name }}</option>
-    </select>
-    <select ng-model="query.condition">
-      <option>WHERE</option>
-      <option>WHERE NOT</option>
-      <option>WHERE BETWEEN</option>
-      <option>WHERE NOT BETWEEN</option>
-    </select>
-    <select ng-change="columnDataType()" ng-show="!wherebetween(query.condition)" ng-model="query.column">
-      <option ng-show="column.table_name === query.table1" ng-repeat="column in allColumns">{{ column.column_name }}</option>
-    </select>
-    <select ng-change="columnDataType()" ng-show="wherebetween(query.condition)" ng-model="query.column">
-      <option ng-show="column.table_name === query.table1 && column.data_type === 'integer' || column.data_type ==='float'" ng-repeat="column in allColumns">{{ column.column_name }}</option>
-    </select>
-    {{query.condition}}
-    <select ng-model="query.comparator" ng-hide="query.condition == 'WHERE BETWEEN' || query.condition == 'WHERE NOT BETWEEN'">
-    {{type}}
-      <option ng-hide="query.condition === 'WHERE BETWEEN' || query.condition === 'WHERE NOT BETWEEN'">=</option>
-      <option ng-hide="type === 'boolean' || type === 'text'"><</option>
-      <option ng-hide="type === 'boolean' || type === 'text'">></option>
-      <option ng-hide="type === 'boolean' || type === 'text'"><=</option>
-      <option ng-hide="type === 'boolean' || type === 'text'">>=</option>
-      <option ng-show="type === 'boolean' || type === 'text'">Contains</option>
-      <option ng-show="type === 'text' || type === 'float'">Includes</option>
-      <option ng-show="type === 'text' || type === 'float'">Does Not Include</option>
-      <option ng-show="type === 'text' || type === 'float'">Starts With</option>
-      <option ng-show="type === 'text' || type === 'float'">Starts With</option>
-    </select>
-    <input ng-model="query.input1"></input>
-    <input ng-if="wherebetween(query.condition)" ng-model="query.input2"></input>
-    <button type="submit" class="btn btn-primary">Submit query</button>
-  </form>
-</div>
 
 <br>
 <br>

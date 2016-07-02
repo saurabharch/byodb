@@ -84,5 +84,14 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.submitQuery = function(queryObj) {
+        console.log(queryObj)
+    }
+
+    TableFactory.getColumnsForTable = function(dbName, tableName){
+        return $http.get('/api/clientdb/columnsfortable/' + dbName + '/' + tableName)
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })

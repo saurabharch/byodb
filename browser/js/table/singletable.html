@@ -4,6 +4,29 @@
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 
+{{columnsForQuery}}
+
+<form ng-submit="getColumnsForTable()" ng-model="select">
+  <div class="checkbox">
+    <label ng-repeat="table in currentTableAssociations track by $index">
+      <input value="table" ng-model="select.table1" ng-click="getAssociated($index)" type="checkbox"> {{table}}
+    </label>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
+<form ng-submit="logFunc(query)" ng-model="query">
+  <div ng-repeat="column in columnsForQuery" class="checkbox">
+    <p>{{column.tableName}}</p>
+    <label ng-repeat="name in column.columns">
+      <input value="table" ng-model="select.table1" ng-click="getAssociated($index)" type="checkbox"> {{name}}
+    </label>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
 
 <div>
   <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 

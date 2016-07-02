@@ -10,6 +10,35 @@ var pg = require('pg');
 
 module.exports = router;
 
+router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
+    var ColumnsNames = [];
+
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            console.log('ERROR1');
+            res.send('could not connect to postgres');
+        }
+
+            var TablesNames = [];
+            client.query("SELECT column_name FROM information_schema.columns WHERE table_name = \'" + req.params.tableName +"\'", function(err, result) {
+            if (err) {
+                console.log(err);
+                res.send('error running query');
+            }
+            var ColumnsNames = [];
+            result.rows.forEach(function(obj) {
+                ColumnsNames.push(obj.column_name)
+            })
+            res.send({tableName: req.params.tableName, columns: ColumnsNames});
+            client.end();
+        })
+    })
+})
 
 
 //get all the information from the association table

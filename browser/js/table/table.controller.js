@@ -12,6 +12,8 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 
 	$scope.associationTable = $stateParams.dbName + '_assoc';
 
+	$scope.numTables = $scope.allTables.rows.length;
+
 	$scope.add = function() {
 		$scope.columnArray.push('1');
 	}
@@ -36,12 +38,38 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 	}
 
 	$scope.columnDataType = function() {
-		console.log("HELLO JENNA IS THE BEST");
 		$scope.allColumns.forEach(function(obj) {
 			if(obj.table_name === $scope.query.table1 && obj.column_name === $scope.query.column) $scope.type = obj.data_type;
 		})
 	}
 
-	// $scope.between
+	$scope.selectedAssoc = {};
+
+	// $scope.getAssociated = function(tableName) {
+	// 	$scope.associations.forEach(function(row){
+	// 		if(!$scope.selectedAssoc[tableName]){ 
+	// 			$scope.selectedAssoc[tableName] = [];
+	// 		}
+	// 		if(row.Table1 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table2) == -1){
+	// 			$scope.selectedAssoc[tableName].push(row.Table2);
+	// 		}
+	// 		else if(row.Table2 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table1) == -1){
+	// 			$scope.selectedAssoc[tableName].push(row.Table1);	
+	// 		} 
+	// 	})
+	// }
+
+	// $scope.currentTableAssociations = [];
+
+	// associations.forEach(function(row){
+	// 	if(row.Table1 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table2) == -1){
+	// 		$scope.currentTableAssociations.push(row.Table2);
+	// 	}
+	// 	else if(row.Table2 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table1) == -1){
+	// 		$scope.selectedAssoc[tableName].push(row.Table1);	
+	// 	} 
+	// })
+
+	$scope.submitQuery = TableFactory.submitQuery;
 
 });
