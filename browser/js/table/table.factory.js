@@ -55,7 +55,6 @@ app.factory('TableFactory', function ($http, $stateParams) {
     }
 
     TableFactory.deleteTable = function(currentTable) {
-        console.log(currentTable);
         return $http.delete('/api/clientdb/' + currentTable.dbName + '/' + currentTable.tableName)
     }
 
@@ -76,6 +75,16 @@ app.factory('TableFactory', function ($http, $stateParams) {
 
      TableFactory.getAllAssociations = function(dbName) {
         return $http.get('/api/clientdb/allassociations/' + dbName)
+        .then(resToData);
+    }
+
+    TableFactory.getPrimaryKeys = function(id, dbName, tableName, columnkey){
+        return $http.get('/api/clientdb/' + dbName + '/' + tableName + '/' + id + "/" + columnkey)
+        .then(resToData);
+    }
+
+    TableFactory.findPrimary = function(dbName, tblName){
+        return $http.get('/api/clientdb/primary/'+dbName+'/'+tblName)
         .then(resToData);
     }
 

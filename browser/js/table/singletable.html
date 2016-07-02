@@ -1,74 +1,86 @@
-<pre> {{associations | json}} </pre>
+<!-- <pre> {{associations | json}} </pre> -->
 <!-- <div>{{singleTable}}</div><br> -->
 <!-- <div>{{theDbName}}</div><br> -->
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
-
-
-<div>
-  <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)"> 
-    <span>Filter {{currentTable.tableName}} where</span>
-    <select ng-model="data.column">
-      <option ng-repeat="column in columns">{{ column }}</option>
-    </select>
-    <select ng-model="data.comparator">
-      <option>=</option>
-      <option><</option>
-      <option>></option>
-      <option><=</option>
-      <option>>=</option>
-      <option><></option>
-    </select>
-    <input ng-model="data.value"></input>
-    <button type="submit" class="btn btn-primary">Submit query</button>
-  </form>
+<!-- <div>{{instanceArray}}</div><br> -->
+<div class="container">
+    <div class="row">
+        <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
+            <span>Filter {{currentTable.tableName}} where</span>
+            <select ng-model="data.column">
+                <option ng-repeat="column in columns">{{ column }}</option>
+            </select>
+            <select ng-model="data.comparator">
+                <option>=</option>
+                <option><</option>
+                <option>></option>
+                <option><=</option>
+                <option>>=</option>
+                <option><></option>
+            </select>
+            <input ng-model="data.value"></input>
+            <button type="submit" class="btn btn-primary">Submit query</button>
+        </form>
+    </div>
 </div>
-<button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
-<button ng-click="newRow(theDbName, theTableName, instanceArray)" type="submit" class="btn btn-default">Add Row</button>
-<button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
-
-
-<table class="table table-bordered">
-    <thead>
-      <tr>
-        <th ng-show="showDelete">
-          <button type="button" class="btn btn-danger" ng-click="deleteSelected(theDbName, theTableName, instanceArray)">Delete Selected</button>
-          <label> Select All <input type="checkbox" ng-model="selectedAll" ng-click="selectAll(instanceArray)"></label>
-        </th>
-        <th>id</th>
-        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
-            <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
-            <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
-        </th>
-        <th>
-          <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="row in instanceArray">
-        <td ng-show="showDelete">
-          <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
-          <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
-        </td>
-        <td>{{row[0]}}</td>
-        <td ng-repeat="value in row track by $index" ng-if="$index >= myIndex">
-            <input placeholder="{{value}}" ng-model='newCell' type="text" class="form-control" ng-keyup="updateRow(value, newCell, row, $index)">
-        </td>
-        <td></td>
-      </tr>
-    </tbody>
-</table>
-
-
-<button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
-
-    <button type="button" class="btn btn-danger" ng-click="deleteDb()">Delete table</button>
-
-
-
-
-
+<div class="container">
+    <div class="row">
+        <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
+        <button ng-click="newRow(theDbName, theTableName, instanceArray)" type="submit" class="btn btn-default">Add Row</button>
+        <button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
+    </div>
+</div>
+<div class="container">
+    <br>
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th ng-show="showDelete">
+                        <button type="button" class="btn btn-danger" ng-click="deleteSelected(theDbName, theTableName, instanceArray)">Delete Selected</button>
+                        <label> Select All
+                            <input type="checkbox" ng-model="selectedAll" ng-click="selectAll(instanceArray)">
+                        </label>
+                    </th>
+                    <th>id</th>
+                    <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
+                        <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
+                        <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
+                    </th>
+                    <th ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
+                        <p>{{ vcolumn.name }}
+                            <p>
+                    </th>
+                    <th>
+                        <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in instanceArray">
+                    <td ng-show="showDelete">
+                        <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
+                        <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
+                    </td>
+                    <td>{{row.values[0].value}}</td>
+                    <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">
+                        <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
+                        <button class="glyphicon glyphicon-th" ng-if="checkForeign(value.col)" ng-click="findPrimary(theDbName, foreignCols[value.col])"></button>
+                    </td>
+                    <td ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
+                        <a ui-sref="Table.Join({rowId:row.values[0].value, dbName: dbName, tableName: vcolumn.table, key: vcolumn.columnkey })">{{vcolumn.name}}</a>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
+        <button type="button" class="btn btn-danger" ng-click="deleteDb()">Delete table</button>
+    </div>
+</div>
 <!-- <div ng-controller="DeleteDbInstanceCtrl">
     <script type="text/ng-template" id="deleteTableContent.html">
         <div class="modal-header">
@@ -93,6 +105,3 @@
     </script>
 
 </div> -->
-
-
-

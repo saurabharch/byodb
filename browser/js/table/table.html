@@ -28,7 +28,7 @@
 <br>
 <br>
 
-<div class="container" ng-hide="$state.includes('Table.Single')">
+<div class="container" ng-hide="$state.includes('Table.Single')" ng-hide="$state.includes('Table.Join')">
     <div class="row">
         <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
             <span>Table 1</span>

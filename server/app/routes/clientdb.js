@@ -33,7 +33,6 @@ router.get('/allassociations/:dbName', function(req, res, next) {
         .then(function() {
             knex.select().table(req.params.dbName + '_assoc')
                 .then(function(result) {
-                    console.log(result);
                     res.send(result);
                 })
         })
@@ -51,7 +50,6 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
             this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
         })
         .then(function(result) {
-            console.log(result);
             res.send(result);
         })
 })
@@ -155,11 +153,65 @@ router.get('/:dbName/:tableName', function(req, res, next) {
         searchPath: 'knex,public'
     });
 
-    knex.select().from(req.params.tableName)
-        .then(function(foundTable) {
-            res.send(foundTable)
-        })
-        .catch(next);
+    var findingTable = knex.select().from(req.params.tableName)
+
+    var findingForeignIds = knex(req.params.dbName + "_assoc").where({
+        Relationship1: 'hasOne',
+        Table1: req.params.tableName
+    }).orWhere({
+        Relationship2: 'hasOne',
+        Table2: req.params.tableName
+    })
+    .then(function(Table){
+        if(Table.length===0){
+            return;
+        }else{
+            if(Table[0].Relationship1 === 'hasOne'){
+                return knex.select('id').from(Table[0].Table2)
+            }else{
+                return knex.select('id').from(Table[0].Table1)
+            }   
+        }
+    })
+     Promise.all([findingTable, findingForeignIds])
+    .then(function(result){
+        res.send(result);
+    })
+
+})
+
+
+router.get('/primary/:dbName/:tblName', function(req, res, next){
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    knex.select('id').from(req.params.tblName)
+    .then(function(result){
+        console.log("!!!!!!!!!!!!!!!",result)
+        res.send(result)
+    })
+    .catch(next);
+
+})
+
+router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    var numId = Number(req.params.id);
+
+    console.log(req.params);
+
+    knex(req.params.tableName).where(req.params.columnkey, numId)
+    .then(function(result){
+        res.send(result);
+    })
 })
 
 //route to query a single table (filter)
@@ -343,7 +395,6 @@ router.post('/:dbName/association', function(req, res, next) {
                                     table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
                                 })
                                 .then(function(result) {
-                                    console.log("========================", result)
                                     res.send(result);
                                 })
                                 .catch(function(err) {
@@ -364,7 +415,6 @@ router.post('/:dbName/association', function(req, res, next) {
                                     table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
                                 })
                                 .then(function(result) {
-                                    console.log("========================", result)
                                     res.send(result);
                                 })
                                 .catch(function(err) {
