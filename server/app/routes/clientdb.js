@@ -27,7 +27,7 @@ router.put('/runjoin', function(req, res, next) {
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
     knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select('*')
         .then(function(result) {
-            console.log('RESULT OF THE QUERY', result);
+            res.send(result);
         })
 })
 

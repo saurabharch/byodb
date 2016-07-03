@@ -121,9 +121,9 @@ app.factory('TableFactory', function ($http, $stateParams) {
                     data.table2 = row.Table2;   
                 }
             }
-            else if(row.Table1 === data.table2 && row.Table2 === data.table1){
-                data.alias = row.Alias2;
-                if(row.Relationship1 === 'hasOne'){
+            else if(row.Table1 === data.table2 && row.Table2 === table1){
+                data.alias = row.Alias1;
+                if(row.Relationship1 === 'hasMany'){
                     data.table1 = row.Table1;
                     data.table2 = row.Table2;
                 }
@@ -135,6 +135,7 @@ app.factory('TableFactory', function ($http, $stateParams) {
         })
 
         return $http.put('/api/clientdb/runjoin', data)
+        .then(resToData);
     }
 
     TableFactory.getPrimaryKeys = function(id, dbName, tableName, columnkey){

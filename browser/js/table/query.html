@@ -1,0 +1,60 @@
+<!-- <pre> {{queryResult | json}} </pre> -->
+
+<div>
+    <div class="container">
+        <div class="row">
+            <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
+                <span>Filter {{currentTable.tableName}} where</span>
+                <select ng-model="data.column">
+                    <option ng-repeat="column in columns">{{ column }}</option>
+                </select>
+                <select ng-model="data.comparator">
+                    <option>=</option>
+                    <option>
+                        <</option>
+                            <option>></option>
+                            <option>
+                                <=</option>
+                                    <option>>=</option>
+                                    <option>
+                                        <>
+                                    </option>
+                </select>
+                <input ng-model="data.value"></input>
+                <button type="submit" class="btn btn-primary">Submit query</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <div class="container">
+        <br>
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th ng-repeat="column in columnsforQuery track by $index" ng-if="$index >= myIndex">
+                            <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="row in instanceQueryArray">
+                        <td ng-show="showDelete">
+                            <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
+                            <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
+                        </td>
+                        <td>{{row.values[0].value}}</td>
+                        <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">
+                            <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
+            <button type="button" class="btn btn-danger" ng-click="deleteDb()">Delete table</button>
+        </div>
+    </div>
+</div>
