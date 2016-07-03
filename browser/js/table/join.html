@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th ng-repeat="column in columns track by $index">{{column}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in instanceArray">
+                    <td ng-repeat="value in row track by $index">{{value}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

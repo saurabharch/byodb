@@ -30,6 +30,17 @@ app.config(function ($stateProvider) {
         }
     });
 
+    $stateProvider.state('Table.Join', {
+        url: '/:tableName/:rowId/:key/join',
+        templateUrl: 'js/table/join.html',
+        controller: 'JoinTableCtrl',
+        resolve: {
+            joinTable: function(TableFactory, $stateParams) {
+                return TableFactory.getPrimaryKeys($stateParams.rowId, $stateParams.dbName, $stateParams.tableName, $stateParams.key);
+            }
+        }
+    });
+
     $stateProvider.state('Table.create', {
         url: '/createtable',
         templateUrl: 'js/table/createtable.html',

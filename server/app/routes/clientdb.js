@@ -26,9 +26,9 @@ router.put('/runjoin', function(req, res, next) {
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
     knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select('*')
-    .then(function(result) {
-        console.log('RESULT OF THE QUERY', result);
-    })
+        .then(function(result) {
+            console.log('RESULT OF THE QUERY', result);
+        })
 })
 
 router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
@@ -45,8 +45,8 @@ router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
             res.send('could not connect to postgres');
         }
 
-            var TablesNames = [];
-            client.query("SELECT column_name FROM information_schema.columns WHERE table_name = \'" + req.params.tableName +"\'", function(err, result) {
+        var TablesNames = [];
+        client.query("SELECT column_name FROM information_schema.columns WHERE table_name = \'" + req.params.tableName + "\'", function(err, result) {
             if (err) {
                 console.log(err);
                 res.send('error running query');
@@ -55,7 +55,7 @@ router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
             result.rows.forEach(function(obj) {
                 ColumnsNames.push(obj.column_name)
             })
-            res.send({tableName: req.params.tableName, columns: ColumnsNames});
+            res.send({ tableName: req.params.tableName, columns: ColumnsNames });
             client.end();
         })
     })
@@ -119,8 +119,8 @@ router.get('/getallcolumns/:dbName', function(req, res, next) {
             res.send('could not connect to postgres');
         }
 
-            var TablesNames = [];
-            client.query("SELECT column_name, table_name, data_type FROM information_schema.columns WHERE table_schema = 'public'", function(err, result) {
+        var TablesNames = [];
+        client.query("SELECT column_name, table_name, data_type FROM information_schema.columns WHERE table_schema = 'public'", function(err, result) {
             if (err) {
                 console.log(err);
                 res.send('error running query');
@@ -235,11 +235,65 @@ router.get('/:dbName/:tableName', function(req, res, next) {
         searchPath: 'knex,public'
     });
 
-    knex.select().from(req.params.tableName)
-        .then(function(foundTable) {
-            res.send(foundTable)
+    var findingTable = knex.select().from(req.params.tableName)
+
+    var findingForeignIds = knex(req.params.dbName + "_assoc").where({
+            Relationship1: 'hasOne',
+            Table1: req.params.tableName
+        }).orWhere({
+            Relationship2: 'hasOne',
+            Table2: req.params.tableName
+        })
+        .then(function(Table) {
+            if (Table.length === 0) {
+                return;
+            } else {
+                if (Table[0].Relationship1 === 'hasOne') {
+                    return knex.select('id').from(Table[0].Table2)
+                } else {
+                    return knex.select('id').from(Table[0].Table1)
+                }
+            }
+        })
+    Promise.all([findingTable, findingForeignIds])
+        .then(function(result) {
+            res.send(result);
+        })
+
+})
+
+
+router.get('/primary/:dbName/:tblName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    knex.select('id').from(req.params.tblName)
+        .then(function(result) {
+            console.log("!!!!!!!!!!!!!!!", result)
+            res.send(result)
         })
         .catch(next);
+
+})
+
+router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+
+    var numId = Number(req.params.id);
+
+    console.log(req.params);
+
+    knex(req.params.tableName).where(req.params.columnkey, numId)
+        .then(function(result) {
+            res.send(result);
+        })
 })
 
 //route to query a single table (filter)
@@ -378,7 +432,19 @@ router.post('/:dbName/association', function(req, res, next) {
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     });
-
+    //creates the association table -- Named using DBName_assoc
+    // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
+    //         table.increments();
+    //         table.string('Table1');
+    //         table.string('Relationship1');
+    //         table.string('Alias1');
+    //         table.string('Table2');
+    //         table.string('Relationship2');
+    //         table.string('Alias2');
+    //         table.string('Through');
+    //     })
+    //     //inserts association data into the association table
+    //     .then(function() {
     return knex(req.params.dbName + '_assoc').insert({
             Table1: req.body.table1.table_name,
             Alias1: req.body.alias1,
@@ -437,6 +503,7 @@ router.post('/:dbName/association', function(req, res, next) {
                                 console.log(err);
                             })
                     }
+
                 })
                 //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
             if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
@@ -449,7 +516,6 @@ router.post('/:dbName/association', function(req, res, next) {
                     })
                     .catch(next);
             }
-            // })
         })
         .catch(next);
 })

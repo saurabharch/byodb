@@ -4,15 +4,32 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	$scope.theDbName = $stateParams.dbName;
 	$scope.theTableName = $stateParams.tableName;
-	$scope.singleTable = singleTable;
+	$scope.singleTable = singleTable[0];
     $scope.selectedAll = false;
     $scope.associations = associations;
+
+
+
+    function foreignColumnObj(){
+    	var foreignCols = {};
+	    $scope.associations.forEach(function(row){
+	    	if(row.Table1 === $scope.theTableName && row.Relationship1 === 'hasOne'){
+	    		foreignCols[row.Alias1] = row.Table2
+	    	}else if(row.Table2 === $scope.theTableName && row.Relationship2 === 'hasOne'){
+	    		foreignCols[row.Alias2] = row.Table1
+	    	}
+	    })	
+    	$scope.foreignCols = foreignCols;
+    }
+
+    foreignColumnObj();
+
 
 	$scope.currentTable = $stateParams;
 
 	$scope.myIndex = 1;
 
-	$scope.ids = singleTable.map(function(row){
+	$scope.ids = $scope.singleTable.map(function(row){
 		return row.id;
 	})
 
@@ -105,7 +122,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
 			})
 			.then(function(theTable){
-				$scope.singleTable = theTable;
+				$scope.singleTable = theTable[0];
 				CreateColumns();
 				CreateRows();
 			})
@@ -117,7 +134,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 				return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName)
 			})
 			.then(function(theTable){
-				$scope.singleTable = theTable;
+				$scope.singleTable = theTable[0];
 				CreateColumns();
 				CreateRows();
 			})
@@ -146,21 +163,60 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 
 	CreateColumns();
 
+
+    function createVirtualColumns(){
+	    if($scope.associations.length > 0){
+	    	$scope.virtualColumns = [];
+	    	$scope.associations.forEach(function(row){
+	    		if(row.Table1 === $scope.theTableName && row.Relationship1 === 'hasMany'){
+    				var virtual = {};
+    				virtual.name = row.Alias1;
+    				if(row.Through){
+    					virtual.table = row.Through;
+    					virtual.columnkey = row.Alias1;
+    				}else{
+    					virtual.table = row.Table2;
+    					virtual.columnkey = row.Alias2;
+    				}
+    				$scope.virtualColumns.push(virtual);
+	    		}else if(row.Table2 === $scope.theTableName && row.Relationship2 === 'hasMany'){
+	    			var virtual = {};
+	    			virtual.name = row.Alias2;
+	    			if(row.Through){
+	    				virtual.table = row.Through;
+	    				virtual.columnkey = row.Alias2;
+	    			}else{
+	    				virtual.table = row.Table1;
+	    				virtual.columnkey = row.Alias1;
+	    			}
+	    			$scope.virtualColumns.push(virtual);
+	    		}
+	    	})
+	    }
+    }
+
+    createVirtualColumns();
+
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
-        $scope.instanceArray = [];
+    	$scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
             var rowValues = [];
+            var rowObj = {};
+            
             for (var prop in row) {
-                if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push(row[prop])
+            	if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push({
+            		col: prop,
+            		value: row[prop]
+            	})
             }
-            $scope.instanceArray.push(rowValues)
+        	rowObj.values = rowValues;
+            $scope.instanceArray.push(rowObj);
         })
     }
 
     // Sort the values in singleTable so that all the values for a given row are grouped
     CreateRows();
-
     //sends the filtering query and then re renders the table with filtered data
     $scope.filter = function(dbName, tableName, data) {
         TableFactory.filter(dbName, tableName, data)
@@ -171,6 +227,11 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
     }
 
 
+    $scope.checkForeign = function (col){
+    	return $scope.foreignCols.hasOwnProperty(col);
+    }
+
+    $scope.findPrimary = TableFactory.findPrimary;
 	//************ Important *********
 		// Make sure to update the row values BEFORE the column name
 			// The rowValsToUpdate array stores the values of the ORIGINAL column names so if the column name is updated after the row value, we still have reference to which column the row value references

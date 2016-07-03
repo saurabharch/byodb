@@ -12,7 +12,6 @@ app.factory('TableFactory', function ($http, $stateParams) {
     }
 
     TableFactory.getSingleTable = function(dbName, tableName){
-        console.log('HELLO');
         return $http.get('/api/clientdb/' + dbName + '/' + tableName)
         .then(resToData)
     }
@@ -56,7 +55,6 @@ app.factory('TableFactory', function ($http, $stateParams) {
     }
 
     TableFactory.deleteTable = function(currentTable) {
-        console.log(currentTable);
         return $http.delete('/api/clientdb/' + currentTable.dbName + '/' + currentTable.tableName)
     }
 
@@ -103,14 +101,11 @@ app.factory('TableFactory', function ($http, $stateParams) {
     // }
 
     TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations) {
-        console.log('made it to factory')
         var data = {};
         data.dbName = dbName;
         data.table2 = arrayOfTables[0];
         data.arrayOfTables = arrayOfTables;
         data.selectedColumns = selectedColumns;
-
-        console.log(associations);
 
         // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
 
@@ -140,6 +135,15 @@ app.factory('TableFactory', function ($http, $stateParams) {
         })
 
         return $http.put('/api/clientdb/runjoin', data)
+    }
+
+    TableFactory.getPrimaryKeys = function(id, dbName, tableName, columnkey){
+        return $http.get('/api/clientdb/' + dbName + '/' + tableName + '/' + id + "/" + columnkey)
+        .then(resToData);
+    }
+
+    TableFactory.findPrimary = function(dbName, tblName){
+        return $http.get('/api/clientdb/primary/'+dbName+'/'+tblName)
         .then(resToData);
     }
 
