@@ -34,6 +34,12 @@ app.config(function ($stateProvider) {
         url: '/createtable',
         templateUrl: 'js/table/createtable.html',
         controller: 'TableCtrl'
+    });
+
+    $stateProvider.state('Table.query', {
+        url: '/queryresult',
+        templateUrl: 'js/table/query.html',
+        controller: 'QueryCtrl'
     });     
 
 });

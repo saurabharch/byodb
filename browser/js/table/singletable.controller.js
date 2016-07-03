@@ -322,6 +322,7 @@ app.controller('SingleTableCtrl', function ($scope, TableFactory, $stateParams, 
 	// }
 
 	$scope.runJoin = function() {
+		// dbName, table1, arrayOfTables, selectedColumns, associations
 		TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations);
 	}
 

@@ -103,19 +103,40 @@ app.factory('TableFactory', function ($http, $stateParams) {
     // }
 
     TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations) {
-
+        console.log('made it to factory')
         var data = {};
         data.dbName = dbName;
-        data.table1 = table1;
         data.table2 = arrayOfTables[0];
         data.arrayOfTables = arrayOfTables;
         data.selectedColumns = selectedColumns;
 
         console.log(associations);
 
+        // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
+
         associations.forEach(function(row) {
-            if(row.Table1 === data.table1 && row.Table2 === data.table2) data.alias = row.Alias2; 
-            if(row.Table1 === data.table2 && row.Table2 === data.table1) data.alias = row.Alias1;
+            if(row.Table1 === table1 && row.Table2 === data.table2){
+                data.alias = row.Alias1;
+                if(row.Relationship1 === 'hasOne'){
+                    data.table1 = row.Table2;
+                    data.table2 = row.Table1;
+                }
+                else{
+                    data.table1 = row.Table1;
+                    data.table2 = row.Table2;   
+                }
+            }
+            else if(row.Table1 === data.table2 && row.Table2 === data.table1){
+                data.alias = row.Alias2;
+                if(row.Relationship1 === 'hasOne'){
+                    data.table1 = row.Table1;
+                    data.table2 = row.Table2;
+                }
+                else{
+                    data.table1 = row.Table2;
+                    data.table2 = row.Table1;   
+                }
+            }
         })
 
         return $http.put('/api/clientdb/runjoin', data)
