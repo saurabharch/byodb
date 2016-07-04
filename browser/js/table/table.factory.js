@@ -78,6 +78,66 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.getAllColumns = function(dbName) {
+        return $http.get('/api/clientdb/getallcolumns/' + dbName)
+        .then(resToData);
+    }
+
+    TableFactory.submitQuery = function(queryObj) {
+        console.log(queryObj)
+    }
+
+    TableFactory.getColumnsForTable = function(dbName, tableName){
+        return $http.get('/api/clientdb/columnsfortable/' + dbName + '/' + tableName)
+        .then(resToData);
+    }
+
+    // TableFactory.runQuery = function(dbName, query) {
+    //     console.log(query);
+    //     var promises = [];
+    //     for(var key in query) {
+    //         promises.push($http.get('/api/clientdb/' + dbName + '/' + key))
+    //     }
+    // }
+
+    TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations) {
+        var data = {};
+        data.dbName = dbName;
+        data.table2 = arrayOfTables[0];
+        data.arrayOfTables = arrayOfTables;
+        data.selectedColumns = selectedColumns;
+
+        // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
+
+        associations.forEach(function(row) {
+            if(row.Table1 === table1 && row.Table2 === data.table2){
+                data.alias = row.Alias1;
+                if(row.Relationship1 === 'hasOne'){
+                    data.table1 = row.Table2;
+                    data.table2 = row.Table1;
+                }
+                else{
+                    data.table1 = row.Table1;
+                    data.table2 = row.Table2;   
+                }
+            }
+            else if(row.Table1 === data.table2 && row.Table2 === table1){
+                data.alias = row.Alias1;
+                if(row.Relationship1 === 'hasMany'){
+                    data.table1 = row.Table1;
+                    data.table2 = row.Table2;
+                }
+                else{
+                    data.table1 = row.Table2;
+                    data.table2 = row.Table1;   
+                }
+            }
+        })
+
+        return $http.put('/api/clientdb/runjoin', data)
+        .then(resToData);
+    }
+
     TableFactory.getPrimaryKeys = function(id, dbName, tableName, columnkey){
         return $http.get('/api/clientdb/' + dbName + '/' + tableName + '/' + id + "/" + columnkey)
         .then(resToData);

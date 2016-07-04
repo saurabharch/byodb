@@ -9,6 +9,9 @@ app.config(function ($stateProvider) {
         	}, 
             associations: function(TableFactory, $stateParams) {
                 return TableFactory.getAllAssociations($stateParams.dbName);
+            },
+            allColumns: function(TableFactory, $stateParams) {
+                return TableFactory.getAllColumns($stateParams.dbName);
             }
         }
     });
@@ -42,6 +45,12 @@ app.config(function ($stateProvider) {
         url: '/createtable',
         templateUrl: 'js/table/createtable.html',
         controller: 'TableCtrl'
+    });
+
+    $stateProvider.state('Table.Single.query', {
+        url: '/queryresult',
+        templateUrl: 'js/table/query.html',
+        controller: 'SingleTableCtrl'
     });     
 
 });

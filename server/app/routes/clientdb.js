@@ -10,6 +10,56 @@ var pg = require('pg');
 
 module.exports = router;
 
+router.put('/runjoin', function(req, res, next) {
+    console.log(req.body);
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
+        searchPath: 'knex,public'
+    })
+
+    var hasMany = req.body.table1;
+    var hasOne = req.body.table2;
+    var hasOneForgeinKey = req.body.alias;
+
+    // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
+    // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
+    // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
+    knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select('*')
+        .then(function(result) {
+            res.send(result);
+        })
+})
+
+router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
+    var ColumnsNames = [];
+
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            console.log('ERROR1');
+            res.send('could not connect to postgres');
+        }
+
+        var TablesNames = [];
+        client.query("SELECT column_name FROM information_schema.columns WHERE table_name = \'" + req.params.tableName + "\'", function(err, result) {
+            if (err) {
+                console.log(err);
+                res.send('error running query');
+            }
+            var ColumnsNames = [];
+            result.rows.forEach(function(obj) {
+                ColumnsNames.push(obj.column_name)
+            })
+            res.send({ tableName: req.params.tableName, columns: ColumnsNames });
+            client.end();
+        })
+    })
+})
 
 
 //get all the information from the association table
@@ -52,6 +102,37 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
         .then(function(result) {
             res.send(result);
         })
+})
+
+//get all columns for an entire database
+router.get('/getallcolumns/:dbName', function(req, res, next) {
+    var ColumnsNames = [];
+
+    var pg = require('pg');
+
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+
+    var client = new pg.Client(conString);
+    client.connect(function(err) {
+        if (err) {
+            console.log('ERROR1');
+            res.send('could not connect to postgres');
+        }
+
+        var TablesNames = [];
+        client.query("SELECT column_name, table_name, data_type FROM information_schema.columns WHERE table_schema = 'public'", function(err, result) {
+            if (err) {
+                console.log(err);
+                res.send('error running query');
+            }
+            var ColumnsNames = [];
+            result.rows.forEach(function(obj) {
+                ColumnsNames.push(obj)
+            })
+            res.send(ColumnsNames);
+            client.end();
+        })
+    })
 })
 
 // delete a db
@@ -97,6 +178,7 @@ router.delete('/:dbn', function(req, res) {
 
 });
 
+//create a table + columns for that created table
 router.post('/', function(req, res, next) {
     if (!req.user) res.sendStatus(404);
 
@@ -156,32 +238,32 @@ router.get('/:dbName/:tableName', function(req, res, next) {
     var findingTable = knex.select().from(req.params.tableName)
 
     var findingForeignIds = knex(req.params.dbName + "_assoc").where({
-        Relationship1: 'hasOne',
-        Table1: req.params.tableName
-    }).orWhere({
-        Relationship2: 'hasOne',
-        Table2: req.params.tableName
-    })
-    .then(function(Table){
-        if(Table.length===0){
-            return;
-        }else{
-            if(Table[0].Relationship1 === 'hasOne'){
-                return knex.select('id').from(Table[0].Table2)
-            }else{
-                return knex.select('id').from(Table[0].Table1)
-            }   
-        }
-    })
-     Promise.all([findingTable, findingForeignIds])
-    .then(function(result){
-        res.send(result);
-    })
+            Relationship1: 'hasOne',
+            Table1: req.params.tableName
+        }).orWhere({
+            Relationship2: 'hasOne',
+            Table2: req.params.tableName
+        })
+        .then(function(Table) {
+            if (Table.length === 0) {
+                return;
+            } else {
+                if (Table[0].Relationship1 === 'hasOne') {
+                    return knex.select('id').from(Table[0].Table2)
+                } else {
+                    return knex.select('id').from(Table[0].Table1)
+                }
+            }
+        })
+    Promise.all([findingTable, findingForeignIds])
+        .then(function(result) {
+            res.send(result);
+        })
 
 })
 
 
-router.get('/primary/:dbName/:tblName', function(req, res, next){
+router.get('/primary/:dbName/:tblName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
@@ -189,15 +271,15 @@ router.get('/primary/:dbName/:tblName', function(req, res, next){
     });
 
     knex.select('id').from(req.params.tblName)
-    .then(function(result){
-        console.log("!!!!!!!!!!!!!!!",result)
-        res.send(result)
-    })
-    .catch(next);
+        .then(function(result) {
+            console.log("!!!!!!!!!!!!!!!", result)
+            res.send(result)
+        })
+        .catch(next);
 
 })
 
-router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
+router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
@@ -209,9 +291,9 @@ router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next){
     console.log(req.params);
 
     knex(req.params.tableName).where(req.params.columnkey, numId)
-    .then(function(result){
-        res.send(result);
-    })
+        .then(function(result) {
+            res.send(result);
+        })
 })
 
 //route to query a single table (filter)
@@ -223,7 +305,6 @@ router.put('/:dbName/:tableName/filter', function(req, res, next) {
     })
     knex(req.params.tableName).where(req.body.column, req.body.comparator, req.body.value)
         .then(function(result) {
-            console.log(result);
             res.send(result)
         })
         .catch(next);
@@ -301,6 +382,7 @@ router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next)
         .catch(next);
 })
 
+// add a row
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -311,13 +393,13 @@ router.post('/addrow/:dbName/:tableName', function(req, res, next) {
         .then(function() {
             knex.select().from(req.params.tableName)
                 .then(function(foundTable) {
-                    console.log(foundTable)
                     res.send(foundTable)
                 })
         })
         .catch(next);
 })
 
+//add a column
 router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next) {
     var pg = require('pg');
 
@@ -341,104 +423,104 @@ router.post('/addcolumn/:dbName/:tableName/:numNewCol', function(req, res, next)
     })
 })
 
-
+//make an association
 router.post('/:dbName/association', function(req, res, next) {
-        var pg = require('pg');
-        var conString = 'postgres://localhost:5432/' + req.params.dbName;
-        var knex = require('knex')({
-            client: 'pg',
-            connection: 'postgres://localhost:5432/' + req.params.dbName,
-            searchPath: 'knex,public'
-        });
-        //creates the association table -- Named using DBName_assoc
-        // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
-        //         table.increments();
-        //         table.string('Table1');
-        //         table.string('Relationship1');
-        //         table.string('Alias1');
-        //         table.string('Table2');
-        //         table.string('Relationship2');
-        //         table.string('Alias2');
-        //         table.string('Through');
-        //     })
-        //     //inserts association data into the association table
-        //     .then(function() {
-        return knex(req.params.dbName + '_assoc').insert({
-                Table1: req.body.table1.table_name,
-                Alias1: req.body.alias1,
-                Relationship1: req.body.type1,
-                Table2: req.body.table2.table_name,
-                Alias2: req.body.alias2,
-                Relationship2: req.body.type2,
-                Through: req.body.through
-            })
-            //Connects to PG to create columns
-            .then(function(result) {
-                var client = new pg.Client(conString);
-                client.connect(function(err) {
-                        if (err) {
-                            console.log('DATABASE FAILED TO CONNECT')
-                            res.send('database failed to connect')
-                        }
-                        //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
-                        if (req.body.type1 === 'hasOne') {
+    var pg = require('pg');
+    var conString = 'postgres://localhost:5432/' + req.params.dbName;
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    //creates the association table -- Named using DBName_assoc
+    // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
+    //         table.increments();
+    //         table.string('Table1');
+    //         table.string('Relationship1');
+    //         table.string('Alias1');
+    //         table.string('Table2');
+    //         table.string('Relationship2');
+    //         table.string('Alias2');
+    //         table.string('Through');
+    //     })
+    //     //inserts association data into the association table
+    //     .then(function() {
+    return knex(req.params.dbName + '_assoc').insert({
+            Table1: req.body.table1.table_name,
+            Alias1: req.body.alias1,
+            Relationship1: req.body.type1,
+            Table2: req.body.table2.table_name,
+            Alias2: req.body.alias2,
+            Relationship2: req.body.type2,
+            Through: req.body.through
+        })
+        //Connects to PG to create columns
+        .then(function(result) {
+            var client = new pg.Client(conString);
+            client.connect(function(err) {
+                    if (err) {
+                        console.log('DATABASE FAILED TO CONNECT')
+                        res.send('database failed to connect')
+                    }
+                    //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
+                    if (req.body.type1 === 'hasOne') {
 
-                            client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result) {
-                                    if (err) {
-                                        console.log("ADD COLUMN FAILED", err)
-                                        res.send('Error running query')
-                                    }
-                                })
-                                //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
-                                //data type on both tables need to match in order for foreign key to work
-                            knex.schema.table(req.body.table1.table_name, function(table) {
-                                    table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
-                                })
-                                .then(function(result) {
-                                    res.send(result);
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                })
-                        }
-                        //need to make above work in alternate direction 
-                        if (req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne') {
-                            client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " integer", function(err, result) {
-                                    if (err) {
-                                        console.log("ADD COLUMN FAILED", err)
-                                        res.send('Error running query')
-                                    }
-                                })
-                                //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
-                                //data type on both tables need to match in order for foreign key to work
-                            knex.schema.table(req.body.table2.table_name, function(table) {
-                                    table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
-                                })
-                                .then(function(result) {
-                                    res.send(result);
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                })
-                        }
+                        client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result) {
+                                if (err) {
+                                    console.log("ADD COLUMN FAILED", err)
+                                    res.send('Error running query')
+                                }
+                            })
+                            //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
+                            //data type on both tables need to match in order for foreign key to work
+                        knex.schema.table(req.body.table1.table_name, function(table) {
+                                table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
+                            })
+                            .then(function(result) {
+                                res.send(result);
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            })
+                    }
+                    //need to make above work in alternate direction 
+                    if (req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne') {
+                        client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " integer", function(err, result) {
+                                if (err) {
+                                    console.log("ADD COLUMN FAILED", err)
+                                    res.send('Error running query')
+                                }
+                            })
+                            //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
+                            //data type on both tables need to match in order for foreign key to work
+                        knex.schema.table(req.body.table2.table_name, function(table) {
+                                table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
+                            })
+                            .then(function(result) {
+                                res.send(result);
+                            })
+                            .catch(function(err) {
+                                console.log(err);
+                            })
+                    }
+
+                })
+                //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
+            if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
+                return knex.schema.createTable(req.body.through, function(table) {
+                        table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
+                        table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
                     })
-                    //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
-                if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
-                    console.log("--------------------------", req.body.through)
-                    return knex.schema.createTable(req.body.through, function(table) {
-                            table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
-                            table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
-                        })
-                        .then(function() {
-                            res.sendStatus(200);
-                        })
-                        .catch(next);
-                }
-            // })
-    })
-    .catch(next);
+                    .then(function() {
+                        res.sendStatus(200);
+                    })
+                    .catch(next);
+            }
+        })
+        .catch(next);
 })
 
+//delete a table
 router.delete('/:dbName/:tableName', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
