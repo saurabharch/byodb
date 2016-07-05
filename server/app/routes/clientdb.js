@@ -385,6 +385,7 @@ router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next)
 
 // add a row
 router.post('/addrow/:dbName/:tableName', function(req, res, next) {
+    console.log('HERE IT IS!!!!!', req.body)
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,

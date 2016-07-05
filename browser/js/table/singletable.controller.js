@@ -90,7 +90,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.newRow = function(db, table, arr) {
         var allIds = [];
         arr.forEach(function(rowData) {
-            allIds.push(rowData[0])
+            allIds.push(rowData.values[0].value)
         })
         var sorted = allIds.sort(function(a, b) {
             return b - a
