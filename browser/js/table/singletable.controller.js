@@ -42,7 +42,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.deleteSelected = function(db, table, instanceArray) {
         instanceArray.forEach(function(row) {
             if (row.selected) {
-                TableFactory.removeRow(db, table, row[0])
+                TableFactory.removeRow(db, table, row['values'][0]['value'])
                     .then(function(result) {
                         $scope.singleTable = result;
                         CreateRows();
