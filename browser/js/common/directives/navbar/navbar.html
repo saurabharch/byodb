@@ -1,4 +1,4 @@
-<nav class="navbar navbar-static-top">
+<!-- <nav class="navbar navbar-static-top">
     <div class="container">
         <div class="navbar-header">
             <fullstack-logo></fullstack-logo>
@@ -14,4 +14,86 @@
             <a ng-click="logout()">Logout</a>
         </div>
     </div>
-</nav>
+</nav> -->
+        <!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+        <!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+        <!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+
+                
+                <header class="logo-env">
+        
+                    <!-- logo -->
+                    <div class="logo">
+                        <a href="dashboard-1.html" class="logo-expanded">
+                            <img src="assets/images/logo@2x.png" width="80" alt="" />
+                        </a>
+        
+                        <a href="dashboard-1.html" class="logo-collapsed">
+                            <img src="assets/images/logo-collapsed@2x.png" width="40" alt="" />
+                        </a>
+                    </div>
+        
+                    <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+                    <div class="mobile-menu-toggle visible-xs">
+                        <a href="#" data-toggle="user-info-menu">
+                            <i class="fa-bell-o"></i>
+                            <span class="badge badge-success">7</span>
+                        </a>
+        
+                        <a href="#" data-toggle="mobile-menu">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </div>
+        
+                    <!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+                    <div class="settings-icon">
+                        <a href="#" data-toggle="settings-pane" data-animate="true">
+                            <i class="linecons-cog"></i>
+                        </a>
+                    </div>
+        
+                    
+                </header>
+                
+                
+                        
+                <ul id="main-menu" class="main-menu">
+                    <!-- add class "multiple-expanded" to allow multiple submenus to open -->
+                    <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+                    <li>
+                        <a href="dashboard-1.html">
+                            <i class="linecons-cog"></i>
+                            <span class="title" ui-sref="Home">Databases</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="layout-variants.html">
+                            <i class="linecons-desktop"></i>
+                            <span class="title">Table List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ui-panels.html">
+                            <i class="linecons-note"></i>
+                            <span class="title">FAQ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ui-widgets.html">
+                            <i class="linecons-star"></i>
+                            <span class="title">About</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailbox-main.html">
+                            <i class="linecons-mail"></i>
+                            <span class="title">Contact</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tables-basic.html">
+                            <i class="linecons-database"></i>
+                            <span class="title">Logout</span>
+                        </a>
+                    </li>
+                </ul>

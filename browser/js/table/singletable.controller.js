@@ -42,7 +42,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.deleteSelected = function(db, table, instanceArray) {
         instanceArray.forEach(function(row) {
             if (row.selected) {
-                TableFactory.removeRow(db, table, row[0])
+                TableFactory.removeRow(db, table, row['values'][0]['value'])
                     .then(function(result) {
                         $scope.singleTable = result;
                         CreateRows();
@@ -90,7 +90,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.newRow = function(db, table, arr) {
         var allIds = [];
         arr.forEach(function(rowData) {
-            allIds.push(rowData[0])
+            allIds.push(rowData.values[0].value)
         })
         var sorted = allIds.sort(function(a, b) {
             return b - a
@@ -265,24 +265,22 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.rowValsToUpdate = [];
 
-    $scope.updateRow = function(old, newCell, row, i) {
+    $scope.updateRow = function(old, newCell, row, i, j) {
         row[i] = newCell;
-        console.log("the stuff", newCell, row, i)
         var rowObj = {};
         var cols = $scope.originalColVals;
         for (var c = 0; c < cols.length; c++) {
-            
-            var colName = cols[c];
-            rowObj[colName] = row[c];
+            var colName = cols[j];
+            if(row[c] !== undefined) rowObj[colName] = row[c];
+            rowObj['id'] = i;
         }
-        console.log("rowObj", rowObj)
 
         // if there is nothing in the array to update, push the update into it
         if ($scope.rowValsToUpdate.length === 0) $scope.rowValsToUpdate.push(rowObj);
         else {
             // check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
             for (var e = 0; e < $scope.rowValsToUpdate.length; e++) {
-                if ($scope.rowValsToUpdate[e].id === rowObj.id) {
+                if ($scope.rowValsToUpdate[e].id === rowObj['id']) {
                     $scope.rowValsToUpdate[e] = rowObj;
                     return;
                 }
