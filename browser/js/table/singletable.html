@@ -89,7 +89,7 @@
                         </td>
                         <td>{{row.values[0].value}}</td>
                         <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">
-                            <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
+                            <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, row.values[0].value, $index)">
                             <button class="glyphicon glyphicon-th" ng-if="checkForeign(value.col)" ng-click="findPrimary(theDbName, foreignCols[value.col])"></button>
                         </td>
                         <td ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
