@@ -5,6 +5,17 @@
     <title>Fullstack Academy Generated Application</title>
     <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/style.css" />
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
+    <link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
+    <link rel="stylesheet" href="assets/css/fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/xenon-core.css">
+    <link rel="stylesheet" href="assets/css/xenon-forms.css">
+    <link rel="stylesheet" href="assets/css/xenon-components.css">
+    <link rel="stylesheet" href="assets/css/xenon-skins.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+
     <script src="/lodash/index.js"></script>
     <script src="/angular/angular.js"></script>
     <script src="/angular-animate/angular-animate.js"></script>
@@ -15,7 +26,97 @@
     <script src="/main.js"></script>
 </head>
 <body ng-app="FullstackGeneratedApp">
-    <navbar></navbar>
+    <div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+            
+        <!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+        <!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+        <!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+        <div class="sidebar-menu toggle-others">
+        
+            <div class="sidebar-menu-inner">
+                
+                <header class="logo-env">
+        
+                    <!-- logo -->
+                    <div class="logo">
+                        <a href="dashboard-1.html" class="logo-expanded">
+                            <img src="assets/images/logo@2x.png" width="80" alt="" />
+                        </a>
+        
+                        <a href="dashboard-1.html" class="logo-collapsed">
+                            <img src="assets/images/logo-collapsed@2x.png" width="40" alt="" />
+                        </a>
+                    </div>
+        
+                    <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
+                    <div class="mobile-menu-toggle visible-xs">
+                        <a href="#" data-toggle="user-info-menu">
+                            <i class="fa-bell-o"></i>
+                            <span class="badge badge-success">7</span>
+                        </a>
+        
+                        <a href="#" data-toggle="mobile-menu">
+                            <i class="fa-bars"></i>
+                        </a>
+                    </div>
+        
+                    <!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
+                    <div class="settings-icon">
+                        <a href="#" data-toggle="settings-pane" data-animate="true">
+                            <i class="linecons-cog"></i>
+                        </a>
+                    </div>
+        
+                    
+                </header>
+                
+                
+                        
+                <ul id="main-menu" class="main-menu">
+                    <!-- add class "multiple-expanded" to allow multiple submenus to open -->
+                    <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+                    <li>
+                        <a href="dashboard-1.html">
+                            <i class="linecons-cog"></i>
+                            <span class="title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="layout-variants.html">
+                            <i class="linecons-desktop"></i>
+                            <span class="title">Layouts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ui-panels.html">
+                            <i class="linecons-note"></i>
+                            <span class="title">UI Elements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ui-widgets.html">
+                            <i class="linecons-star"></i>
+                            <span class="title">Widgets</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailbox-main.html">
+                            <i class="linecons-mail"></i>
+                            <span class="title">Mailbox</span>
+                            <span class="label label-success pull-right">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tables-basic.html">
+                            <i class="linecons-database"></i>
+                            <span class="title">Tables</span>
+                        </a>
+                    </li>
+                </ul>
+                
+            </div>
+        
+        </div>
     <div id="main" ui-view></div>
 </body>
 </html>

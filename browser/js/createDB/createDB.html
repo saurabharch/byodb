@@ -1,15 +1,17 @@
-<form ng-model="db" ng-submit="createDB(db)">
+<div class="container">
+  <div class="row">
+  <form ng-model="db" ng-submit="createDB(db)">
+    <fieldset class="form-group">
+      <label for="exampleInputEmail1">Enter your database's name</label>
+      <input ng-model="db.name" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the database's name">
+    </fieldset>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
 
-  <fieldset class="form-group">
-    <label for="exampleInputEmail1">Enter your database's name</label>
-    <input ng-model="db.name" type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter the database's name">
-  </fieldset>
-  
-  <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  </div>
+</div>
 
-</form>
-
-<br>
 
 <form ng-if="createdDB" ng-model="table" ng-submit="createTable(table, createdDB)">
 

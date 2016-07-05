@@ -267,12 +267,15 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.updateRow = function(old, newCell, row, i) {
         row[i] = newCell;
+        console.log("the stuff", newCell, row, i)
         var rowObj = {};
         var cols = $scope.originalColVals;
         for (var c = 0; c < cols.length; c++) {
+            
             var colName = cols[c];
             rowObj[colName] = row[c];
         }
+        console.log("rowObj", rowObj)
 
         // if there is nothing in the array to update, push the update into it
         if ($scope.rowValsToUpdate.length === 0) $scope.rowValsToUpdate.push(rowObj);
