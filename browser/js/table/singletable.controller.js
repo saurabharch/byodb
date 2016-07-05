@@ -265,13 +265,14 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.rowValsToUpdate = [];
 
-    $scope.updateRow = function(old, newCell, row, i) {
+    $scope.updateRow = function(old, newCell, row, i, j) {
         row[i] = newCell;
         var rowObj = {};
         var cols = $scope.originalColVals;
         for (var c = 0; c < cols.length; c++) {
-            var colName = cols[c];
-            rowObj[colName] = row[c];
+            var colName = cols[j];
+            if(row[c] !== undefined) rowObj[colName] = row[c];
+            rowObj['id'] = i;
         }
 
         // if there is nothing in the array to update, push the update into it
@@ -279,7 +280,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         else {
             // check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
             for (var e = 0; e < $scope.rowValsToUpdate.length; e++) {
-                if ($scope.rowValsToUpdate[e].id === rowObj.id) {
+                if ($scope.rowValsToUpdate[e].id === rowObj['id']) {
                     $scope.rowValsToUpdate[e] = rowObj;
                     return;
                 }

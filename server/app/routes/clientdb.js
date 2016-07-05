@@ -312,6 +312,7 @@ router.put('/:dbName/:tableName/filter', function(req, res, next) {
 
 //route to update data in a table (columns and rows)
 router.put('/:dbName/:tableName', function(req, res, next) {
+    console.log('HERE!!!!!', req.body)
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
