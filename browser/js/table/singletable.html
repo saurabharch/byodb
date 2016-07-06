@@ -30,7 +30,7 @@
     </form>
 </div>
     <!-- <div>{{instanceArray}}</div><br> -->
-<div class="panel">
+<div class="panel" ng-hide="$state.includes('Table.Single.query')">
     <div class="panel-headi">
         <div class="row">
             <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
