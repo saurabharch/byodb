@@ -1,0 +1,34 @@
+<div class="panel" ng-hide="$state.includes('Table.Single')" ng-hide="$state.includes('Table.Join')">
+    <div class="row">
+        <div class="panel-heading">
+            <label>Set Associations Between Tables</label>
+        </div>
+        <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
+            <span>Table 1</span>
+            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
+            </select>
+            <span>Table 2</span>
+            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
+            </select>
+            <div>
+                <span>Relation 1 --></span>
+                <select ng-model="association.type1" ng-options="association as association for association in associationTypes">
+                </select>
+                <span>AS</span>
+                <input ng-model="association.alias1">
+            </div>
+            <div>
+                <span>Relation 2 <--</span>
+                <select ng-model="association.type2" ng-options="association as association for association in associationTypes">
+                </select>
+                <span>AS</span>
+                <input ng-model="association.alias2">
+            </div>
+            <div ng-show="association.type1 === 'hasMany' && association.type2 === 'hasMany'">
+                <span>Through:</span>
+                <input ng-model="association.through">
+            </div>
+            <button type="submit" class="btn btn-primary">Make association</button>
+        </form>
+    </div>
+</div>

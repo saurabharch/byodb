@@ -1,83 +1,57 @@
-<div class="panel">
-    <div class="row">
-        <div>
-        <h3 class="addtable">Add a table to your database</h3>
-        <span>
+<div class="main-content">
+<div class="page-container">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3>Database Tables</h3>
+        </div>
+        <div class="row btn-toolbar">
+            <div>
+                <button ng-hide="$state.includes('Table.Single')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
+                    {{table.table_name}}</button>
+            </div>
+        </div>
+        <div ng-controller="deleteDBCtrl">
+            <script type="text/ng-template" id="deleteDBContent.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">You are about to delete your database!</h3>
+                </div>
+                <div class="modal-body">
+                    Once you delete your database it cannot be undone. Type 'DROP DATABASE' to delete your database.
+                    <form name="deleteForm" novalidate>
+                        <div class="form-group">
+                            <input type="text" name="name" class="form-control" ng-model="formVal" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" ng-disabled="formVal !== dropDbText" ng-click="deleteTheDb()">Delete</button>
+                    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
+            <button type="button" class="btn btn-danger" ng-click="open()">Delete database</button>
+        </div>
+    </div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel">
+            <h3 class="addtable">Add a table to your database</h3>
+            <span>
         <button ng-hide="$state.includes('Table.Single')" class="btn btn-default" ui-sref="Table.create"><span class="glyphicon glyphicon-th"></span></button>
+            </span>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="panel">
+        <h3 class="addtable">Set an association between your tables.</h3>
+        <span>
+        <button ng-hide="$state.includes('Table.Single')" class="btn btn-default" ui-sref="Table.setAssociation"><span class="glyphicon glyphicon-th"></span></button>
         </span>
         </div>
     </div>
 </div>
-<div class="page-container">
-<div class="panel">
-    <div class="panel-heading">
-    <h3>Database Tables</h3>
-    </div>
-    <div class="row btn-toolbar">
-        <div>
-        <button ng-hide="$state.includes('Table.Single')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-default">
-            {{table.table_name}}</button>
-            </div>
-    </div>
-    <div ng-controller="deleteDBCtrl">
-        <script type="text/ng-template" id="deleteDBContent.html">
-            <div class="modal-header">
-                <h3 class="modal-title">You are about to delete your database!</h3>
-            </div>
-            <div class="modal-body">
-                Once you delete your database it cannot be undone. Type 'DROP DATABASE' to delete your database.
-                <form name="deleteForm" novalidate> 
-
-               <div class="form-group">
-                   <input type="text" name="name" class="form-control" ng-model="formVal" required>
-               </div>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-danger" type="button" ng-disabled="formVal !== dropDbText" ng-click="deleteTheDb()">Delete</button>
-                <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
-            </div>
-        </script>
-
-        <button type="button" class="btn btn-danger" ng-click="open()">Delete database</button>
-
-    </div>
-</div>
-</div>
-
-<div class="panel" ng-hide="$state.includes('Table.Single')" ng-hide="$state.includes('Table.Join')">
-    <div class="row">
-    <div class="panel-heading">
-    <h3>Set Associations Between Tables</h3>
-    </div>
-        <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
-            <span>Table 1</span>
-            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
-            </select>
-            <span>Table 2</span>
-            <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
-            </select>
-            <div>
-            <span>Relation 1 --></span>
-             <select ng-model="association.type1" ng-options="association as association for association in associationTypes">
-            </select>
-            <span>AS</span>
-            <input ng-model="association.alias1">
-            </div>
-            <div>
-            <span>Relation 2 <--</span>
-             <select ng-model="association.type2" ng-options="association as association for association in associationTypes">
-            </select>
-            <span>AS</span>
-            <input ng-model="association.alias2">
-            </div>
-            <div ng-show="association.type1 === 'hasMany' && association.type2 === 'hasMany'">
-            	<span>Through:</span>
-            	<input ng-model="association.through">
-            </div>
-            <button type="submit" class="btn btn-primary">Make association</button>
-        </form>
-    </div>
-</div>
 
 <ui-view></ui-view>
+</div>
+</div>

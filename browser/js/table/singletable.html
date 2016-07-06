@@ -5,7 +5,7 @@
 <!-- <div>{{theTableName}}</div><br> -->
 <!-- <pre> {{tablesToQuery| json}} </pre> -->
 <!-- <pre> {{queryResult | json}} </pre> -->
-<div ng-hide="$state.includes('Table.Single.query')">
+<div ng-hide="$state.includes('Table.Single.query')" class="panel">
     <form ng-submit="getColumnsForTable()" ng-model="select">
         <div class="checkbox">
             <label ng-repeat="table in currentTableAssociations track by $index">
@@ -74,7 +74,7 @@
                         </th>
                         <th ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
                             <p>{{ vcolumn.name }}
-                                <p>
+                                </p>
                         </th>
                         <th>
                             <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
@@ -106,6 +106,5 @@
         </div>
     </div>
 </div>
-
-
 <ui-view></ui-view>
+</div>
