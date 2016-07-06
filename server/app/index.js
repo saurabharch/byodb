@@ -14,11 +14,13 @@ module.exports = function (db) {
         res.sendFile(app.get('indexHTMLPath'));
     })
 
+
     //it blocks every url after api if the user is not logged in. 
     app.use('/*', function(req, res, next) {
         if(!req.user) res.redirect('/');
         else next();
     })
+
 
     // Routes that will be accessed via AJAX should be prepended with
     // /api so they are isolated from our GET /* wildcard.

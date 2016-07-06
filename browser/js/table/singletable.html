@@ -55,10 +55,10 @@
             <button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
         </div>
     </div>
-    <div class="container">
+    <div class="panel-body">
         <br>
-        <div class="row">
-            <table class="table table-bordered">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+            <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" style="width: 100%;">
                 <thead>
                     <tr>
                         <th ng-show="showDelete">
@@ -68,7 +68,7 @@
                             </label>
                         </th>
                         <th>id</th>
-                        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
+                        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex" tabindex="0" rowspan="1" colspan="1">
                             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
                             <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
                         </th>
