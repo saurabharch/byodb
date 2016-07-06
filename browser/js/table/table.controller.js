@@ -33,7 +33,7 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 	$scope.createTable = function(table){
 		TableFactory.createTable(table)
 		.then(function(){
-			$state.go('Table', {dbName:$scope.dbName},{reload:true});
+			$state.go('Table', {dbName:$scope.dbName});
 		})
 	}
 

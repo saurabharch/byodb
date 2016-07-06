@@ -83,29 +83,18 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
-    TableFactory.submitQuery = function(queryObj) {
-        console.log(queryObj)
-    }
-
     TableFactory.getColumnsForTable = function(dbName, tableName){
         return $http.get('/api/clientdb/columnsfortable/' + dbName + '/' + tableName)
         .then(resToData);
     }
 
-    // TableFactory.runQuery = function(dbName, query) {
-    //     console.log(query);
-    //     var promises = [];
-    //     for(var key in query) {
-    //         promises.push($http.get('/api/clientdb/' + dbName + '/' + key))
-    //     }
-    // }
-
-    TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations) {
+    TableFactory.runJoin = function(dbName, table1, arrayOfTables, selectedColumns, associations, colsToReturn) {
         var data = {};
         data.dbName = dbName;
         data.table2 = arrayOfTables[0];
         data.arrayOfTables = arrayOfTables;
         data.selectedColumns = selectedColumns;
+        data.colsToReturn = colsToReturn;
 
         // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
 

@@ -342,71 +342,53 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     }
 
-    $scope.selectedColumns = {};
+    var selectedColumns = {};
+    var queryTable;
 
     $scope.getDataFromColumns = function(val) {
+        if(!selectedColumns) selectedColumns = [];
 
         var columnName = $scope.columnsForQuery[0]['columns'][val.i];
         var tableName = val.tableName
+        queryTable = tableName;
 
-        if (!$scope.selectedColumns[tableName]) $scope.selectedColumns[tableName] = [];
-        if ($scope.selectedColumns[tableName].indexOf(columnName) !== -1) {
-            $scope.selectedColumns[tableName].splice($scope.selectedColumns[tableName].indexOf(columnName), 1)
+        if (!selectedColumns[tableName]) selectedColumns[tableName] = [];
+        if (selectedColumns[tableName].indexOf(columnName) !== -1) {
+            selectedColumns[tableName].splice(selectedColumns[tableName].indexOf(columnName), 1)
         } else {
-            $scope.selectedColumns[tableName].push(columnName);
+            selectedColumns[tableName].push(columnName);
         }
+        $scope.selectedColumns = selectedColumns;
     }
+
 
     // Running the query + rendering the query
     $scope.resultOfQuery = [];
 
     $scope.queryResult;
 
+    $scope.arr = [];
+
+
+    // theTableName
+
     $scope.runJoin = function() {
         // dbName, table1, arrayOfTables, selectedColumns, associations
-        TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations)
+        var columnsToReturn = $scope.columns.map(function(colName){
+            return $scope.theTableName + '.' + colName;
+        })
+        for(var prop in $scope.selectedColumns){
+           $scope.selectedColumns[prop].forEach(function(col){
+                columnsToReturn.push(prop + '.' + col)
+           })
+        }
+        TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations, columnsToReturn)
             .then(function(queryResult) {
                 $scope.queryResult = queryResult;
             })
             .then(function() {
                 $state.go('Table.Single.query');
             })
-            .then(function() {
-                $scope.CreateQueryColumns();
-                $scope.CreateQueryRows()
-            })
-    }
-
-
-    $scope.CreateQueryColumns = function() {
-        $scope.columnsforQuery = [];
-        // $scope.originalColVals = [];
-        var table = $scope.queryResult[0];
-
-
-        for (var prop in table) {
-            if (prop !== 'created_at' && prop !== 'updated_at') {
-                $scope.columnsforQuery.push(prop);
-                // $scope.originalColVals.push(prop);
-            }
-        }
-    }
-
-    $scope.CreateQueryRows = function() {
-        $scope.instanceQueryArray = [];
-        $scope.queryResult.forEach(function(row) {
-            var rowValues = [];
-            var rowObj = {};
-
-            for (var prop in row) {
-                if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push({
-                    col: prop,
-                    value: row[prop]
-                })
-            }
-            rowObj.values = rowValues;
-            $scope.instanceQueryArray.push(rowObj);
-        })
     }
 
 });
