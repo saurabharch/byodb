@@ -20,12 +20,13 @@ router.put('/runjoin', function(req, res, next) {
     var hasMany = req.body.table1;
     var hasOne = req.body.table2;
     var hasOneForgeinKey = req.body.alias;
-
+        console.log(req.body)
     // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
     knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn)
         .then(function(result) {
+            console.log(result);
             res.send(result);
         })
         .then(function(){
@@ -469,19 +470,6 @@ router.post('/:dbName/association', function(req, res, next) {
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     });
-    //creates the association table -- Named using DBName_assoc
-    // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
-    //         table.increments();
-    //         table.string('Table1');
-    //         table.string('Relationship1');
-    //         table.string('Alias1');
-    //         table.string('Table2');
-    //         table.string('Relationship2');
-    //         table.string('Alias2');
-    //         table.string('Through');
-    //     })
-    //     //inserts association data into the association table
-    //     .then(function() {
     return knex(req.params.dbName + '_assoc').insert({
             Table1: req.body.table1.table_name,
             Alias1: req.body.alias1,

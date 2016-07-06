@@ -24,7 +24,12 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 
 	$scope.dbName = $stateParams.dbName;
 
-	$scope.makeAssociations = TableFactory.makeAssociations;
+	$scope.makeAssociations = function(association, dbName) {
+		TableFactory.makeAssociations(association, dbName)
+		.then(function() {
+			$state.go('Table', {dbName : $scope.dbName}, {reload:true});
+		})
+	} 
 
 	$scope.wherebetween = function(condition) {
 		if(condition === "WHERE BETWEEN" || condition === "WHERE NOT BETWEEN") return true;
