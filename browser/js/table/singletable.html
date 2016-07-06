@@ -6,6 +6,9 @@
 <!-- <pre> {{tablesToQuery| json}} </pre> -->
 <!-- <pre> {{queryResult | json}} </pre> -->
 <div ng-hide="$state.includes('Table.Single.query')" class="panel">
+    <div class="panel-heading">
+    <h4>Query Data On Associated Tables</h4>
+    </div>
     <form ng-submit="getColumnsForTable()" ng-model="select">
         <div class="checkbox">
             <label ng-repeat="table in currentTableAssociations track by $index">
@@ -23,8 +26,10 @@
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
+</div>
     <!-- <div>{{instanceArray}}</div><br> -->
-    <div class="container">
+<div class="panel">
+    <div class="panel-headi">
         <div class="row">
             <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
                 <span>Filter {{currentTable.tableName}} where</span>
@@ -33,17 +38,13 @@
                 </select>
                 <select ng-model="data.comparator">
                     <option>=</option>
-                    <option>
-                        <</option>
-                            <option>></option>
-                            <option>
-                                <=</option>
-                                    <option>>=</option>
-                                    <option>
-                                        <>
-                                    </option>
+                    <option><</option>
+                    <option>></option>
+                    <option><=</option>
+                    <option>>=</option>
+                    <option><></option>
                 </select>
-                <input ng-model="data.value"></input>
+                <input ng-model="data.value">
                 <button type="submit" class="btn btn-primary">Submit query</button>
             </form>
         </div>

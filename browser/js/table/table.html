@@ -4,6 +4,7 @@
         <div class="panel-heading">
             <h3>Database Tables</h3>
         </div>
+        <div class="panel-body">
         <div class="row btn-toolbar">
             <div>
                 <button ng-hide="$state.includes('Table.Join')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
@@ -30,6 +31,7 @@
             </script>
             <button type="button" class="btn btn-danger" ng-click="open()">Delete database</button>
         </div>
+        </div>
     </div>
 
 <div class="row" ng-hide="$state.includes('Table.Single')" >
@@ -44,7 +46,7 @@
 
     <div class="col-sm-6">
         <div class="panel">
-        <h3 class="addtable">Set an association between your tables.</h3>
+        <h3 class="addtable">Set Table Associations</h3>
         <span>
         <button ng-hide="$state.includes('Table.Single')" class="btn btn-default" ui-sref="Table.setAssociation"><span class="glyphicon glyphicon-th"></span></button>
         </span>
