@@ -6,9 +6,11 @@
 <!-- <pre> {{tablesToQuery| json}} </pre> -->
 <!-- <pre> {{queryResult | json}} </pre> -->
 
-<!-- <div ng-repeat="element in singleTable">{{element}}</div> -->
+<div ng-hide="$state.includes('Table.Single.query')" class="panel">
+    <div class="panel-heading">
+    <h4>Query Data On Associated Tables</h4>
+    </div>
 
-<div ng-hide="$state.includes('Table.Single.query')">
     <form ng-submit="getColumnsForTable()" ng-model="select">
         <div class="checkbox">
             <label ng-repeat="table in currentTableAssociations track by $index">
@@ -26,8 +28,10 @@
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
+</div>
     <!-- <div>{{instanceArray}}</div><br> -->
-    <div class="container">
+<div class="panel">
+    <div class="panel-headi">
         <div class="row">
             <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
                 <span>Filter {{currentTable.tableName}} where</span>
@@ -36,17 +40,13 @@
                 </select>
                 <select ng-model="data.comparator">
                     <option>=</option>
-                    <option>
-                        <</option>
-                            <option>></option>
-                            <option>
-                                <=</option>
-                                    <option>>=</option>
-                                    <option>
-                                        <>
-                                    </option>
+                    <option><</option>
+                    <option>></option>
+                    <option><=</option>
+                    <option>>=</option>
+                    <option><></option>
                 </select>
-                <input ng-model="data.value"></input>
+                <input ng-model="data.value">
                 <button type="submit" class="btn btn-primary">Submit query</button>
             </form>
         </div>
@@ -58,10 +58,10 @@
             <button ng-click="addColumn(theDbName, theTableName)" type="submit" class="btn btn-default">Add Column</button>
         </div>
     </div>
-    <div class="container">
+    <div class="panel-body">
         <br>
-        <div class="row">
-            <table class="table table-bordered">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+            <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" style="width: 100%;">
                 <thead>
                     <tr>
                         <th ng-show="showDelete">
@@ -71,13 +71,13 @@
                             </label>
                         </th>
                         <th>id</th>
-                        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex">
+                        <th ng-repeat="column in columns track by $index" ng-if="$index >= myIndex" tabindex="0" rowspan="1" colspan="1">
                             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control" ng-keyup="updateColumns(column, newColumnName, $index)">
                             <button ng-if="showDelete" type="button" ng-click="removeColumn(theDbName, theTableName, column)" class="btn btn-sm btn-danger">x</button>
                         </th>
                         <th ng-show="virtualColumns" ng-repeat="vcolumn in virtualColumns">
                             <p>{{ vcolumn.name }}
-                                <p>
+                                </p>
                         </th>
                         <th>
                             <p ng-click="addColumn(theDbName, theTableName)" class='glyphicon glyphicon-plus'></p>
@@ -109,6 +109,5 @@
         </div>
     </div>
 </div>
-
-
 <ui-view></ui-view>
+</div>

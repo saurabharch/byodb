@@ -47,6 +47,12 @@ app.config(function ($stateProvider) {
         controller: 'TableCtrl'
     });
 
+    $stateProvider.state('Table.setAssociation', {
+        url: '/setassociation',
+        templateUrl: 'js/table/setassociation.html',
+        controller: 'TableCtrl'
+    });
+
     $stateProvider.state('Table.Single.query', {
         url: '/queryresult',
         templateUrl: 'js/table/query.html',

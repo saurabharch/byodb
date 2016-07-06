@@ -359,8 +359,8 @@ router.put('/:dbName/:tableName', function(req, res, next) {
                     table.renameColumn(oldVal, newVal)
                 })
                 promises2.push(promise2);
-            })
-            Promise.all(promises2)
+            });
+            Promise.all(promises2);
         })
         .then(function() {
             res.sendStatus(200);
@@ -369,7 +369,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
             knex.destroy();
         })
         .catch(next);
-})
+});
 
 // delete row in table
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
