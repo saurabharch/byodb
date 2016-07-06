@@ -31,28 +31,13 @@
                         <a href="dashboard-1.html" class="logo-collapsed">
                             <img src="assets/images/logo-collapsed@2x.png" width="40" alt="" />
                         </a>
+                    </div >
+                    <div ng-show="user">
+                    <h4 class="welcome">
+                    Welcome, {{ user.email }}
+                    </h4>
                     </div>
-        
-                    <!-- This will toggle the mobile menu and will be visible only on mobile devices -->
-                    <div class="mobile-menu-toggle visible-xs">
-                        <a href="#" data-toggle="user-info-menu">
-                            <i class="fa-bell-o"></i>
-                            <span class="badge badge-success">7</span>
-                        </a>
-        
-                        <a href="#" data-toggle="mobile-menu">
-                            <i class="fa-bars"></i>
-                        </a>
-                    </div>
-        
-                    <!-- This will open the popup with user profile settings, you can use for any purpose, just be creative -->
-                    <div class="settings-icon">
-                        <a href="#" data-toggle="settings-pane" data-animate="true">
-                            <i class="linecons-cog"></i>
-                        </a>
-                    </div>
-        
-                    
+
                 </header>
                 
                 
@@ -60,38 +45,38 @@
                 <ul id="main-menu" class="main-menu">
                     <!-- add class "multiple-expanded" to allow multiple submenus to open -->
                     <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
-                    <li>
-                        <a href="dashboard-1.html">
-                            <i class="linecons-cog"></i>
-                            <span class="title" ui-sref="Home">Databases</span>
+                    <li ng-show="user">
+                        <a ui-sref="Home">
+                            <i class="linecons-database"></i>
+                            <span class="title">Databases</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="layout-variants.html">
+                    <li ng-show="user">
+                        <a>
                             <i class="linecons-desktop"></i>
                             <span class="title">Table List</span>
                         </a>
                     </li>
                     <li>
-                        <a href="ui-panels.html">
+                        <a>
                             <i class="linecons-note"></i>
                             <span class="title">FAQ</span>
                         </a>
                     </li>
                     <li>
-                        <a href="ui-widgets.html">
+                        <a>
                             <i class="linecons-star"></i>
                             <span class="title">About</span>
                         </a>
                     </li>
                     <li>
-                        <a href="mailbox-main.html">
+                        <a>
                             <i class="linecons-mail"></i>
                             <span class="title">Contact</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="tables-basic.html">
+                    <li  ng-show="user">
+                        <a ng-click="logout()" ui-sref="home" >
                             <i class="linecons-database"></i>
                             <span class="title">Logout</span>
                         </a>

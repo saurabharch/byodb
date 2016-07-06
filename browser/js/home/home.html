@@ -1,16 +1,16 @@
-<section id="home">
-    <div class="container">
-        <div class="row">
-            <button ui-sref="createdb" class="btn btn-default">Create New Database</button>
-        </div>
+<div class="main-body">
+<div class="panel">
+    <div>
+        <button ui-sref="createdb" class="btn btn-default">Create New Database</button>
     </div>
     <div class="container">
         <div class="row">
             <h2>Access your database</h2>
         </div>
-        <div class="row btn-toolbar">
+        <div class="btn-toolbar">
             <button ng-repeat="db in allDbs" ui-sref="Table({dbName: db.dbName})" class="btn btn-default">{{ db.name }}
             </button>
         </div>
     </div>
-</section>
+</div>
+</div>
