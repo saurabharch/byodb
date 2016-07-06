@@ -359,7 +359,6 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
             selectedColumns[tableName].push(columnName);
         }
         $scope.selectedColumns = selectedColumns;
-        // console.log(selectedColumns)
     }
 
 
@@ -370,97 +369,26 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.arr = [];
 
+
+    // theTableName
+
     $scope.runJoin = function() {
         // dbName, table1, arrayOfTables, selectedColumns, associations
-        TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations)
+        var columnsToReturn = $scope.columns.map(function(colName){
+            return $scope.theTableName + '.' + colName;
+        })
+        for(var prop in $scope.selectedColumns){
+           $scope.selectedColumns[prop].forEach(function(col){
+                columnsToReturn.push(prop + '.' + col)
+           })
+        }
+        TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations, columnsToReturn)
             .then(function(queryResult) {
                 $scope.queryResult = queryResult;
             })
             .then(function() {
                 $state.go('Table.Single.query');
             })
-            .then(function() {
-                $scope.CreateQueryRows();
-                displayQueryColumns();
-                $scope.CreateQueryColumns();
-            })
     }
-
-
-    $scope.CreateQueryColumns = function() {
-        $scope.queryTableColumns = [];
-        // $scope.originalColVals = [];
-        var table = $scope.queryResult[0];
-        // console.log(table)
-
-        console.log(queryTable, $scope.theTableName)
-
-        for(var i = 0; i < $scope.associations.length; i++){
-            if($scope.associations[i].Table1 === $scope.theTableName && $scope.associations[i].Table2 === queryTable){
-                getColsFromSelection();
-                getColsFromScope();
-            }
-            else if($scope.associations[i].Table2 === $scope.theTableName && $scope.associations[i].Table1 === queryTable){
-                getColsFromScope();
-                getColsFromSelection();
-            }
-        }
-
-        function getColsFromSelection(){        
-            for (var prop in table) {
-                if (prop !== 'created_at' && prop !== 'updated_at' && $scope.arr.indexOf(prop) !== -1) {
-                    $scope.queryTableColumns.push(prop);
-                }
-            }
-        }
-
-        function getColsFromScope(){
-            $scope.columns.forEach(function(colName){
-                $scope.queryTableColumns.push(colName);
-            })
-        }
-
-        $scope.arr = [];
-
-    }
-
-    $scope.CreateQueryRows = function() {
-        $scope.instanceQueryArray = [];
-        $scope.queryResult.forEach(function(row) {
-            var rowValues = [];
-            var rowObj = {};
-
-            for (var prop in row) {
-                if (prop !== 'created_at' && prop !== 'updated_at') rowValues.push({
-                    col: prop,
-                    value: row[prop]
-                })
-            }
-            rowObj.values = rowValues;
-            $scope.instanceQueryArray.push(rowObj);
-        })
-    }
-
-    function displayQueryColumns(){
-        for(var prop in selectedColumns){
-            // console.log(selectedColumns[prop])
-            selectedColumns[prop].forEach(function(value){
-                $scope.arr.push(value)
-            })
-        }
-
-        // console.log($scope.arr)
-
-        $scope.instanceQueryArray.forEach(function(obj){
-            obj.values.forEach(function(element){
-                if($scope.arr.indexOf(element['col']) !== -1){
-                    element.display = true;
-                } else {
-                    element.display = false;
-                }
-            })
-        })
-    }
-
 
 });

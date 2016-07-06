@@ -11,7 +11,6 @@ var pg = require('pg');
 module.exports = router;
 
 router.put('/runjoin', function(req, res, next) {
-    console.log(req.body);
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.body.dbName,
@@ -25,7 +24,7 @@ router.put('/runjoin', function(req, res, next) {
     // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
-    knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select('*')
+    knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn)
         .then(function(result) {
             res.send(result);
         })
@@ -209,6 +208,7 @@ router.post('/', function(req, res, next) {
             ]);
         })
         .then(function(){
+            res.sendStatus(200);
             knex.destroy();
         })
         .catch(next);

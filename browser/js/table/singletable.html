@@ -1,10 +1,13 @@
 <!-- <pre> {{associations | json}} </pre> -->
-<!-- <div>{{singleTable}}</div><br> -->
+<!-- <div>{{columns}}</div><br> -->
 <!-- <div>{{theDbName}}</div><br> -->
 <!-- <div>{{allTables}}</div><br> -->
 <!-- <div>{{theTableName}}</div><br> -->
 <!-- <pre> {{tablesToQuery| json}} </pre> -->
 <!-- <pre> {{queryResult | json}} </pre> -->
+
+<!-- <div ng-repeat="element in singleTable">{{element}}</div> -->
+
 <div ng-hide="$state.includes('Table.Single.query')">
     <form ng-submit="getColumnsForTable()" ng-model="select">
         <div class="checkbox">
