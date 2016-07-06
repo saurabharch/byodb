@@ -1,5 +1,6 @@
-<!-- <pre> {{queryResult | json}} </pre> -->
+<!-- <pre> {{instanceQueryArray | json}} </pre> -->
 <!-- <pre>{{instanceQueryArray | json}}</pre> -->
+{{queryTableColumns}}
 <div>
     <div class="container">
         <div class="row">
@@ -25,6 +26,27 @@
             </form>
         </div>
     </div>
+
+<!-- <div class="container">
+    <div class="row">
+        <table class="table table-bordered">
+            <thead>
+                <tr >
+                    <th ng-repeat="column in queryTableColumns track by $index">
+                        {{column}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in instanceQueryArray">
+                    <td ng-repeat="val in row.values">
+                        {{val}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div> -->
 
     
     <div class="container">

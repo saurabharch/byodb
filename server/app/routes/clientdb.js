@@ -29,6 +29,9 @@ router.put('/runjoin', function(req, res, next) {
         .then(function(result) {
             res.send(result);
         })
+        .then(function(){
+            knex.destroy();
+        })
 })
 
 router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
@@ -86,6 +89,9 @@ router.get('/allassociations/:dbName', function(req, res, next) {
                     res.send(result);
                 })
         })
+        .then(function(){
+            knex.destroy();
+        })
 })
 
 //get information from the association table for a single table
@@ -101,6 +107,9 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
         })
         .then(function(result) {
             res.send(result);
+        })
+        .then(function(){
+            knex.destroy();
         })
 })
 
@@ -199,6 +208,9 @@ router.post('/', function(req, res, next) {
                 { id: 1 },
             ]);
         })
+        .then(function(){
+            knex.destroy();
+        })
         .catch(next);
 })
 
@@ -259,6 +271,9 @@ router.get('/:dbName/:tableName', function(req, res, next) {
         .then(function(result) {
             res.send(result);
         })
+        .then(function(){
+            knex.destroy();
+        })
 
 })
 
@@ -274,6 +289,9 @@ router.get('/primary/:dbName/:tblName', function(req, res, next) {
         .then(function(result) {
             console.log("!!!!!!!!!!!!!!!", result)
             res.send(result)
+        })
+        .then(function(){
+            knex.destroy();
         })
         .catch(next);
 
@@ -294,6 +312,9 @@ router.get('/:dbName/:tableName/:id/:columnkey', function(req, res, next) {
         .then(function(result) {
             res.send(result);
         })
+        .then(function(){
+            knex.destroy();
+        })
 })
 
 //route to query a single table (filter)
@@ -307,12 +328,14 @@ router.put('/:dbName/:tableName/filter', function(req, res, next) {
         .then(function(result) {
             res.send(result)
         })
+        .then(function(){
+            knex.destroy();
+        })
         .catch(next);
 })
 
 //route to update data in a table (columns and rows)
 router.put('/:dbName/:tableName', function(req, res, next) {
-    console.log('HERE!!!!!', req.body)
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
@@ -342,6 +365,9 @@ router.put('/:dbName/:tableName', function(req, res, next) {
         .then(function() {
             res.sendStatus(200);
         })
+        .then(function(){
+            knex.destroy();
+        })
         .catch(next);
 })
 
@@ -360,6 +386,9 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
                 .then(function(foundTable) {
                     res.send(foundTable)
                 })
+        })
+        .then(function(){
+            knex.destroy();
         })
         .catch(next);
 })
@@ -380,6 +409,9 @@ router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next)
         .then(function(foundTable) {
             res.send(foundTable)
         })
+        .then(function(){
+            knex.destroy();
+        })
         .catch(next);
 })
 
@@ -397,6 +429,9 @@ router.post('/addrow/:dbName/:tableName', function(req, res, next) {
                 .then(function(foundTable) {
                     res.send(foundTable)
                 })
+        })
+        .then(function(){
+            knex.destroy();
         })
         .catch(next);
 })
@@ -519,6 +554,9 @@ router.post('/:dbName/association', function(req, res, next) {
                     .catch(next);
             }
         })
+        .then(function(){
+            knex.destroy();
+        })
         .catch(next);
 })
 
@@ -533,6 +571,9 @@ router.delete('/:dbName/:tableName', function(req, res, next) {
     knex.schema.dropTable(req.params.tableName)
         .then(function(result) {
             res.status(201).send(result)
+        })
+        .then(function(){
+            knex.destroy();
         })
         .catch(next);
 

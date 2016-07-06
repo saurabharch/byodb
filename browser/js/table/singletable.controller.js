@@ -343,12 +343,14 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     }
 
     var selectedColumns = {};
+    var queryTable;
 
     $scope.getDataFromColumns = function(val) {
         if(!selectedColumns) selectedColumns = [];
 
         var columnName = $scope.columnsForQuery[0]['columns'][val.i];
         var tableName = val.tableName
+        queryTable = tableName;
 
         if (!selectedColumns[tableName]) selectedColumns[tableName] = [];
         if (selectedColumns[tableName].indexOf(columnName) !== -1) {
@@ -391,14 +393,35 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         var table = $scope.queryResult[0];
         // console.log(table)
 
-        for (var prop in table) {
-            // console.log($scope.arr)
-            if (prop !== 'created_at' && prop !== 'updated_at' && $scope.arr.indexOf(prop) !== -1) {
-                $scope.queryTableColumns.push(prop);
-                // $scope.originalColVals.push(prop);
+        console.log(queryTable, $scope.theTableName)
+
+        for(var i = 0; i < $scope.associations.length; i++){
+            if($scope.associations[i].Table1 === $scope.theTableName && $scope.associations[i].Table2 === queryTable){
+                getColsFromSelection();
+                getColsFromScope();
+            }
+            else if($scope.associations[i].Table2 === $scope.theTableName && $scope.associations[i].Table1 === queryTable){
+                getColsFromScope();
+                getColsFromSelection();
             }
         }
-        console.log($scope.queryTableColumns)
+
+        function getColsFromSelection(){        
+            for (var prop in table) {
+                if (prop !== 'created_at' && prop !== 'updated_at' && $scope.arr.indexOf(prop) !== -1) {
+                    $scope.queryTableColumns.push(prop);
+                }
+            }
+        }
+
+        function getColsFromScope(){
+            $scope.columns.forEach(function(colName){
+                $scope.queryTableColumns.push(colName);
+            })
+        }
+
+        $scope.arr = [];
+
     }
 
     $scope.CreateQueryRows = function() {
@@ -420,10 +443,13 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     function displayQueryColumns(){
         for(var prop in selectedColumns){
+            // console.log(selectedColumns[prop])
             selectedColumns[prop].forEach(function(value){
                 $scope.arr.push(value)
             })
         }
+
+        // console.log($scope.arr)
 
         $scope.instanceQueryArray.forEach(function(obj){
             obj.values.forEach(function(element){
