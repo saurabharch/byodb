@@ -342,25 +342,31 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     }
 
-    $scope.selectedColumns = {};
+    var selectedColumns = {};
 
     $scope.getDataFromColumns = function(val) {
+        if(!selectedColumns) selectedColumns = [];
 
         var columnName = $scope.columnsForQuery[0]['columns'][val.i];
         var tableName = val.tableName
 
-        if (!$scope.selectedColumns[tableName]) $scope.selectedColumns[tableName] = [];
-        if ($scope.selectedColumns[tableName].indexOf(columnName) !== -1) {
-            $scope.selectedColumns[tableName].splice($scope.selectedColumns[tableName].indexOf(columnName), 1)
+        if (!selectedColumns[tableName]) selectedColumns[tableName] = [];
+        if (selectedColumns[tableName].indexOf(columnName) !== -1) {
+            selectedColumns[tableName].splice(selectedColumns[tableName].indexOf(columnName), 1)
         } else {
-            $scope.selectedColumns[tableName].push(columnName);
+            selectedColumns[tableName].push(columnName);
         }
+        $scope.selectedColumns = selectedColumns;
+        // console.log(selectedColumns)
     }
+
 
     // Running the query + rendering the query
     $scope.resultOfQuery = [];
 
     $scope.queryResult;
+
+    $scope.arr = [];
 
     $scope.runJoin = function() {
         // dbName, table1, arrayOfTables, selectedColumns, associations
@@ -372,24 +378,27 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
                 $state.go('Table.Single.query');
             })
             .then(function() {
+                $scope.CreateQueryRows();
+                displayQueryColumns();
                 $scope.CreateQueryColumns();
-                $scope.CreateQueryRows()
             })
     }
 
 
     $scope.CreateQueryColumns = function() {
-        $scope.columnsforQuery = [];
+        $scope.queryTableColumns = [];
         // $scope.originalColVals = [];
         var table = $scope.queryResult[0];
-
+        // console.log(table)
 
         for (var prop in table) {
-            if (prop !== 'created_at' && prop !== 'updated_at') {
-                $scope.columnsforQuery.push(prop);
+            // console.log($scope.arr)
+            if (prop !== 'created_at' && prop !== 'updated_at' && $scope.arr.indexOf(prop) !== -1) {
+                $scope.queryTableColumns.push(prop);
                 // $scope.originalColVals.push(prop);
             }
         }
+        console.log($scope.queryTableColumns)
     }
 
     $scope.CreateQueryRows = function() {
@@ -408,5 +417,24 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
             $scope.instanceQueryArray.push(rowObj);
         })
     }
+
+    function displayQueryColumns(){
+        for(var prop in selectedColumns){
+            selectedColumns[prop].forEach(function(value){
+                $scope.arr.push(value)
+            })
+        }
+
+        $scope.instanceQueryArray.forEach(function(obj){
+            obj.values.forEach(function(element){
+                if($scope.arr.indexOf(element['col']) !== -1){
+                    element.display = true;
+                } else {
+                    element.display = false;
+                }
+            })
+        })
+    }
+
 
 });

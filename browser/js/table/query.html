@@ -1,5 +1,5 @@
 <!-- <pre> {{queryResult | json}} </pre> -->
-
+<!-- <pre>{{instanceQueryArray | json}}</pre> -->
 <div>
     <div class="container">
         <div class="row">
@@ -33,8 +33,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>id</th>
-                        <th ng-repeat="column in columnsforQuery track by $index" ng-if="$index >= myIndex">
+                        <th ng-repeat="column in queryTableColumns track by $index">
                             <input placeholder="{{column}}" ng-model='newColumnName' type="text" class="form-control">
                         </th>
                     </tr>
@@ -45,7 +44,7 @@
                             <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                             <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
                         </td>
-                        <td>{{row.values[0].value}}</td>
+                        <td ng-show="row.values[0].display">{{row.values[0].value}}</td>
                         <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">
                             <input placeholder="{{value.value}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
                     </tr>
