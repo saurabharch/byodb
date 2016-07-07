@@ -7,7 +7,7 @@
         <div class="panel-body">
         <div class="row btn-toolbar">
             <div>
-                <button ng-hide="$state.includes('Table.Join')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
+                <button ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
                     {{table.table_name}}</button>
             </div>
         </div>
