@@ -1,4 +1,4 @@
-app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal, associations) {
+app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, singleTable, $window, $state, $uibModal, associations, $log) {
 
     ///////////////////////////////Putting stuff on scope/////////////////////////////////////////////////
 
@@ -390,5 +390,46 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
                 $state.go('Table.Single.query');
             })
     }
+
+    $scope.animationsEnabled = true;
+
+    $scope.open = function (dbName, tblName, col, index) {
+
+      var modalInstance = $uibModal.open({
+        animation: $scope.animationsEnabled,
+        templateUrl: 'js/table/association.modal.html',
+        controller: 'AssociationInstanceCtrl',
+        resolve: {
+          foreignCols: function () {
+            return $scope.foreignCols;
+          },
+          forTable: function(TableFactory){
+            console.log(tblName)
+            return TableFactory.findPrimary(dbName, tblName);
+          },
+          forTableName: function(){
+            return tblName;
+          },
+          currTable: function(){
+            return $scope.theTableName
+          },
+          colName: function (){
+            return col;
+          },
+          id1: function(){
+            return index;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        console.log("CLOSED")
+        $scope.$evalAsync();
+      });
+    };
+
+    $scope.toggleAnimation = function () {
+      $scope.animationsEnabled = !$scope.animationsEnabled;
+    };
 
 });
