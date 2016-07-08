@@ -265,27 +265,24 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.rowValsToUpdate = [];
 
-    $scope.updateRow = function(old, newCell, row, i, j) {
-        row[i] = newCell;
-        var rowObj = {};
+    $scope.updateRow = function(old, newCell, row, i, j){
         var cols = $scope.originalColVals;
-        for (var c = 0; c < cols.length; c++) {
-            var colName = cols[j];
-            if(row[c] !== undefined) rowObj[colName] = row[c];
-            rowObj['id'] = i;
-        }
-
-        // if there is nothing in the array to update, push the update into it
-        if ($scope.rowValsToUpdate.length === 0) $scope.rowValsToUpdate.push(rowObj);
-        else {
-            // check to see if the row is already scheduled to be updated, if it is, then update it with the new thing to be updated
-            for (var e = 0; e < $scope.rowValsToUpdate.length; e++) {
-                if ($scope.rowValsToUpdate[e].id === rowObj['id']) {
-                    $scope.rowValsToUpdate[e] = rowObj;
-                    return;
-                }
+        var found = false;
+        var colName = cols[j];
+        for(var k = 0; k < $scope.rowValsToUpdate.length; k++){
+            var obj = $scope.rowValsToUpdate[k];
+            console.log(obj)
+            if(obj['id'] === i){
+                found = true;
+                if(obj[colName]) obj[colName] = newCell;
+                obj[colName] = newCell;
             }
-            $scope.rowValsToUpdate.push(rowObj);
+        }
+        if(!found) {
+            var rowObj = {};
+            rowObj['id'] = i;
+            rowObj[colName] = newCell;
+            $scope.rowValsToUpdate.push(rowObj)
         }
     }
 

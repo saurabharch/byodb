@@ -20,12 +20,13 @@ router.put('/runjoin', function(req, res, next) {
     var hasMany = req.body.table1;
     var hasOne = req.body.table2;
     var hasOneForgeinKey = req.body.alias;
-
+        console.log(req.body)
     // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
     knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn)
         .then(function(result) {
+            console.log(result);
             res.send(result);
         })
         .then(function(){

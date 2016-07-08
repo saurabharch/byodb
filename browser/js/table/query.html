@@ -1,26 +1,11 @@
 <div class="panel">
     <div class="container">
         <div class="row">
-            <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
-                <span>Filter {{currentTable.tableName}} where</span>
-                <select ng-model="data.column">
-                    <option ng-repeat="column in columns">{{ column }}</option>
-                </select>
-                <select ng-model="data.comparator">
-                    <option>=</option>
-                    <option>
-                        <</option>
-                            <option>></option>
-                            <option>
-                                <=</option>
-                                    <option>>=</option>
-                                    <option>
-                                        <>
-                                    </option>
-                </select>
-                <input ng-model="data.value"></input>
-                <button type="submit" class="btn btn-primary">Submit query</button>
+            <form>
+            <label>Search Your Table</label>
+                <input ng-model="searchValue"></input>
             </form>
+            <!-- <button type="submit" class="btn btn-primary">Submit query</button> -->
         </div>
     </div>
 
@@ -36,14 +21,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="row in queryResult track by $index">
+                    <tr ng-repeat="row in queryResult track by $index" ng-show="qFilter(searchValue, row)">
                         <td ng-show="showDelete">
                             <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                             <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
                         </td>
-                        <td ng-show="row.values[0].display">{{row.values[0].value}}</td>
+                        <!-- <td ng-show="row.values[0].display">{{row.values[0].value}}</td> -->
                         <td ng-repeat="(_key_, _value_) in row track by $index">
-                            <input placeholder="{{_value_}}" ng-model='newCell' type="text" ng-keyup="updateRow(value, newCell, row, $index)">
+                            <input placeholder="{{_value_}}" ng-model='newCell' type="text">
                     </tr>
                 </tbody>
             </table>

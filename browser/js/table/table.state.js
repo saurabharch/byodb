@@ -56,7 +56,7 @@ app.config(function ($stateProvider) {
     $stateProvider.state('Table.Single.query', {
         url: '/queryresult',
         templateUrl: 'js/table/query.html',
-        controller: 'SingleTableCtrl'
+        controller: 'QueryTableCtrl'
     });     
 
 });
