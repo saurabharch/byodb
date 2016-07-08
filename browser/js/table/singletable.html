@@ -84,7 +84,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="row in instanceArray">
+                        <tr ng-repeat="row in instanceArray | orderBy: 'row.values.value'">
                             <td ng-show="showDelete">
                                 <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                                 <button type="button" ng-click="removeRow(theDbName, theTableName, row['values'][0]['value'])" class="btn btn-sm btn-danger">x</button>
