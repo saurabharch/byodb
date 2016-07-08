@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <br>
+        <div class="row">
             <div class="dataTables_wrapper form-inline dt-bootstrap table-responsive">
                 <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" style="width: 100%;">
                     <thead>
@@ -84,7 +84,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="row in instanceArray">
+                        <tr ng-repeat="row in filteredRows">
                             <td ng-show="showDelete">
                                 <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                                 <button type="button" ng-click="removeRow(theDbName, theTableName, row['values'][0]['value'])" class="btn btn-sm btn-danger">x</button>
@@ -101,6 +101,18 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-xs-6">
+                <pagination 
+                      ng-model="currentPage"
+                      total-items="instanceArray.length"
+                      max-size="maxSize"  
+                      boundary-links="true">
+                </pagination>
+                </div>
+                </div>
             </div>
             <div class="row">
                 <button ng-if="colValsToUpdate.length > 0 || rowValsToUpdate.length > 0" ng-click="updateBackend()" type="submit" class="btn btn-default">Submit</button>
