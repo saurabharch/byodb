@@ -2,12 +2,18 @@
 <div class="page-container">
     <div class="panel">
         <div class="panel-heading">
-            <h3>Database Tables</h3>
+            <h3 class="panel-title">Database Tables</h3>
+            <div class="panel-options">
+                <a href="#" data-toggle="panel">
+                    <span class="collapse-icon">&ndash;</span>
+                    <span class="expand-icon">+</span>
+                </a>
+            </div>
         </div>
         <div class="panel-body">
         <div class="row btn-toolbar">
             <div>
-                <button ng-hide="$state.includes('Table.Join')" ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
+                <button ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
                     {{table.table_name}}</button>
             </div>
         </div>

@@ -1,24 +1,31 @@
 <div class="main-content">
-<div class="page-container">
-    <div class="panel">
-        <div>
-            <button ui-sref="createdb" class="btn btn-primary btn-lg">Create New Database</button>
-        </div>
-        <div class="panel-heading">
-                <h2>Access your database</h2>
-        </div>
-            <div class="row">
-                <div class="col-sm-3" ng-repeat="db in allDbs">
-                    
-                    <div class="xe-widget btn-group btn-group-justified">
-                    
+    <div class="page-container">
+        <div class="panel">
+            <!-- <span>
+            <button ui-sref="createdb" class="btn btn-primary btn">Create New Database</button>
+        </span> -->
+            <div class="panel-heading">
+                <h2 class="panel-title">Access your database</h2>
+                <div class="panel-options">
+                    <a href="#" data-toggle="panel">
+                        <span class="collapse-icon">&ndash;</span>
+                        <span class="expand-icon">+</span>
+                    </a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div>
+                    <button ui-sref="createdb" class="btn btn-primary btn">Create New Database</button>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3" ng-repeat="db in allDbs">
+                        <div class="xe-widget btn-group btn-group-justified">
                             <a type="button" ui-sref="Table({dbName: db.dbName})" class="btn btn-aero btn-icon-standalone">
                                 <i class="linecons-database"></i>
                                 <span>{{ db.name }}</span>
                             </a>
-
+                        </div>
                     </div>
-                
                 </div>
             </div>
         </div>
