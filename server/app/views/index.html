@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <base href="/" />
-    <title>Fullstack Academy Generated Application</title>
+    <title>BYODB</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/style.css" />
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
+    <link rel="stylesheet" href="assets/css/fonts/linecons/css/linecons.css">
+    <link rel="stylesheet" href="assets/css/fonts/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/xenon-core.css">
+    <link rel="stylesheet" href="assets/css/xenon-forms.css">
+    <link rel="stylesheet" href="assets/css/xenon-components.css">
+    <link rel="stylesheet" href="assets/css/xenon-skins.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+
+    <script   src="https://code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
     <script src="/lodash/index.js"></script>
     <script src="/angular/angular.js"></script>
     <script src="/angular-animate/angular-animate.js"></script>
@@ -14,8 +27,36 @@
     <script src="/socket.io-client/socket.io.js"></script>
     <script src="/main.js"></script>
 </head>
-<body ng-app="FullstackGeneratedApp">
-    <navbar></navbar>
-    <div id="main" ui-view></div>
+<body ng-app="FullstackGeneratedApp"  class="page-body skin-green">
+    <div class="page-container"><!-- add class "sidebar-collapsed" to close sidebar by default, "chat-visible" to make chat appear always -->
+    <div class="sidebar-menu toggle-others fixed">   
+    <div class="sidebar-menu-inner">
+    
+        <sidebar></sidebar>
+    
+    </div>
+    </div>
+        <ui-view></ui-view>
+        <!-- Imported styles on this page -->
+    <link rel="stylesheet" href="assets/js/datatables/dataTables.bootstrap.css">
+
+    <!-- Bottom Scripts -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/TweenMax.min.js"></script>
+    <script src="assets/js/resizeable.js"></script>
+    <script src="assets/js/joinable.js"></script>
+    <script src="assets/js/xenon-api.js"></script>
+    <script src="assets/js/xenon-toggles.js"></script>
+    <script src="assets/js/datatables/js/jquery.dataTables.min.js"></script>
+
+
+    <!-- Imported scripts on this page -->
+    <script src="assets/js/datatables/dataTables.bootstrap.js"></script>
+    <script src="assets/js/datatables/yadcf/jquery.dataTables.yadcf.js"></script>
+    <script src="assets/js/datatables/tabletools/dataTables.tableTools.min.js"></script>
+
+
+    <!-- JavaScripts initializations and stuff -->
+    <script src="assets/js/xenon-custom.js"></script>
 </body>
 </html>

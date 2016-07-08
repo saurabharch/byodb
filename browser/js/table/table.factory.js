@@ -137,5 +137,17 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
+    TableFactory.setForeignKey = function(dbName, tblName, colName, id1, id2){
+        var data = {};
+        data.dbName = dbName;
+        data.tblName = tblName;
+        data.colName = colName;
+        data.id1 = id1;
+        data.id2 = id2;
+
+        return $http.put('/api/clientdb/setForeignKey', data)
+        .then(resToData);   
+    }
+
 	return TableFactory; 
 })

@@ -20,17 +20,47 @@ router.put('/runjoin', function(req, res, next) {
     var hasMany = req.body.table1;
     var hasOne = req.body.table2;
     var hasOneForgeinKey = req.body.alias;
-
+        console.log(req.body)
     // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
     knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn)
         .then(function(result) {
+            console.log(result);
             res.send(result);
         })
         .then(function(){
             knex.destroy();
         })
+})
+
+router.put('/setForeignKey', function(req, res, next){
+    console.log(req.body);
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
+        searchPath: 'knex,public'
+    })
+
+    var updateObj = {};
+    var id1 = Number(req.body.id1);
+
+    updateObj[req.body.colName] = req.body.id2
+
+    console.log(updateObj);
+
+    var id2 = Number(req.body.id2);
+    var colName = req.body.colname;
+
+    knex(req.body.tblName).where('id', id1).update(updateObj)
+    .then(function(result){
+        console.log(result)
+        res.send(result)
+    })
+    .then(function(){
+        knex.destroy();
+    })
+
 })
 
 router.get('/columnsfortable/:dbName/:tableName', function(req, res, next) {
@@ -285,7 +315,7 @@ router.get('/primary/:dbName/:tblName', function(req, res, next) {
         searchPath: 'knex,public'
     });
 
-    knex.select('id').from(req.params.tblName)
+    knex.select().from(req.params.tblName)
         .then(function(result) {
             console.log("!!!!!!!!!!!!!!!", result)
             res.send(result)
@@ -359,8 +389,8 @@ router.put('/:dbName/:tableName', function(req, res, next) {
                     table.renameColumn(oldVal, newVal)
                 })
                 promises2.push(promise2);
-            })
-            Promise.all(promises2)
+            });
+            Promise.all(promises2);
         })
         .then(function() {
             res.sendStatus(200);
@@ -369,7 +399,8 @@ router.put('/:dbName/:tableName', function(req, res, next) {
             knex.destroy();
         })
         .catch(next);
-})
+});
+
 
 // delete row in table
 router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
@@ -469,19 +500,6 @@ router.post('/:dbName/association', function(req, res, next) {
         connection: 'postgres://localhost:5432/' + req.params.dbName,
         searchPath: 'knex,public'
     });
-    //creates the association table -- Named using DBName_assoc
-    // knex.schema.createTableIfNotExists(req.params.dbName + '_assoc', function(table) {
-    //         table.increments();
-    //         table.string('Table1');
-    //         table.string('Relationship1');
-    //         table.string('Alias1');
-    //         table.string('Table2');
-    //         table.string('Relationship2');
-    //         table.string('Alias2');
-    //         table.string('Through');
-    //     })
-    //     //inserts association data into the association table
-    //     .then(function() {
     return knex(req.params.dbName + '_assoc').insert({
             Table1: req.body.table1.table_name,
             Alias1: req.body.alias1,
@@ -495,53 +513,59 @@ router.post('/:dbName/association', function(req, res, next) {
         .then(function(result) {
             var client = new pg.Client(conString);
             client.connect(function(err) {
-                    if (err) {
-                        console.log('DATABASE FAILED TO CONNECT')
-                        res.send('database failed to connect')
-                    }
-                    //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
-                    if (req.body.type1 === 'hasOne') {
+                if (err) {
+                    console.log('DATABASE FAILED TO CONNECT')
+                    res.send('database failed to connect')
+                }
+                //Player hasOne Team -- Adds teamid column using PG sets datatype to integer <-- IMPORTANT
+                if (req.body.type1 === 'hasOne') {
 
-                        client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result) {
-                                if (err) {
-                                    console.log("ADD COLUMN FAILED", err)
-                                    res.send('Error running query')
-                                }
-                            })
-                            //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
-                            //data type on both tables need to match in order for foreign key to work
-                        knex.schema.table(req.body.table1.table_name, function(table) {
-                                table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
-                            })
-                            .then(function(result) {
-                                res.send(result);
-                            })
-                            .catch(function(err) {
-                                console.log(err);
-                            })
-                    }
-                    //need to make above work in alternate direction 
-                    if (req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne') {
-                        client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + req.body.alias2 + " integer", function(err, result) {
-                                if (err) {
-                                    console.log("ADD COLUMN FAILED", err)
-                                    res.send('Error running query')
-                                }
-                            })
-                            //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
-                            //data type on both tables need to match in order for foreign key to work
-                        knex.schema.table(req.body.table2.table_name, function(table) {
-                                table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
-                            })
-                            .then(function(result) {
-                                res.send(result);
-                            })
-                            .catch(function(err) {
-                                console.log(err);
-                            })
-                    }
+                    client.query("ALTER TABLE \"" + req.body.table1.table_name + "\" ADD COLUMN " + "\"" + req.body.alias1 + "\"" + " integer", function(err, result) {
+                            if (err) {
+                                console.log("ADD COLUMN FAILED", err)
+                                res.send('Error running query')
+                            }
+                        })
+                        //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
+                        //data type on both tables need to match in order for foreign key to work
+                    knex.schema.table(req.body.table1.table_name, function(table) {
+                            table.foreign(req.body.alias1).references('id').inTable(req.body.table2.table_name);
+                        })
+                        .then(function(result) {
+                            res.send(result);
+                        })
+                        .then(function(){
+                            knex.destroy();
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                        })
+                }
+                //need to make above work in alternate direction 
+                if (req.body.type2 === 'hasOne' && req.body.type1 !== 'hasOne') {
+                    client.query("ALTER TABLE \"" + req.body.table2.table_name + "\" ADD COLUMN " + "\"" + req.body.alias2 + "\"" + " integer", function(err, result) {
+                            if (err) {
+                                console.log("ADD COLUMN FAILED", err)
+                                res.send('Error running query')
+                            }
+                        })
+                        //Finds newly created column ('teamid') and makes it a foreign key to Teams.id
+                        //data type on both tables need to match in order for foreign key to work
+                    knex.schema.table(req.body.table2.table_name, function(table) {
+                            table.foreign(req.body.alias2).references('id').inTable(req.body.table1.table_name);
+                        })
+                        .then(function(result) {
+                            res.send(result);
+                        })
+                        .then(function(){
+                            knex.destroy();
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                        })
+                }
 
-                })
+            })
                 //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
             if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
                 return knex.schema.createTable(req.body.through, function(table) {
@@ -551,11 +575,11 @@ router.post('/:dbName/association', function(req, res, next) {
                     .then(function() {
                         res.sendStatus(200);
                     })
+                    .then(function(){
+                        knex.destroy();
+                    })
                     .catch(next);
             }
-        })
-        .then(function(){
-            knex.destroy();
         })
         .catch(next);
 })

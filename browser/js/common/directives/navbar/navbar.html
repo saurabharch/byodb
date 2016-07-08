@@ -1,4 +1,4 @@
-<nav class="navbar navbar-static-top">
+<!-- <nav class="navbar navbar-static-top">
     <div class="container">
         <div class="navbar-header">
             <fullstack-logo></fullstack-logo>
@@ -14,4 +14,71 @@
             <a ng-click="logout()">Logout</a>
         </div>
     </div>
-</nav>
+</nav> -->
+        <!-- Add "fixed" class to make the sidebar fixed always to the browser viewport. -->
+        <!-- Adding class "toggle-others" will keep only one menu item open at a time. -->
+        <!-- Adding class "collapsed" collapse sidebar root elements and show only icons. -->
+
+                
+                <header ui-sref="Home" class="logo-env">
+        
+                    <!-- logo -->
+                    <div class="logo">
+                        <a  class="logo-expanded">
+                            <img src="assets/images/BYODB-logo-black.png" width="150" alt="" />
+                        </a>
+        
+                        <a href="dashboard-1.html" class="logo-collapsed">
+                            <img src="assets/images/logo-collapsed@2x.png" width="40" alt="" />
+                        </a>
+                    </div >
+                    <div ng-show="user">
+                    <h4 class="welcome">
+                    Welcome, {{ user.email }}
+                    </h4>
+                    </div>
+
+                </header>
+                
+                
+                        
+                <ul id="main-menu" class="main-menu">
+                    <!-- add class "multiple-expanded" to allow multiple submenus to open -->
+                    <!-- class "auto-inherit-active-class" will automatically add "active" class for parent elements who are marked already with class "active" -->
+                    <li ng-show="user">
+                        <a ui-sref="Home">
+                            <i class="linecons-database"></i>
+                            <span class="title">Databases</span>
+                        </a>
+                    </li>
+                    <li ng-show="user">
+                        <a>
+                            <i class="linecons-desktop"></i>
+                            <span class="title">Table List</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <i class="linecons-note"></i>
+                            <span class="title">FAQ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <i class="linecons-star"></i>
+                            <span class="title">About</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <i class="linecons-mail"></i>
+                            <span class="title">Contact</span>
+                        </a>
+                    </li>
+                    <li  ng-show="user">
+                        <a ng-click="logout()" ui-sref="home" >
+                            <i class="linecons-database"></i>
+                            <span class="title">Logout</span>
+                        </a>
+                    </li>
+                </ul>
