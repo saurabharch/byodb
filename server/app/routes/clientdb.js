@@ -403,7 +403,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
 
 
 // delete row in table
-router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
+router.delete('/:dbName/:tableName/:rowId/:length', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
@@ -415,7 +415,23 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
         .then(function() {
             knex.select().from(req.params.tableName)
                 .then(function(foundTable) {
-                    res.send(foundTable)
+                    if(req.params.length == 0){
+                        var knex = require('knex')({
+                            client: 'pg',
+                            connection: 'postgres://localhost:5432/' + req.params.dbName,
+                            searchPath: 'knex,public'
+                        });
+                        knex(req.params.tableName)
+                            .insert({ id: 1 })
+                            .then(function(){
+                                return knex.select().from(req.params.tableName)
+                            })
+                            .then(function(theTable){
+                                res.send(theTable)
+                            })
+                    }
+                    
+                    else{ console.log('this IS FOUND TABLE', foundTable); res.send(foundTable) } 
                 })
         })
         .then(function(){

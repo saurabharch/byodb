@@ -43,15 +43,18 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     }
 
     $scope.deleteSelected = function(db, table, instanceArray) {
-        instanceArray.forEach(function(row) {
+        for(var i = instanceArray.length-1; i >= 0; i--){
+            var row = instanceArray[i];
+            var length = i;
+            console.log(row)       
             if (row.selected) {
-                TableFactory.removeRow(db, table, row['values'][0]['value'])
+                TableFactory.removeRow(db, table, row['values'][0]['value'], length)
                     .then(function(result) {
                         $scope.singleTable = result;
                         CreateRows();
                     })
             }
-        })
+        }
         $scope.showDelete = false;
     }
 
@@ -73,8 +76,9 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         }
     }
 
-    $scope.removeRow = function(db, table, row) {
-        TableFactory.removeRow(db, table, row)
+    $scope.removeRow = function(db, table, row, instanceArray) {
+        var length = instanceArray.length - 1;
+        TableFactory.removeRow(db, table, row, length)
             .then(function(result) {
                 $scope.singleTable = result;
                 CreateRows();
