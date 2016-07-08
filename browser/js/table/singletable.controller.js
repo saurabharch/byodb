@@ -397,6 +397,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
       var modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,
+        backdrop: false,
         templateUrl: 'js/table/association.modal.html',
         controller: 'AssociationInstanceCtrl',
         resolve: {
