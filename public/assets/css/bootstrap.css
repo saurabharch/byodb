@@ -8,3 +8,7 @@
 ::-webkit-input-placeholder {
   color: black;
 }
+
+.modal-backdrop {
+	position: relative;
+}
