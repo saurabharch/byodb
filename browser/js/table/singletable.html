@@ -87,7 +87,7 @@
                         <tr ng-repeat="row in instanceArray">
                             <td ng-show="showDelete">
                                 <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
-                                <button type="button" ng-click="removeRow(theDbName, theTableName, row['values'][0]['value'])" class="btn btn-sm btn-danger">x</button>
+                                <button type="button" ng-click="removeRow(theDbName, theTableName, row['values'][0]['value'], instanceArray)" class="btn btn-sm btn-danger">x</button>
                             </td>
                             <td>{{row.values[0].value}}</td>
                             <td ng-repeat="value in row.values track by $index" ng-if="$index >= myIndex">

@@ -73,8 +73,9 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         }
     }
 
-    $scope.removeRow = function(db, table, row) {
-        TableFactory.removeRow(db, table, row)
+    $scope.removeRow = function(db, table, row, instanceArray) {
+        var length = instanceArray.length - 1;
+        TableFactory.removeRow(db, table, row, length)
             .then(function(result) {
                 $scope.singleTable = result;
                 CreateRows();
