@@ -133,7 +133,7 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
     })
 
     knex(req.params.dbName + '_assoc').where(function() {
-            this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
+            this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName).orWhere('Through', req.params.tableName)
         })
         .then(function(result) {
             res.send(result);
