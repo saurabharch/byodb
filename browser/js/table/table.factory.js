@@ -123,6 +123,8 @@ app.factory('TableFactory', function ($http, $stateParams) {
             }
         })
 
+        console.log('DATA',data);
+
         return $http.put('/api/clientdb/runjoin', data)
         .then(resToData);
     }

@@ -381,6 +381,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         }
         TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations, columnsToReturn)
             .then(function(queryResult) {
+                console.log('QUERYRRESULT', queryResult);
                 $scope.queryResult = queryResult;
             })
             .then(function() {
