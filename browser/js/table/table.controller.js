@@ -29,9 +29,6 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 	$scope.makeAssociations = function(association, dbName) {
 		$scope.submitted = true;
 		TableFactory.makeAssociations(association, dbName)
-		// .then(function() {
-		// 	$state.go('Table', {dbName : $scope.dbName}, {reload:true});
-		// })
 	} 
 
 	$scope.wherebetween = function(condition) {
@@ -52,31 +49,6 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 	}
 
 	$scope.selectedAssoc = {};
-
-	// $scope.getAssociated = function(tableName) {
-	// 	$scope.associations.forEach(function(row){
-	// 		if(!$scope.selectedAssoc[tableName]){ 
-	// 			$scope.selectedAssoc[tableName] = [];
-	// 		}
-	// 		if(row.Table1 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table2) == -1){
-	// 			$scope.selectedAssoc[tableName].push(row.Table2);
-	// 		}
-	// 		else if(row.Table2 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table1) == -1){
-	// 			$scope.selectedAssoc[tableName].push(row.Table1);	
-	// 		} 
-	// 	})
-	// }
-
-	// $scope.currentTableAssociations = [];
-
-	// associations.forEach(function(row){
-	// 	if(row.Table1 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table2) == -1){
-	// 		$scope.currentTableAssociations.push(row.Table2);
-	// 	}
-	// 	else if(row.Table2 === tableName && $scope.selectedAssoc[tableName].indexOf(row.Table1) == -1){
-	// 		$scope.selectedAssoc[tableName].push(row.Table1);	
-	// 	} 
-	// })
 
 	$scope.submitQuery = TableFactory.submitQuery;
 

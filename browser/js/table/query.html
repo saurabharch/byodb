@@ -5,7 +5,6 @@
             <label>Search Your Table</label>
                 <input ng-model="searchValue"></input>
             </form>
-            <!-- <button type="submit" class="btn btn-primary">Submit query</button> -->
         </div>
     </div>
 
@@ -15,20 +14,19 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th ng-repeat="(_key_, _value_) in queryResult[0] track by $index">
-                            <input placeholder="{{_key_}}" ng-model='newColumnName' type="text" class="form-control">
+                        <th ng-repeat="columnName in queryResult[queryResult.length-1] track by $index">
+                            <input placeholder="{{columnName}}" ng-model='newColumnName' type="text" class="form-control">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="row in queryResult track by $index" ng-show="qFilter(searchValue, row)">
+                    <tr ng-repeat="row in queryResult track by $index" ng-show="qFilter(searchValue, row)" ng-if="$index<queryResult.length-1">
                         <td ng-show="showDelete">
                             <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
                             <button type="button" ng-click="removeRow(theDbName, theTableName, row[0])" class="btn btn-sm btn-danger">x</button>
                         </td>
-                        <!-- <td ng-show="row.values[0].display">{{row.values[0].value}}</td> -->
-                        <td ng-repeat="(_key_, _value_) in row track by $index">
-                            <input placeholder="{{_value_}}" ng-model='newCell' type="text">
+                        <td ng-repeat="value in row track by $index" ng-if="$index<queryResult.length">
+                            <input placeholder="{{value}}" ng-model='newCell' type="text">
                     </tr>
                 </tbody>
             </table>
