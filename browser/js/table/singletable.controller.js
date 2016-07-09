@@ -10,7 +10,6 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     if($scope.associations.length>0) {
         if($scope.associations[0]['Through'] === $stateParams.tableName) {
-            console.log('HELLO');
             $state.go('Table.Through', {dbName : $stateParams.dbName, tableName : $stateParams.tableName})
         }
     }

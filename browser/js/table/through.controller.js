@@ -30,6 +30,7 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
+
         $scope.instanceArray = [];
         $scope.singleTable.forEach(function(row) {
             var rowValues = [];
@@ -76,7 +77,14 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
     };
 
     $scope.newRow = function(db, table) {
-       TableFactory.increment(db, table);
+       TableFactory.increment(db, table)
+       .then(function(result) {
+        console.log(result);
+        $scope.instanceArray = result;
+         // CreateColumns();
+         // CreateRows();
+         $scope.$evalAsync();
+       })
     }
 
 })

@@ -12,15 +12,26 @@ module.exports = router;
 
 router.put('/:dbName/:tableName/addrowonjoin', function(req, res, next) {
     var knex = require('knex')({
-        client: 'pg',
-        connection: 'postgres://localhost:5432/' + req.params.dbName,
-        searchPath: 'knex,public'
-    })
-    console.log('REQPARAMS', req.params);
-    knex(req.params.tableName).insert()
-    .then(function(result) {
-        res.send(result);
-    })
+      client: 'pg',
+      connection: 'postgres://localhost:5432/' + req.params.dbName,
+      searchPath: 'knex,public'
+  })
+
+  knex.select().from(req.params.tableName).options({ rowMode: 'array' })
+      .then(function(result) {
+          var max = 0;
+          result.forEach(function(arr) {
+              if (arr[0] > max) max = arr[0];
+          })
+          max++;
+          knex(req.params.tableName).insert({ id: max })
+          .then(function() {
+              knex.select().from(req.params.tableName).options({ rowMode: 'array' })
+              .then(function(instanceArr) {
+                  res.send(instanceArr);
+              })
+          })
+      })
     .catch(next);
 })
 
