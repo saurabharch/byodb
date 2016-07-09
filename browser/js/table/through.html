@@ -2,8 +2,8 @@
 <!-- <pre> {{allTables | json }}</pre>
 <pre> {{allColumns | json }}</pre>
 <pre> {{columns| json }}</pre> -->
-<!-- <pre> {{singleTable | json }}</pre>
-<pre> {{instanceArray| json }}</pre> -->
+<!-- <pre> {{singleTable | json }}</pre> -->
+<!-- <pre> {{instanceArray| json }}</pre> -->
 <!-- <pre> {{columns | json }}</pre>
 <pre> {{twoTables | json }}</pre> -->
 <!-- <pre> {{theDbName | json }}</pre>
@@ -25,11 +25,21 @@
             <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th ng-repeat="column in columns track by $index">{{column}}</th>
+                      <th ng-show="showDelete">
+                                <button type="button" class="btn btn-danger" ng-click="deleteSelected(theDbName, tableName, instanceArray)">Delete Selected</button>
+                                <label> Select All
+                                    <input type="checkbox" ng-model="selectedAll" ng-click="selectAll(instanceArray)">
+                                </label>
+                            </th>
+                        <th ng-repeat="column in columns track by $index">{{column}} </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="row in instanceArray">
+                    <tr ng-repeat="row in instanceArray track by $index">
+                     <td ng-show="showDelete">
+                                <input type="checkbox" ng-model="row.selected" ng-click="uncheckSelectAll(instanceArray)">
+                                <button type="button" ng-click="removeRow(theDbName, tableName, row[0])" class="btn btn-sm btn-danger">x</button>
+                            </td>
                         <td ng-repeat="value in row track by $index">
                         <span>{{value}}</span>
                         <button ng-if="$index>0" class="glyphicon glyphicon-th" ng-click="open(theDbName, tableName, $index, row[0], columns[$index])"></button>

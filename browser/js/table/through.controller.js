@@ -81,10 +81,53 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
        .then(function(result) {
         console.log(result);
         $scope.instanceArray = result;
-         // CreateColumns();
-         // CreateRows();
-         $scope.$evalAsync();
+        $scope.$evalAsync();
        })
+    }
+
+    //delete a row 
+    $scope.showDelete = false;
+    $scope.toggleDelete = function() {
+        $scope.showDelete = !$scope.showDelete
+    }
+
+    $scope.deleteSelected = function(db, table, instanceArray) {
+        instanceArray.forEach(function(row) {
+            if (row.selected) {
+                TableFactory.removeRow(db, table, row[0])
+                    .then(function(result) {
+                        $scope.singleTable = result;
+                        CreateRows();
+                    })
+            }
+        })
+        $scope.showDelete = false;
+    }
+
+    $scope.selectAll = function(instanceArray) {
+        if ($scope.selectedAll) {
+            instanceArray.forEach(function(row) {
+                row.selected = true;
+            })
+        } else {
+            instanceArray.forEach(function(row) {
+                row.selected = false;
+            })
+        }
+    }
+
+    $scope.uncheckSelectAll = function(instanceArray) {
+        if ($scope.selectedAll === true) {
+            $scope.selectedAll = false;
+        }
+    }
+
+    $scope.removeRow = function(db, table, row) {
+        TableFactory.removeRow(db, table, row)
+            .then(function(result) {
+                $scope.singleTable = result;
+                CreateRows();
+            })
     }
 
 })
