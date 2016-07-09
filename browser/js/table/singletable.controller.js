@@ -4,15 +4,21 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
     $scope.theDbName = $stateParams.dbName;
     $scope.theTableName = $stateParams.tableName;
-    $scope.singleTable = singleTable[0];
+    $scope.singleTable = singleTable[0].sort(function(a, b){
+        if(a.id > b.id) return 1;
+        if(a.id < b.id) return -1;
+        return 0;
+    });
     $scope.selectedAll = false;
     $scope.associations = associations;
+
 
     if($scope.associations.length>0) {
         if($scope.associations[0]['Through'] === $stateParams.tableName) {
             $state.go('Table.Through', {dbName : $stateParams.dbName, tableName : $stateParams.tableName})
         }
     }
+
 
     function foreignColumnObj() {
         var foreignCols = {};
@@ -399,6 +405,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
 
       var modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,
+        backdrop: false,
         templateUrl: 'js/table/association.modal.html',
         controller: 'AssociationInstanceCtrl',
         resolve: {
@@ -433,5 +440,16 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.toggleAnimation = function () {
       $scope.animationsEnabled = !$scope.animationsEnabled;
     };
+
+    $scope.filteredRows=[];
+    $scope.currentPage=1;
+    $scope.numPerPage=10;
+    $scope.maxSize=5;
+
+    $scope.$watch("currentPage + numPerPage", function(){
+        var begin = (($scope.currentPage - 1) * $scope.numPerPage);
+        var end = begin + $scope.numPerPage;
+        $scope.filteredRows = $scope.instanceArray.slice(begin, end);
+    })
 
 });
