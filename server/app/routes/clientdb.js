@@ -35,6 +35,35 @@ router.put('/runjoin', function(req, res, next) {
         })
 })
 
+router.put('/updateJoinTable', function(req, res, next) {
+    console.log('REQBODY', req.body);
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
+        searchPath: 'knex,public'
+    })
+
+
+    var columnToUpdate = req.body.columnName;  
+    var tableToUpdate = req.body.tableToUpdate;
+    var updateObj = {};
+    updateObj[columnToUpdate] = req.body.newRow;
+
+    console.log('COLTOUPDATE', columnToUpdate);
+    console.log('NEWROW', req.body.newRow)
+    console.log(updateObj);
+
+    knex(tableToUpdate).where('id', req.body.rowId).update(updateObj)
+    .then(function(result) {
+        console.log('RESULT', result);
+        res.send(result);
+    })
+    .then(function() {
+        knex.destroy();
+    })
+
+})
+
 router.put('/setForeignKey', function(req, res, next){
     console.log(req.body);
     var knex = require('knex')({
@@ -569,8 +598,14 @@ router.post('/:dbName/association', function(req, res, next) {
                 //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
             if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
                 return knex.schema.createTable(req.body.through, function(table) {
-                        table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
-                        table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
+                        table.increments();
+                        table.integer(req.body.alias2).references('id').inTable(req.body.table1.table_name);
+                        table.integer(req.body.alias1).references('id').inTable(req.body.table2.table_name);
+                    })
+                    .then(function() {
+                        return knex(req.body.through).insert([
+                            { id: 1 },
+                        ]);
                     })
                     .then(function() {
                         res.sendStatus(200);

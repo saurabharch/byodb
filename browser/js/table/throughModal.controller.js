@@ -1,33 +1,36 @@
-app.controller('ThroughModalCtrl', function ($scope, $uibModalInstance, TableFactory, HomeFactory, $stateParams, $state, theTable) {
+app.controller('ThroughModalCtrl', function($scope, $uibModalInstance, TableFactory, HomeFactory, $stateParams, $state, theTable, tableName, rowId, columnName) {
 
-  $scope.dbName = $stateParams.dbName;
+    $scope.dbName = $stateParams.dbName;
 
-  $scope.singleTable = theTable;
+    $scope.singleTable = theTable;
 
-  
+    $scope.tableName = tableName;
 
-  $scope.setSelected = function(){
+    $scope.rowId = rowId;
 
-    $scope.currRow = this.row;
-    console.log($scope.currRow);
-  }
+    $scope.columnName = columnName;
 
- 
+    $scope.setSelected = function() {
 
-  function CreateColumns(){
-    $scope.columns = [];
-    var table = $scope.singleTable[0];
-
-
-    for(var prop in table){
-      if(prop !== 'created_at' && prop !== 'updated_at'){
-        $scope.columns.push(prop);  
-      } 
+        $scope.currRow = this.row;
+        // console.log('HERE', $scope.currRow);
     }
-  }
+
+
+    // console.log($scope.singleTable[0])
+    function CreateColumns() {
+        $scope.columns = [];
+        var table = $scope.singleTable[0][0];
+
+
+        for (var prop in table) {
+            if (prop !== 'created_at' && prop !== 'updated_at') {
+                $scope.columns.push(prop);
+            }
+        }
+    }
 
     CreateColumns();
-
 
     //this function will re run when the filter function is invoked, in order to repopulate the table
     function CreateRows() {
@@ -45,21 +48,23 @@ app.controller('ThroughModalCtrl', function ($scope, $uibModalInstance, TableFac
     CreateRows();
 
 
-  $scope.setForeignKey = function(dbName, tblName, colName, id1, id2){
-    $uibModalInstance.close();
-    TableFactory.setForeignKey(dbName, tblName, colName, id1, id2)
-    .then(function(){
-        $state.go('Table.Single', { dbName: $scope.dbName, tableName: $scope.singleTable }, { reload: true })
-    })
-  }
+    $scope.setForeignKey = function(dbName, tblName, rowId, newRow) {
+        $uibModalInstance.close();
+        console.log('HERE', $scope.columnName);
+        console.log(dbName, tblName, rowId, newRow, $stateParams.tableName)
+        TableFactory.updateJoinTable(dbName, tblName, rowId, newRow, $stateParams.tableName, $scope.columnName);
+            // .then(function() {
+            //     // $state.go('Table.Single', { dbName: $scope.dbName, tableName: $scope.singleTable }, { reload: true })
+            // })
+    }
 
 
 
-  $scope.ok = function () {
-    $uibModalInstance.close($scope.selected.item);
-  };
+    $scope.ok = function() {
+        $uibModalInstance.close($scope.selected.item);
+    };
 
-  $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
 });

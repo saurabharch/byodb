@@ -10,7 +10,7 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
         $scope.associations.forEach(function(assoc) {
             if (assoc['Through'] === $stateParams.tableName) {
                 $scope.twoTables.push(assoc['Table1']);
-                $scope.twoTables.push(assoc['Table2']);
+                $scope.twoTables.push(assoc['Table2']); //here - come back
             }
         })
     }
@@ -45,8 +45,11 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
 
     // $scope.animationsEnabled = true;
 
-    $scope.open = function(dbName, tableName, index) {
-        var theTable = $scope.twoTables[index];
+    $scope.open = function(dbName, tableName, index, row, columnName) {
+        console.log(dbName, tableName, index, row, columnName);
+        var theTable = $scope.twoTables[index-1];
+        console.log('twoTables', $scope.twoTables);
+        console.log('theTable', theTable);
 
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
@@ -55,7 +58,10 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
             resolve: {
                 theTable: function(TableFactory) {
                     return TableFactory.getSingleTable(dbName, theTable);
-                }
+                },
+                tableName : function() { return theTable },
+                rowId : function() { return row },
+                columnName : function() { return columnName }
             }
         });
 

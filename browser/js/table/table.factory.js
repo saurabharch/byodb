@@ -151,5 +151,18 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);   
     }
 
+    TableFactory.updateJoinTable = function(dbName, tableName, id, newRow, tableToUpdate, columnName) {
+        var data = {};
+        data.dbName = dbName;
+        data.tblName = tableName;
+        data.rowId = id;
+        data.newRow = newRow;
+        data.tableToUpdate = tableToUpdate;
+        data.columnName = columnName;
+       
+       return $http.put('/api/clientdb/updateJoinTable', data)
+       .then(resToData);  
+    }
+
 	return TableFactory; 
 })
