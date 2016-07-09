@@ -448,4 +448,10 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         $scope.filteredRows = $scope.instanceArray.slice(begin, end);
     })
 
+    $scope.$watch("instanceArray", function(){
+        var begin = (($scope.currentPage - 1) * $scope.numPerPage);
+        var end = begin + $scope.numPerPage;
+        $scope.filteredRows = $scope.instanceArray.slice(begin, end);
+    })    
+
 });
