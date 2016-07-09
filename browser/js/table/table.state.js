@@ -41,6 +41,17 @@ app.config(function ($stateProvider) {
         }
     });
 
+    $stateProvider.state('Table.Through', {
+        url: '/:tableName/through',
+        templateUrl: 'js/table/through.html',
+        controller: 'ThroughCtrl', 
+        resolve: {
+            singleTable: function(TableFactory, $stateParams) {
+                return TableFactory.getSingleTable($stateParams.dbName, $stateParams.tableName);
+            }
+        }
+    });  
+
     $stateProvider.state('Table.create', {
         url: '/createtable',
         templateUrl: 'js/table/createtable.html',
@@ -58,5 +69,6 @@ app.config(function ($stateProvider) {
         templateUrl: 'js/table/query.html',
         controller: 'QueryTableCtrl'
     });     
+
 
 });

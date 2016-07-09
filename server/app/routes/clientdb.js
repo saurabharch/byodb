@@ -10,6 +10,33 @@ var pg = require('pg');
 
 module.exports = router;
 
+//add row on join tables
+router.put('/:dbName/:tableName/addrowonjoin', function(req, res, next) {
+    var knex = require('knex')({
+      client: 'pg',
+      connection: 'postgres://localhost:5432/' + req.params.dbName,
+      searchPath: 'knex,public'
+  })
+
+  knex.select().from(req.params.tableName).options({ rowMode: 'array' })
+      .then(function(result) {
+          var max = 0;
+          result.forEach(function(arr) {
+              if (arr[0] > max) max = arr[0];
+          })
+          max++;
+          knex(req.params.tableName).insert({ id: max })
+          .then(function() {
+              knex.select().from(req.params.tableName).options({ rowMode: 'array' })
+              .then(function(instanceArr) {
+                  res.send(instanceArr);
+              })
+          })
+      })
+    .catch(next);
+})
+
+//run query and join table
 router.put('/runjoin', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -17,21 +44,51 @@ router.put('/runjoin', function(req, res, next) {
         searchPath: 'knex,public'
     })
 
-    var hasMany = req.body.table1;
-    var hasOne = req.body.table2;
-    var hasOneForgeinKey = req.body.alias;
+    var hasMany = req.body.table1; 
+    var hasOne = req.body.table2; 
+    var hasOneForgeinKey = req.body.alias; 
         console.log(req.body)
     // [hasMany, hasOne, hasMany primary key, hasOne forgein key]
     // knex('Teams').join('Players', 'Teams.id', '=', 'Players.TeamId').select('*')
     // select * from "Teams" inner join "Players" on "Teams"."id" = "Teams"."PlayerId" - column Teams.PlayerId does not exist
-    knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn)
+    knex(hasMany).join(hasOne, hasMany + '.id', '=', hasOne + '.' + hasOneForgeinKey).select(req.body.colsToReturn).options({rowMode : 'array'})
         .then(function(result) {
-            console.log(result);
+            result.push(req.body.colsToReturn)
+            console.log('RESULT', result);
             res.send(result);
         })
         .then(function(){
             knex.destroy();
         })
+})
+
+//update data in join table
+router.put('/updateJoinTable', function(req, res, next) {
+    console.log('REQBODY', req.body);
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
+        searchPath: 'knex,public'
+    })
+
+
+    var columnToUpdate = req.body.columnName;  
+    var tableToUpdate = req.body.tableToUpdate;
+    var updateObj = {};
+    updateObj[columnToUpdate] = req.body.newRow;
+
+    console.log('COLTOUPDATE', columnToUpdate);
+    console.log('NEWROW', req.body.newRow)
+    console.log(updateObj);
+
+    knex(tableToUpdate).where('id', req.body.rowId).update(updateObj)
+    .then(function(result) {
+        console.log('RESULT', result);
+        res.send(result);
+    })
+    .then(function() {
+        knex.destroy();
+    })
 })
 
 // delete column in table
@@ -154,7 +211,7 @@ router.get('/associationtable/:dbName/:tableName', function(req, res, next) {
     })
 
     knex(req.params.dbName + '_assoc').where(function() {
-            this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName)
+            this.where('Table1', req.params.tableName).orWhere('Table2', req.params.tableName).orWhere('Through', req.params.tableName)
         })
         .then(function(result) {
             res.send(result);
@@ -339,7 +396,6 @@ router.get('/primary/:dbName/:tblName', function(req, res, next) {
 
     knex.select().from(req.params.tblName)
         .then(function(result) {
-            console.log("!!!!!!!!!!!!!!!", result)
             res.send(result)
         })
         .then(function(){
@@ -585,8 +641,14 @@ router.post('/:dbName/association', function(req, res, next) {
                 //creates a join table for now-- have to figure out away to make foreign key/associations align in the database 
             if (req.body.type1 === 'hasMany' && req.body.type2 === 'hasMany') {
                 return knex.schema.createTable(req.body.through, function(table) {
-                        table.integer(req.body.alias1).references('id').inTable(req.body.table1.table_name);
-                        table.integer(req.body.alias2).references('id').inTable(req.body.table2.table_name);
+                        table.increments();
+                        table.integer(req.body.alias2).references('id').inTable(req.body.table1.table_name);
+                        table.integer(req.body.alias1).references('id').inTable(req.body.table2.table_name);
+                    })
+                    .then(function() {
+                        return knex(req.body.through).insert([
+                            { id: 1 },
+                        ]);
                     })
                     .then(function() {
                         res.sendStatus(200);

@@ -13,6 +13,13 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
     $scope.associations = associations;
 
 
+    if($scope.associations.length>0) {
+        if($scope.associations[0]['Through'] === $stateParams.tableName) {
+            $state.go('Table.Through', {dbName : $stateParams.dbName, tableName : $stateParams.tableName})
+        }
+    }
+
+
     function foreignColumnObj() {
         var foreignCols = {};
         $scope.associations.forEach(function(row) {
@@ -388,6 +395,7 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         }
         TableFactory.runJoin($scope.theDbName, $scope.theTableName, $scope.tablesToQuery, $scope.selectedColumns, $scope.associations, columnsToReturn)
             .then(function(queryResult) {
+                console.log('QUERYRRESULT', queryResult);
                 $scope.queryResult = queryResult;
             })
             .then(function() {

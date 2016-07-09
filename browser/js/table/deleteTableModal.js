@@ -34,7 +34,7 @@ app.controller('DeleteDbInstanceCtrl', function ($scope, $uibModalInstance, item
 
   $scope.delete = function () {
     TableFactory.deleteDb($scope.dbName)
-    // $state.go('Home', {}, {reload : true})
+    $state.go('Home', {}, {reload : true})
   };
 
   $scope.cancel = function () {
