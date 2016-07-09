@@ -74,4 +74,9 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
     $scope.toggleAnimation = function() {
         $scope.animationsEnabled = !$scope.animationsEnabled;
     };
+
+    $scope.newRow = function(db, table) {
+       TableFactory.increment(db, table);
+    }
+
 })

@@ -10,6 +10,20 @@ var pg = require('pg');
 
 module.exports = router;
 
+router.put('/:dbName/:tableName/addrowonjoin', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    })
+    console.log('REQPARAMS', req.params);
+    knex(req.params.tableName).insert()
+    .then(function(result) {
+        res.send(result);
+    })
+    .catch(next);
+})
+
 router.put('/runjoin', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',

@@ -6,7 +6,16 @@
 <pre> {{tableName | json }}</pre>
 <pre> {{columns | json }}</pre>
 <pre> {{twoTables | json }}</pre> -->
+<!-- <pre> {{theDbName | json }}</pre>
+<pre> {{tableName | json }}</pre> -->
 
+
+<div>
+    <div class="row">
+        <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
+        <button ng-click="newRow(theDbName, tableName)" type="submit" class="btn btn-default">Add Row</button>
+    </div>
+</div>
 
 
 

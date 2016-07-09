@@ -164,5 +164,10 @@ app.factory('TableFactory', function ($http, $stateParams) {
        .then(resToData);  
     }
 
+    TableFactory.increment = function(dbName, tableName) {
+        return $http.put('/api/clientdb/'+ dbName + '/' + tableName +'/addrowonjoin')
+        .then(resToData);
+    }
+
 	return TableFactory; 
 })
