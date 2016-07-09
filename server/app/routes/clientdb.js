@@ -10,6 +10,7 @@ var pg = require('pg');
 
 module.exports = router;
 
+//add row on join tables
 router.put('/:dbName/:tableName/addrowonjoin', function(req, res, next) {
     var knex = require('knex')({
       client: 'pg',
@@ -35,6 +36,7 @@ router.put('/:dbName/:tableName/addrowonjoin', function(req, res, next) {
     .catch(next);
 })
 
+//run query and join table
 router.put('/runjoin', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
@@ -60,6 +62,7 @@ router.put('/runjoin', function(req, res, next) {
         })
 })
 
+//update data in join table
 router.put('/updateJoinTable', function(req, res, next) {
     console.log('REQBODY', req.body);
     var knex = require('knex')({
@@ -86,7 +89,28 @@ router.put('/updateJoinTable', function(req, res, next) {
     .then(function() {
         knex.destroy();
     })
+})
 
+// delete column in table
+router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next) {
+    var knex = require('knex')({
+        client: 'pg',
+        connection: 'postgres://localhost:5432/' + req.params.dbName,
+        searchPath: 'knex,public'
+    });
+    knex.schema.table(req.params.tableName, function(table) {
+            table.dropColumn(req.params.columnName)
+        })
+        .then(function(res) {
+            return knex.select().from(req.params.tableName)
+        })
+        .then(function(foundTable) {
+            res.send(foundTable)
+        })
+        .then(function(){
+            knex.destroy();
+        })
+        .catch(next);
 })
 
 router.put('/setForeignKey', function(req, res, next){
@@ -457,7 +481,7 @@ router.put('/:dbName/:tableName', function(req, res, next) {
 
 
 // delete row in table
-router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
+router.delete('/:dbName/:tableName/:rowId/:length', function(req, res, next) {
     var knex = require('knex')({
         client: 'pg',
         connection: 'postgres://localhost:5432/' + req.params.dbName,
@@ -469,30 +493,24 @@ router.delete('/:dbName/:tableName/:rowId', function(req, res, next) {
         .then(function() {
             knex.select().from(req.params.tableName)
                 .then(function(foundTable) {
-                    res.send(foundTable)
+                    if(req.params.length == 0){
+                        var knex = require('knex')({
+                            client: 'pg',
+                            connection: 'postgres://localhost:5432/' + req.params.dbName,
+                            searchPath: 'knex,public'
+                        });
+                        knex(req.params.tableName)
+                            .insert({ id: 1 })
+                            .then(function(){
+                                return knex.select().from(req.params.tableName)
+                            })
+                            .then(function(theTable){
+                                res.send(theTable)
+                            })
+                    }
+                    
+                    else{ console.log('this IS FOUND TABLE', foundTable); res.send(foundTable) } 
                 })
-        })
-        .then(function(){
-            knex.destroy();
-        })
-        .catch(next);
-})
-
-// delete column in table
-router.delete('/:dbName/:tableName/column/:columnName', function(req, res, next) {
-    var knex = require('knex')({
-        client: 'pg',
-        connection: 'postgres://localhost:5432/' + req.params.dbName,
-        searchPath: 'knex,public'
-    });
-    knex.schema.table(req.params.tableName, function(table) {
-            table.dropColumn(req.params.columnName)
-        })
-        .then(function(res) {
-            return knex.select().from(req.params.tableName)
-        })
-        .then(function(foundTable) {
-            res.send(foundTable)
         })
         .then(function(){
             knex.destroy();

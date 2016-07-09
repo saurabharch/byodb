@@ -35,8 +35,8 @@ app.factory('TableFactory', function ($http, $stateParams) {
         .then(resToData);
     }
 
-    TableFactory.removeRow = function(dbName, tableName, rowId){
-        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId)
+    TableFactory.removeRow = function(dbName, tableName, rowId, length){
+        return $http.delete('/api/clientdb/' + dbName + '/' + tableName + '/' + rowId + '/' + length)
         .then(resToData)
     }
 
