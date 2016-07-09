@@ -460,6 +460,10 @@ app.controller('SingleTableCtrl', function($scope, TableFactory, $stateParams, s
         var begin = (($scope.currentPage - 1) * $scope.numPerPage);
         var end = begin + $scope.numPerPage;
         $scope.filteredRows = $scope.instanceArray.slice(begin, end);
-    })    
+    })
+
+    $scope.csv = function(table){
+        alasql("SELECT * INTO CSV('mydata.csv', {headers:true}) FROM ?",[table]);
+    }    
 
 });
