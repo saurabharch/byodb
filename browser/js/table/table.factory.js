@@ -123,6 +123,8 @@ app.factory('TableFactory', function ($http, $stateParams) {
             }
         })
 
+        console.log('DATA',data);
+
         return $http.put('/api/clientdb/runjoin', data)
         .then(resToData);
     }
@@ -147,6 +149,24 @@ app.factory('TableFactory', function ($http, $stateParams) {
 
         return $http.put('/api/clientdb/setForeignKey', data)
         .then(resToData);   
+    }
+
+    TableFactory.updateJoinTable = function(dbName, tableName, id, newRow, tableToUpdate, columnName) {
+        var data = {};
+        data.dbName = dbName;
+        data.tblName = tableName;
+        data.rowId = id;
+        data.newRow = newRow;
+        data.tableToUpdate = tableToUpdate;
+        data.columnName = columnName;
+       
+       return $http.put('/api/clientdb/updateJoinTable', data)
+       .then(resToData);  
+    }
+
+    TableFactory.increment = function(dbName, tableName) {
+        return $http.put('/api/clientdb/'+ dbName + '/' + tableName +'/addrowonjoin')
+        .then(resToData);
     }
 
 	return TableFactory; 
