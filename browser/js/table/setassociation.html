@@ -1,45 +1,57 @@
 <div class="panel" ng-hide="$state.includes('Table.Single')" ng-hide="$state.includes('Table.Join')">
-    <div class="row">
-        <div class="panel-heading">
-            <label>Set Associations Between Tables</label>
+    <div class="panel-heading">
+        <label>Set Associations Between Tables</label>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">Relation 1</h4>
+                            <p class="list-group-item-text">
+                                <span>Table 1</span>
+                                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
+                                </select>
+                                <select ng-model="association.type1" ng-options="association as association for association in associationTypes">
+                                </select>
+                                <span>Table 2</span>
+                                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
+                                </select>
+                                <span>AS</span>
+                                <input ng-model="association.alias1">
+                            </p>
+                        </div>
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">Relation 2</h4>
+                            <p class="list-group-item-text">
+                                <span>Table 2</span>
+                                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
+                                </select>
+                                <select ng-model="association.type2" ng-options="association as association for association in associationTypes">
+                                </select>
+                                <span>Table 1</span>
+                                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
+                                </select>
+                                <span>AS</span>
+                                <input ng-model="association.alias2">
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <div ng-show="association.type1 === 'hasMany' && association.type2 === 'hasMany'">
+                            <span>Join Table Name:</span>
+                            <span><input ng-model="association.through"></span>
+                        </div>
+                    </div>
+                    <div>
+                    <button type="submit" class="btn btn-primary" id="btn-assoc">Make association</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form ng-model="association" ng-submit="makeAssociations(association, dbName)">
-            <div>
-                <span>Relation 1 -->  </span>
-                <span>Table 1</span>
-                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
-                </select>
-                <select ng-model="association.type1" ng-options="association as association for association in associationTypes">
-                </select>
-                <span>Table 2</span>
-                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
-                </select>
-                <span>AS</span>
-                <input ng-model="association.alias1">
-            </div>
-            <div>
-                <span>Relation 2 -->  </span>
-                <span>Table 2</span>
-                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table2">
-                </select>
-                <select ng-model="association.type2" ng-options="association as association for association in associationTypes">
-                </select>
-                <span>Table 1</span>
-                <select ng-options="table as table.table_name for table in allTables.rows track by table.table_name" ng-model="association.table1">
-                </select>
-                <span>AS</span>
-                <input ng-model="association.alias2">
-            </div>
-
-            <div ng-show="association.type1 === 'hasMany' && association.type2 === 'hasMany'">
-                <span>Through:</span>
-                <input ng-model="association.through">
-            </div>
-            <button type="submit" class="btn btn-primary">Make association</button>
-        </form>
     </div>
 </div>
-
 <div ng-show="submitted">
     <p>Your association has been successfully created!</p>
 </div>
