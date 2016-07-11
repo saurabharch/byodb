@@ -52,4 +52,8 @@ app.controller('TableCtrl', function ($scope, allTables, $state, TableFactory, $
 
 	$scope.submitQuery = TableFactory.submitQuery;
 
+	$scope.assoctable = function (tableName){
+		return tableName === $stateParams.dbName+"_assoc";
+	}
+
 });

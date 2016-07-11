@@ -13,7 +13,7 @@
         <div class="panel-body">
         <div class="row btn-toolbar">
             <div>
-                <button ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary">
+                <button ng-repeat="table in allTables.rows" ui-sref="Table.Single({tableName: table.table_name})" class="btn btn-primary" ng-hide="assoctable(table.table_name)">
                     {{table.table_name}}</button>
             </div>
         </div>
