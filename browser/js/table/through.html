@@ -10,16 +10,15 @@
 <pre> {{tableName | json }}</pre> -->
 
 
-<div>
-    <div class="row">
-        <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
-        <button ng-click="newRow(theDbName, tableName)" type="submit" class="btn btn-default">Add Row</button>
-    </div>
-</div>
-
-
-
 <div class="panel">
+    <div>
+        <div class="row">
+            <button ng-click="toggleDelete()" type="submit" class="btn btn-primary">Delete Mode</button>
+            <button ng-click="newRow(theDbName, tableName)" type="submit" class="btn btn-default">Add Row</button>
+            <button type="submit" class="btn btn-primary btn-csv" ng-click="csv(singleTable)">Download CSV</button>
+        </div>
+    </div>
+
     <div class="panel-body">
         <div class="row">
             <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" style="width: 100%;">

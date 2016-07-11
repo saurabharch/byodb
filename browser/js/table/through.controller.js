@@ -130,4 +130,8 @@ app.controller('ThroughCtrl', function($scope, TableFactory, $stateParams, assoc
             })
     }
 
+    $scope.csv = function(table){
+        alasql("SELECT * INTO CSV('mydata.csv', {headers:true}) FROM ?",[table]);
+    }    
+
 })

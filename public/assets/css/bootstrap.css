@@ -12,3 +12,7 @@
 .modal-backdrop {
 	position: relative;
 }
+
+.query {
+	padding-top: 8px;
+}
