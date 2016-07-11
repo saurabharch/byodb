@@ -1,7 +1,7 @@
 app.config(function ($stateProvider) {
     $stateProvider.state('Home', {
         url: '/home',
-        templateUrl: 'js/Home/Home.html',
+        templateUrl: 'js/home/home.html',
         controller: 'HomeCtrl',
         resolve: {
         	allDbs: function(HomeFactory){
