@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="panel" ng-hide="$state.includes('Table.Single.query')">
-        <div class="panel-headi">
+        <div class="panel-head">
             <div class="row">
                 <form ng-model="data" ng-submit="filter(currentTable.dbName, currentTable.tableName, data)">
                     <span>Filter {{currentTable.tableName}} where</span>
@@ -55,7 +55,7 @@
                     </select>
                     <input ng-model="data.value">
                     <button type="submit" class="btn btn-primary">Submit query</button>
-                    <button type="submit" class="btn btn-primary" ng-click="csv(singleTable)">Download CSV</button>
+                    <button type="submit" class="btn btn-primary btn-csv" ng-click="csv(singleTable)">Download CSV</button>
                 </form>
             </div>
         </div>
