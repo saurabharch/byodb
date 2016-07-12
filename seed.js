@@ -44,44 +44,44 @@ var seedUsers = function () {
 
 };
 
-var seedDatabases = function () {
+// var seedDatabases = function () {
 
-    var databases = [
-        {
-            name: 'cool colors'
-        },
-        {
-            name: 'things to do for mom'
-        },
-        {
-            name: 'oho'
-        }
-    ];
+//     var databases = [
+//         {
+//             name: 'cool colors'
+//         },
+//         {
+//             name: 'things to do for mom'
+//         },
+//         {
+//             name: 'oho'
+//         }
+//     ];
 
-    var creatingDatabases = databases.map(function (databaseObj) {
-        return Database.create(databaseObj);
-    });
+//     var creatingDatabases = databases.map(function (databaseObj) {
+//         return Database.create(databaseObj);
+//     });
 
-    return Promise.all(creatingDatabases);
+//     return Promise.all(creatingDatabases);
 
-};
+// };
 
 db.sync({ force: true })
     .then(function () {
-       return Promise.all([seedUsers(), seedDatabases()])
+       return seedUsers()
     })
-    .then(function () {
-        var findingdb = Database.findById(1);
-        var findingdb1 = Database.findById(2);
-        var findingdb2 = Database.findById(3);
-        var findinguser = User.findById(1);
-        var findinguser1 = User.findById(2);;
-        return Promise.all([findingdb, findingdb1, findingdb2,findinguser,findinguser1]);
-    })
-    .spread(function(db, db1, db2,user, user1){
-        console.log(user);
-        return Promise.all(user.setDatabases([db,db1]), user1.setDatabases([db1,db2]));
-    })
+    // .then(function () {
+    //     var findingdb = Database.findById(1);
+    //     var findingdb1 = Database.findById(2);
+    //     var findingdb2 = Database.findById(3);
+    //     var findinguser = User.findById(1);
+    //     var findinguser1 = User.findById(2);;
+    //     return Promise.all([findingdb, findingdb1, findingdb2,findinguser,findinguser1]);
+    // })
+    // .spread(function(user, user1){
+    //     console.log(user);
+    //     return Promise.all(user.setDatabases([db,db1]), user1.setDatabases([db1,db2]));
+    // })
     .then(function () {
         console.log(chalk.green('Seed successful!'));
         process.kill(0);
