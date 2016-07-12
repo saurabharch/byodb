@@ -6,6 +6,7 @@ var router = require('express').Router();
 var Sequelize = require('sequelize');
 var knex = require('knex');
 var pg = require('pg');
+var Promise = Sequelize.Promise
 
 
 module.exports = router;
