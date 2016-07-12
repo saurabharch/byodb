@@ -41,6 +41,7 @@ router.get('/:dbName', function(req, res, next){
 })
 
 router.delete('/:dbName', function(req, res, next){
+    console.log('I am here to delete the row in the masterdb')
     Database.findOne({
         where: {
             dbName: req.params.dbName
