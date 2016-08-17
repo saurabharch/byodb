@@ -257,7 +257,7 @@ router.get('/getallcolumns/:dbName', function(req, res, next) {
 router.delete('/:dbn', function(req, res) {
     var pg = require('pg');
 
-    var conString = 'postgres://localhost:5432/masterDB';
+    var conString = 'postgres://localhost:5432/byodb';
 
     var client = new pg.Client(conString);
     client.connect(function(err) {
