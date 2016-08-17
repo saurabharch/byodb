@@ -26,7 +26,7 @@ module.exports = function (db) {
         classMethods: {
             makeClientDatabase: function(createdDB) {
                 var dbName = createdDB.dbName;
-                var connectionString = 'postgres://localhost:5432/masterDB';
+                var connectionString = 'postgres://localhost:5432/byodb';
                 var client = new pg.Client(connectionString);
                 client.connect();
                 var query = client.query('CREATE DATABASE ' + dbName);
