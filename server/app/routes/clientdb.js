@@ -302,7 +302,7 @@ router.post('/', function(req, res, next) {
 
     var knex = require('knex')({
         client: 'pg',
-        connection: 'postgres://127.0.0.1:5432/' + req.body.dbName,
+        connection: 'postgres://localhost:5432/' + req.body.dbName,
         searchPath: 'knex,public'
     });
 
